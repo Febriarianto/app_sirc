@@ -160,7 +160,7 @@ class KendaraanController extends Controller
             DB::beginTransaction();
             try {
                 $data = Kendaraan::findOrFail($id);
-                if ($request->foto == null) {
+                if ($request->file('foto') == null) {
                     $img = $data->foto;
                 } else {
                     $img = $request->file('foto')->store('kendaraan', 'public');
