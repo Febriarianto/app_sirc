@@ -82,7 +82,6 @@ class PemilikController extends Controller
             DB::beginTransaction();
             try {
                 $data = Pemilik::create([
-                    'id' => $request['id'],
                     'nama' => ucwords($request['nama']),
                     'alamat' => $request['alamat'],
                     'no_hp' => $request['no_hp'],

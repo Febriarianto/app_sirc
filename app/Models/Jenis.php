@@ -13,5 +13,7 @@ class Jenis extends Model
     protected $fillable = [
         'id',
         'nama',
+        'harga_12',
+        'harga_24'
     ];
 }

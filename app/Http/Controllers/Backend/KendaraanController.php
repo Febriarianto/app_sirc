@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Storage;
 
 class KendaraanController extends Controller
 {
@@ -34,7 +35,7 @@ class KendaraanController extends Controller
             ['url' => '#', 'title' => "Kendaraan"],
         ];
         if ($request->ajax()) {
-            $data = Kendaraan::with(['jenis', 'pemilik']);
+            $data = Kendaraan::with('pemilik', 'jenis');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -74,25 +75,24 @@ class KendaraanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required',
             'id_pemilik' => 'required',
             'id_jenis' => 'required',
             'no_kendaraan' => 'required',
             'tahun' => 'required',
             'warna' => 'required',
-            'foto' => 'required',
+            'foto' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
+                $img = $request->file('foto')->store('kendaraan', 'public');
                 $data = Kendaraan::create([
-                    'id' => $request['id'],
                     'id_pemilik' => $request['id_pemilik'],
                     'id_jenis' => $request['id_jenis'],
                     'no_kendaraan' => $request['no_kendaraan'],
                     'tahun' => $request['tahun'],
                     'warna' => $request['warna'],
-                    'foto' => $request['foto'],
+                    'foto' => $img,
                 ]);
 
                 DB::commit();
@@ -150,27 +150,28 @@ class KendaraanController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required',
             'id_pemilik' => 'required',
             'id_jenis' => 'required',
             'no_kendaraan' => 'required',
             'tahun' => 'required',
             'warna' => 'required',
-            'foto' => 'required',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
                 $data = Kendaraan::findOrFail($id);
-
+                if ($request->foto == null) {
+                    $img = $data->foto;
+                } else {
+                    $img = $request->file('foto')->store('kendaraan', 'public');
+                }
                 $data->update([
-                    'id' => $request['id'],
                     'id_pemilik' => $request['id_pemilik'],
                     'id_jenis' => $request['id_jenis'],
                     'no_kendaraan' => $request['no_kendaraan'],
                     'tahun' => $request['tahun'],
                     'warna' => $request['warna'],
-                    'foto' => $request['foto'],
+                    'foto' => $img,
                 ]);
 
                 DB::commit();
@@ -202,6 +203,7 @@ class KendaraanController extends Controller
         DB::beginTransaction();
         try {
             $data->delete();
+            \Storage::delete($data->foto);
             DB::commit();
             $response = response()->json([
                 'status' => 'success',

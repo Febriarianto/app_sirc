@@ -6,7 +6,7 @@
         @method($config['form']->method)
         @csrf
         <div class="row">
-            <div class="col-sm-12 col-lg-8">
+            <div class="col-sm-12 col-lg-12">
                 <div class="card">
                     <div class="card-header justify-content-between">
                         <div class="header-title">
@@ -33,60 +33,27 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="select2Pemilik">Pemilik :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="name">Nama :</label>
                                 <div class="col-sm-9">
-                                    <select id="select2Pemilik" style="width: 100% !important;" name="id_pemilik">
-                                        @if(isset($data->id_pemilik))
-                                        <option value="{{ $data->id_pemilik }}">{{ $data->pemilik->nama }}</option>
-                                        @endif
-                                    </select>
+                                    <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama" value="{{ $data->nama ?? '' }}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="select2Jenis">Jenis :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_12">Harga 12 Jam :</label>
                                 <div class="col-sm-9">
-                                    <select id="select2Jenis" style="width: 100% !important;" name="id_jenis">
-                                        @if(isset($data->id_jenis))
-                                        <option value="{{ $data->id_jenis }}">{{ $data->jenis->nama }}</option>
-                                        @endif
-                                    </select>
+                                    <input type="number" class="form-control" id="harga_12" name="harga_12" placeholder="Masukan harga 12 jam" value="{{ $data->harga_12 ?? '' }}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="no_kendaraan">No Kendaraan :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_24">Harga 24 Jam :</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="no_kendaraan" name="no_kendaraan" placeholder="Masukkan No Kendaraan" value="{{ $data->no_kendaraan ?? '' }}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="no_kendaraan">Tahun :</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="tahun" name="tahun" placeholder="Masukkan Tahun" value="{{ $data->tahun ?? '' }}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="warna">Warna :</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="warna" name="warna" placeholder="Masukan Warna" value="{{ $data->warna ?? '' }}">
+                                    <input type="number" class="form-control" id="harga_24" name="harga_24" placeholder="Masukan Harga 24 Jam" value="{{ $data->harga_24 ?? '' }}">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-lg-4 text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <label class="mb-2 text-bold d-block">Foto</label>
-                        <img id="avatar" @if(isset($data['foto'])) src="{{ $data['foto'] != NULL ? asset("storage/".$data['foto']) : asset('images/no-content.svg') }}" @else src="{{ asset('images/no-content.svg') }}" @endif style="object-fit: cover; border: 1px solid #d9d9d9" class="mb-2 border-2 mx-auto" height="200px" width="200px" alt="">
-                        <input class="form-control image" type="file" id="customFile1" name="foto" accept=".jpg, .jpeg, .png">
-                        <p class="text-muted ms-75 mt-50"><small>Allowed JPG, JPEG or PNG. Max
-                                size of
-                                2MB</small></p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </form>
 </div>
 @endsection
@@ -96,42 +63,6 @@
         $('#select2Active').select2({
             theme: 'bootstrap4',
             width: '100%'
-        });
-
-        $('#select2Pemilik').select2({
-            theme: 'bootstrap4',
-            dropdownParent: $('#select2Pemilik').parent(),
-            placeholder: "Cari Pemilik",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('pemilik.select2') }}",
-                dataType: "json",
-                cache: true,
-                data: function(e) {
-                    return {
-                        q: e.term || '',
-                        page: e.page || 1
-                    }
-                },
-            },
-        });
-
-        $('#select2Jenis').select2({
-            theme: 'bootstrap4',
-            dropdownParent: $('#select2Jenis').parent(),
-            placeholder: "Cari Jenis",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('jenis.select2') }}",
-                dataType: "json",
-                cache: true,
-                data: function(e) {
-                    return {
-                        q: e.term || '',
-                        page: e.page || 1
-                    }
-                },
-            },
         });
 
         $("#formStore").submit(function(e) {
@@ -180,17 +111,6 @@
                     toastr.error(response.responseJSON.message, 'Failed !');
                 }
             });
-        });
-
-        $(".image").change(function() {
-            let thumb = $(this).parent().find('img');
-            if (this.files && this.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    thumb.attr('src', e.target.result);
-                }
-                reader.readAsDataURL(this.files[0]);
-            }
         });
     });
 </script>

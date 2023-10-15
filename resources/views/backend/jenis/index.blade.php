@@ -9,10 +9,10 @@
                     <div class="header-title">
                         <div class="row">
                             <div class="col-sm-6 col-lg-6">
-                                <h4 class="card-title">Data Kendaraan</h4>
+                                <h4 class="card-title">Data Jenis</h4>
                             </div>
                             <div class="col-sm-6 col-lg-6">
-                                <a href="{{ route('kendaraan.create') }}" class="btn btn-primary float-right">
+                                <a href="{{ route('jenis.create') }}" class="btn btn-primary float-right">
                                     <i class="fas fa-plus"></i> Tambah
                                 </a>
                             </div>
@@ -24,11 +24,9 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead>
                                 <tr>
-                                    <th>NO Kendaraan</th>
-                                    <th>Pemilik</th>
-                                    <th>Jenis</th>
-                                    <th>Tahun</th>
-                                    <th>Warna</th>
+                                    <th>Nama</th>
+                                    <th>Harga 12 Jam</th>
+                                    <th>Harga 24 Jam</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -50,27 +48,19 @@
             serverSide: true,
             processing: true,
             ajax: {
-                url: `{{ route('kendaraan.index') }}`
+                url: `{{ route('jenis.index') }}`
             },
             columns: [{
-                    data: 'no_kendaraan',
-                    name: 'no_kendaraan'
+                    data: 'nama',
+                    name: 'nama'
                 },
                 {
-                    data: 'pemilik.nama',
-                    name: 'pemilik.nama'
+                    name: 'harga_12',
+                    data: 'harga_12'
                 },
                 {
-                    data: 'jenis.nama',
-                    name: 'jenis.nama'
-                },
-                {
-                    data: 'tahun',
-                    name: 'tahun'
-                },
-                {
-                    data: 'warna',
-                    name: 'warna'
+                    data: 'harga_24',
+                    name: 'harga_24'
                 },
                 {
                     data: 'action',
@@ -84,7 +74,7 @@
                 let api = this.api();
                 $(row).find('.btn-delete').click(function() {
                     let pk = $(this).data('id'),
-                        url = `{{ route("kendaraan.index") }}/` + pk;
+                        url = `{{ route("jenis.index") }}/` + pk;
                     Swal.fire({
                         title: "Anda Yakin ?",
                         text: "Data tidak dapat dikembalikan setelah di hapus!",

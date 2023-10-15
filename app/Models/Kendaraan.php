@@ -19,4 +19,13 @@ class Kendaraan extends Model
         'warna',
         'foto',
     ];
+
+    public function pemilik()
+    {
+        return $this->belongsTo(Pemilik::class, 'id_pemilik');
+    }
+    public function jenis()
+    {
+        return $this->belongsTo(Jenis::class, 'id_jenis');
+    }
 }
