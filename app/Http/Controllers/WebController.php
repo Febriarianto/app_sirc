@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Kendaraan;
 
 class WebController extends Controller
 {
@@ -13,7 +14,8 @@ class WebController extends Controller
      */
     public function index()
     {
-        return view('web.index');
+        $kendaraan = Kendaraan::with('jenis')->paginate(6);
+        return view('web.index', compact('kendaraan'));
     }
 
     /**

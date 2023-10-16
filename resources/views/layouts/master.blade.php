@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin | {{ SettingWeb::get_setting()->title }}</title>
-
+    <link rel="shortcut icon" href="{{ asset ('storage/images/setting/'.SettingWeb::get_setting()->favicon) }}" type="image/x-icon">
     @include('layouts.link.default')
 
 </head>
