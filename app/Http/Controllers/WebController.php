@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Kendaraan;
+use App\Models\Jenis;
 
 class WebController extends Controller
 {
@@ -15,7 +16,9 @@ class WebController extends Controller
     public function index()
     {
         $kendaraan = Kendaraan::with('jenis')->paginate(6);
-        return view('web.index', compact('kendaraan'));
+
+        $jenis = Jenis::select('id', 'nama')->get();
+        return view('web.index', compact('kendaraan', 'jenis'));
     }
 
     /**

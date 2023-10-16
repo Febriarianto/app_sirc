@@ -105,20 +105,18 @@
 
                     <div class="row align-items-center">
 
-                        <div class="mb-3 mb-md-0 col-md-3">
+                        <div class="mb-3 mb-md-0 col-md-9">
                             <select name="" id="" class="custom-select form-control">
                                 <option value="">Select Type</option>
-                                <option value="">Ferrari</option>
-                                <option value="">Toyota</option>
-                                <option value="">Ford</option>
-                                <option value="">Lamborghini</option>
+                                @foreach($jenis as $j)
+                                <option value="$j->id">{{$j->nama}}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="mb-3 mb-md-0 col-md-3">
+                        <!-- <div class="mb-3 mb-md-0 col-md-3">
                             <div class="form-control-wrap">
                                 <input type="text" id="cf-3" placeholder="Pick up" class="form-control datepicker px-3">
                                 <span class="icon icon-date_range"></span>
-
                             </div>
                         </div>
                         <div class="mb-3 mb-md-0 col-md-3">
@@ -126,7 +124,7 @@
                                 <input type="text" id="cf-4" placeholder="Drop off" class="form-control datepicker px-3">
                                 <span class="icon icon-date_range"></span>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="mb-3 mb-md-0 col-md-3">
                             <input type="submit" value="Search Now" class="btn btn-primary btn-block py-3">
                         </div>
@@ -149,20 +147,16 @@
                                 <div class="rent-price">
                                     <strong>Rp. {{number_format($k->jenis->harga_24)}}</strong><span class="mx-1">/</span>24 Jam
                                 </div>
-                                <!-- <div class="d-block d-md-flex mb-3 border-bottom pb-3">
+                                <div class="d-block d-md-flex mb-3 border-bottom pb-3">
                                     <div class="listing-feature pr-4">
-                                        <span class="caption">Luggage:</span>
-                                        <span class="number">8</span>
+                                        <span class="caption">Warna:</span>
+                                        <span class="number">{{$k->warna}}</span>
                                     </div>
                                     <div class="listing-feature pr-4">
-                                        <span class="caption">Doors:</span>
-                                        <span class="number">4</span>
+                                        <span class="caption">Tahun:</span>
+                                        <span class="number">{{$k->tahun}}</span>
                                     </div>
-                                    <div class="listing-feature pr-4">
-                                        <span class="caption">Passenger:</span>
-                                        <span class="number">4</span>
-                                    </div>
-                                </div> -->
+                                </div>
                                 <div>
                                     <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos eos at eum, voluptatem quibusdam.</p> -->
                                     <p><a href="#" class="btn btn-primary btn-sm float-right">Rent Now</a></p>

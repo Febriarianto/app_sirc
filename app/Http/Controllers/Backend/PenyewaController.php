@@ -74,6 +74,7 @@ class PenyewaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'nik' => 'required|unique:penyewa',
             'nama' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
@@ -86,6 +87,7 @@ class PenyewaController extends Controller
                 $imgKtp = $request->file('ktp')->store('ktp', 'public');
                 $imgKk = $request->file('kk')->store('kk', 'public');
                 $data = Penyewa::create([
+                    'nik' => $request['nik'],
                     'nama' => $request['nama'],
                     'no_hp' => $request['no_hp'],
                     'alamat' => $request['alamat'],
@@ -149,6 +151,7 @@ class PenyewaController extends Controller
     {
         // dd($request);
         $validator = Validator::make($request->all(), [
+            'nama' => 'required|nik|unique:penyewa,nik,' . $request['nik'] . ',nik',
             'nama' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
@@ -172,6 +175,7 @@ class PenyewaController extends Controller
                 }
 
                 $data->update([
+                    'nik' => $request['nik'],
                     'nama' => $request['nama'],
                     'no_hp' => $request['no_hp'],
                     'alamat' => $request['alamat'],

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('penyewa', function (Blueprint $table) {
             $table->id();
+            $table->string('nik')->unique();
             $table->string('nama');
             $table->string('no_hp');
             $table->string('alamat');

@@ -24,6 +24,7 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead>
                                 <tr>
+                                    <th>NIK</th>
                                     <th>Nama</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
@@ -51,6 +52,10 @@
                 url: `{{ route('penyewa.index') }}`
             },
             columns: [{
+                    data: 'nik',
+                    name: 'nik'
+                },
+                {
                     data: 'nama',
                     name: 'nama'
                 },

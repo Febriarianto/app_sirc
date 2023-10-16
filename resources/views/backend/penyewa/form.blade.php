@@ -33,6 +33,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="nik">NIK :</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan NIK" value="{{ $data->nik ?? '' }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="nama">Nama :</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama" value="{{ $data->nama ?? '' }}">
