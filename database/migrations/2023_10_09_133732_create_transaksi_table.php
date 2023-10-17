@@ -15,20 +15,23 @@ return new class extends Migration
     {
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_penyewa')->on('penyewa')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_penyewa')->references('id')->on('penyewa')->onUpdate('cascade')->onDelete('cascade');
             $table->string('kota_tujuan');
-            $table->foreignId('id_kendaraan')->on('kendaraan')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_kendaraan')->references('id')->on('kendaraan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('lama_sewa');
+            $table->enum('paket', ['tahunan', 'bulanana', 'mingguan', 'harian']);
             $table->dateTime('keberangkatan');
             $table->dateTime('kepulangan');
+            $table->unsignedBigInteger('over_time');
             $table->unsignedBigInteger('biaya');
             $table->unsignedBigInteger('dp');
             $table->unsignedBigInteger('sisa');
-            $table->string('kondisi_bbm');
-            $table->string('dongkrak');
-            $table->string('ban_cadangan');
-            $table->string('kelengkapan_lain');
-            $table->string('jaminan');
+            $table->enum('metode_pelunasan', ['cash', 'transfer']);
+            $table->string('bukti_pelunasan');
+            $table->enum('metode_dp', ['cash', 'transfer']);
+            $table->string('bukti_dp');
+            $table->enum('tipe', ['pemesanan', 'faktur',]);
+            $table->enum('status', ['proses', 'selesai', 'batal']);
             $table->timestamps();
         });
     }

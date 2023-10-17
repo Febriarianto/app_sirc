@@ -17,15 +17,23 @@ class Transaksi extends Model
         'kota_tujuan',
         'id_kendaraan',
         'lama_sewa',
+        'paket',
         'keberangkatan',
         'kepulangan',
+        'over_time',
         'biaya',
         'dp',
         'sisa',
-        'kondisi_bbm',
-        'dongkrak',
-        'ban_cadangan',
-        'kelengkapan_lain',
-        'jaminan',
+        'metode_pelunasan',
+        'bukti_pelunasan',
+        'metode_dp',
+        'bukti_dp',
+        'tipe',
+        'status',
     ];
+
+    public function penyewa()
+    {
+        return $this->belongsTo(Penyewa::class, 'id_penyewa');
+    }
 }

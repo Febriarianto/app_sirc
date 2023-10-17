@@ -70,8 +70,10 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::resource('kendaraan', Backend\KendaraanController::class);
 
     /* Penyewa Route */
+    Route::get('penyewa/select2', [Backend\PenyewaController::class, 'select2'])->name('penyewa.select2');
     Route::resource('penyewa', Backend\PenyewaController::class);
 
     /* Transaksi Route */
-    Route::resource('transaksi', Backend\TransaksiController::class);
+    Route::resource('faktur', Backend\FakturController::class);
+    Route::resource('pemesanan', Backend\PemesananController::class);
 });

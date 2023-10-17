@@ -215,4 +215,32 @@ class KendaraanController extends Controller
         }
         return $response;
     }
+    public function select2(Request $request)
+    {
+        $page = $request->page;
+        $resultCount = 10;
+        $offset = ($page - 1) * $resultCount;
+        $data = Kendaraan::where('no_kendaraan', 'LIKE', '%' . $request->q . '%')
+            ->orderBy('no_kendaraan')
+            ->skip($offset)
+            ->take($resultCount)
+            ->selectRaw('id, no_kendaraan as text')
+            ->get();
+
+        $count = Kendaraan::where('no_kendaraan', 'LIKE', '%' . $request->q . '%')
+            ->get()
+            ->count();
+
+        $endCount = $offset + $resultCount;
+        $morePages = $count > $endCount;
+
+        $results = array(
+            "results" => $data,
+            "pagination" => array(
+                "more" => $morePages
+            )
+        );
+
+        return response()->json($results);
+    }
 }

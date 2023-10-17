@@ -225,4 +225,33 @@ class PenyewaController extends Controller
         }
         return $response;
     }
+
+    public function select2(Request $request)
+    {
+        $page = $request->page;
+        $resultCount = 10;
+        $offset = ($page - 1) * $resultCount;
+        $data = Penyewa::where('nik', 'LIKE', '%' . $request->q . '%')
+            ->orderBy('nik')
+            ->skip($offset)
+            ->take($resultCount)
+            ->selectRaw('id, nik as text')
+            ->get();
+
+        $count = Penyewa::where('nik', 'LIKE', '%' . $request->q . '%')
+            ->get()
+            ->count();
+
+        $endCount = $offset + $resultCount;
+        $morePages = $count > $endCount;
+
+        $results = array(
+            "results" => $data,
+            "pagination" => array(
+                "more" => $morePages
+            )
+        );
+
+        return response()->json($results);
+    }
 }

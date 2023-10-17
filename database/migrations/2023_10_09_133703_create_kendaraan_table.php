@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('kendaraan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pemilik')->on('pemilik')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('id_jenis');
+            $table->foreignId('id_pemilik')->references('id')->on('pemilik')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('id_jenis')->references('id')->on('jenis')->onUpdate('cascade')->onDelete('cascade');;
             $table->string('no_kendaraan')->unique();
             $table->string('tahun');
             $table->string('warna');
