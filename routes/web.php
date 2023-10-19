@@ -76,4 +76,8 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     /* Transaksi Route */
     Route::resource('faktur', Backend\FakturController::class);
     Route::resource('pemesanan', Backend\PemesananController::class);
+
+    // referral
+    Route::resource('referral', Backend\ReferralController::class);
+
 });

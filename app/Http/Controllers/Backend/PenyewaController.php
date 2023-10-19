@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Penyewa;
+use App\Models\Referral;
 use App\Traits\ResponseStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -53,6 +54,7 @@ class PenyewaController extends Controller
      */
     public function create()
     {
+        $referrals = Referral::all();
         $config['title'] = "Tambah Penyewa";
         $config['breadcrumbs'] = [
             ['url' => route('penyewa.index'), 'title' => "Penyewa"],
@@ -62,7 +64,7 @@ class PenyewaController extends Controller
             'method' => 'POST',
             'action' => route('penyewa.store')
         ];
-        return view('backend.penyewa.form', compact('config'));
+        return view('backend.penyewa.form', compact('config', 'referrals'));
     }
 
     /**
@@ -93,6 +95,7 @@ class PenyewaController extends Controller
                     'alamat' => $request['alamat'],
                     'ktp' => $imgKtp,
                     'kk' => $imgKk,
+                    'referral_id' => $request['$referral_id'],
                 ]);
 
                 DB::commit();

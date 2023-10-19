@@ -33,25 +33,34 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="nik">NIK :</label>
-                                <div class="col-sm-9">
+                                <label class="control-label col-sm-1 align-self-center mb-0" for="nik">NIK :</label>
+                                <div class="col-sm-3">
                                     <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan NIK" value="{{ $data->nik ?? '' }}">
+                                </div>
+
+                                <label class="control-label col-sm-1 align-self-center mb-0" for="nik">Referral :</label>
+                                <div class="col-sm-3">
+                                    <select name="referral_id" id="referral" class="form-control">
+                                        @foreach ($referrals as $referral)
+                                            <option value="{{ $referral->id }}">{{  $referral->nama }}</option>
+                                        @endforeach
+                                      </select>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="nama">Nama :</label>
+                                <label class="control-label col-sm-1 align-self-center mb-0" for="nama">Nama :</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama" value="{{ $data->nama ?? '' }}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="alamat">Alamat :</label>
+                                <label class="control-label col-sm-1 align-self-center mb-0" for="alamat">Alamat :</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukkan Alamat" value="{{ $data->alamat ?? '' }}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="no_hp">No Hp :</label>
+                                <label class="control-label col-sm-1 align-self-center mb-0" for="no_hp">No Hp :</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Masukan No Hp" value="{{ $data->no_hp ?? '' }}">
                                 </div>
