@@ -18,5 +18,10 @@ class Penyewa extends Model
         'alamat',
         'ktp',
         'kk',
+        'referral_id',
     ];
+    public function referral()
+    {
+        return $this->belongsTo(Referral::class, 'referral_id');
+    }
 }

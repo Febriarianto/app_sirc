@@ -36,4 +36,8 @@ class Transaksi extends Model
     {
         return $this->belongsTo(Penyewa::class, 'id_penyewa');
     }
+    public function kendaraan()
+    {
+        return $this->belongsTo(Kendaraan::class, 'id_kendaraan');
+    }
 }

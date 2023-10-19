@@ -100,7 +100,7 @@ class ReferralController extends Controller
             'method' => 'PUT',
             'action' => route('referral.update', $id)
         ];
-        return view('backend.Referral.form', compact('config', 'data'));
+        return view('backend.referral.form', compact('config', 'data'));
     }
 
     /**

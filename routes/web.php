@@ -71,6 +71,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
 
     /* Penyewa Route */
     Route::get('penyewa/select2', [Backend\PenyewaController::class, 'select2'])->name('penyewa.select2');
+    Route::get('penyewa/getPenyewa/{nik}', [Backend\PenyewaController::class, 'getPenyewa'])->name('penyewa.getPenyewa');
     Route::resource('penyewa', Backend\PenyewaController::class);
 
     /* Transaksi Route */
@@ -78,6 +79,6 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::resource('pemesanan', Backend\PemesananController::class);
 
     // referral
+    Route::get('referral/select2', [Backend\ReferralController::class, 'select2'])->name('referral.select2');
     Route::resource('referral', Backend\ReferralController::class);
-
 });

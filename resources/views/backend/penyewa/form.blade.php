@@ -38,13 +38,13 @@
                                     <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan NIK" value="{{ $data->nik ?? '' }}">
                                 </div>
 
-                                <label class="control-label col-sm-1 align-self-center mb-0" for="nik">Referral :</label>
+                                <label class="control-label col-sm-1 align-self-center mb-0" for="select2Referral">Referral :</label>
                                 <div class="col-sm-3">
-                                    <select name="referral_id" id="referral" class="form-control">
-                                        @foreach ($referrals as $referral)
-                                            <option value="{{ $referral->id }}">{{  $referral->nama }}</option>
-                                        @endforeach
-                                      </select>
+                                    <select id="select2Referral" style="width: 100% !important;" name="referral_id">
+                                        @if(isset($data->referral_id))
+                                        <option value="{{ $data->referral_id }}">{{ $data->referral->nama }}</option>
+                                        @endif
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -107,31 +107,13 @@
             width: '100%'
         });
 
-        $('#select2Pemilik').select2({
+        $('#select2Referral').select2({
             theme: 'bootstrap4',
-            dropdownParent: $('#select2Pemilik').parent(),
-            placeholder: "Cari Pemilik",
+            dropdownParent: $('#select2Referral').parent(),
+            placeholder: "Cari Referral",
             allowClear: true,
             ajax: {
-                url: "{{ route('pemilik.select2') }}",
-                dataType: "json",
-                cache: true,
-                data: function(e) {
-                    return {
-                        q: e.term || '',
-                        page: e.page || 1
-                    }
-                },
-            },
-        });
-
-        $('#select2Jenis').select2({
-            theme: 'bootstrap4',
-            dropdownParent: $('#select2Jenis').parent(),
-            placeholder: "Cari Jenis",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('jenis.select2') }}",
+                url: "{{ route('referral.select2') }}",
                 dataType: "json",
                 cache: true,
                 data: function(e) {

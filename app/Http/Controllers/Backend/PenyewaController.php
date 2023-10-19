@@ -135,7 +135,7 @@ class PenyewaController extends Controller
             ['url' => route('penyewa.index'), 'title' => "Penyewa"],
             ['url' => '#', 'title' => "Edit Penyewa"],
         ];
-        $data = Penyewa::where('id', $id)->first();
+        $data = Penyewa::with('referral')->where('id', $id)->first();
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('penyewa.update', $id)
@@ -158,6 +158,7 @@ class PenyewaController extends Controller
             'nama' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
+            'referral_id' => 'required',
             // 'ktp' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // 'kk' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -182,6 +183,7 @@ class PenyewaController extends Controller
                     'nama' => $request['nama'],
                     'no_hp' => $request['no_hp'],
                     'alamat' => $request['alamat'],
+                    'referral_id' => $request['referral_id'] ?? 0,
                     'ktp' => $imgKtp,
                     'kk' => $imgKk,
                 ]);
@@ -256,5 +258,16 @@ class PenyewaController extends Controller
         );
 
         return response()->json($results);
+    }
+
+    public function getPenyewa($nik)
+    {
+        $data = Penyewa::select('nama', 'alamat', 'no_hp')->where('nik', $nik)->first();
+        // if (count($data) > 0) {
+        //     return response()->json(['response' => 'Y', 'data' => $data]);
+        // } else {
+        //     return response()->json(['response' => 'N']);
+        // }
+        return response()->json(['response' => 'Y', 'data' => $data]);
     }
 }

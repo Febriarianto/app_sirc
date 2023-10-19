@@ -14,7 +14,7 @@
                                 <div class="col-sm-6 col-lg-6">
                                     <h4 class="card-title">{{ $config['title'] }}</h4>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-2 align-self-center mb-0" for="no_hp">No Rekening :</label>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="no_hp" name="no_rekening" placeholder="Masukan Nomor rekening" value="{{ $data->no_hp ?? '' }}">
+                                    <input type="text" class="form-control" id="no_hp" name="no_rekening" placeholder="Masukan Nomor rekening" value="{{ $data->no_rekening ?? '' }}">
                                 </div>
                             </div>
                         </div>
