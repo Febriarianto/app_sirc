@@ -33,9 +33,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="nik">NIK :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewa :</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan NIK" value="{{ $data->nik ?? '' }}">
+                                    <select id="select2Penyewa" style="width: 100% !important;" name="id_penyewa">
+                                        @if(isset($data->id_penyewa))
+                                        <option value="{{ $data->id_penyewa }}">{{ $data->penyewa->nik }}</option>
+                                        @endif
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -69,15 +73,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="nomor_kendaraan">Nomor Kendaraan :</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="select2Kendaraan">Nomor Kendaraan :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nomor_kendaraan" name="nomor_kendaraan" placeholder="Masukan Nomor Kendaraan" value="{{ $data->no_hp ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="kendaraan">Kendaraan :</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="kendaraan" name="kendaraan" placeholder="Masukan Kendaraan" value="{{ $data->kendaraan ?? '' }}" readonly>
+                                <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
+                                    @if(isset($data->id_kendaraan))
+                                    <option value="{{ $data->id_kendaraan }}">{{ $data->kendaraan->no_kendaraan }}</option>
+                                    @endif
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -98,10 +100,10 @@
             <div class="col-sm-12 col-lg-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Paket :</label>
                         </div>
-                        <div class="row">
+                        <div class="form-group row">
                             <div class="col-sm-3">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" id="tahunan" name="paket" value="tahunan" class="custom-control-input">
@@ -126,6 +128,26 @@
                                     <label class="custom-control-label" for="harian">Harian</label>
                                 </div>
                             </div>
+                        </div> -->
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Paket :</label>
+                            <div class="col-sm-9">
+                                <select name="" id="" class="form-control">
+                                    <option value="">- Pilih -</option>
+                                    <option value="harian">Harian</option>
+                                    <option value="mingguan">Mingguan</option>
+                                    <option value="bulanan">Bulanan</option>
+                                    <option value="tahunan">Tahunan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="div">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga">Harga Paket :</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="harga" name="harga" placeholder="Masukan Harga Paket" value="{{ $data->kepulangan ?? '0' }}">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -134,32 +156,32 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="lama_sewa">Lama Sewa :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" placeholder="Masukan Lama Sewa" value="{{ $data->lama_sewa ?? '' }}">
+                                <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" placeholder="Masukan Lama Sewa" value="{{ $data->lama_sewa ?? '0' }}">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="over_time">Biaya Over Time :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="over_time" name="over_time" placeholder="Masukan Biaya Over Time" value="{{ $data->over_time ?? '' }}">
+                                <input type="number" class="form-control" id="over_time" name="over_time" placeholder="Masukan Biaya Over Time" value="{{ $data->over_time ?? '0' }}">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="biaya">Total Biaya :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="biaya" name="biaya" placeholder="Masukan Total Biaya" value="{{ $data->biaya ?? '' }}" readonly>
+                                <input type="text" class="form-control" id="biaya" name="biaya" placeholder="Masukan Total Biaya" value="{{ $data->biaya ?? '0' }}" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="dp">DP:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="dp" name="dp" placeholder="Masukan DP" value="{{ $data->dp ?? '' }}" readonly>
+                                <input type="text" class="form-control" id="dp" name="dp" placeholder="Masukan DP" value="{{ $data->dp ?? '0' }}" readonly>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Sisa:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="sisa" name="sisa" placeholder="Masukan Sisa" value="{{ $data->sisa ?? '' }}" readonly>
+                                <input type="text" class="form-control" id="sisa" name="sisa" placeholder="Masukan Sisa" value="{{ $data->sisa ?? '0' }}" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -178,6 +200,10 @@
                                     <label class="custom-control-label" for="transfer">Transfer</label>
                                 </div>
                             </div>
+                            <div id="fileTrf" class="col-sm-6" style="display:none;">
+                                <input type="file" class="form-control" id="bukti_pelunasan" name="bukti_pelunasan" value="{{ $data->bukti_pelunasan ?? '' }}">
+                                <label for="">{{ $data->bukti_pelunasan ?? '' }}</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -189,18 +215,65 @@
 @section('script')
 <script>
     $(document).ready(function() {
+
+        let hargaPaket = $('#harga'),
+            lamaSewa = $('#lama_sewa'),
+            overTime = $('#over_time'),
+            totalBiaya = $('#biaya'),
+            dp = $('#dp');
+
+        var CalResult = function() {
+            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) + parseInt(overTime.val()),
+                sisa = calTotal - parseInt(dp.val());
+
+            totalBiaya.val(calTotal);
+            $('#sisa').val(sisa);
+        }
+
+        CalResult();
+
+        $("#harga").on("keyup", function() {
+            console.log(CalResult());
+        });
+        $("#lama_sewa").on("keyup", function() {
+            console.log(CalResult());
+        });
+        $("#over_time").on("keyup", function() {
+            console.log(CalResult());
+        });
+
+        let nik2 = $('#select2Penyewa option:selected').text().trim();
+        $.ajax({
+            url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nik2,
+            success: function(response) {
+                $('#nama').val(response.data.nama);
+                $('#alamat').val(response.data.alamat);
+                $('#no_hp').val(response.data.no_hp);
+            }
+        })
+
+        if ($('#transfer').is(':checked')) {
+            let divFile = document.querySelector('input[name="bukti_dp"]').parentNode;
+            divFile.style.display = "";
+        }
+
+        if ($('#cash').is(':checked')) {
+            let divFile = document.querySelector('input[name="bukti_dp"]').parentNode;
+            divFile.style.display = "none";
+        }
+
         $('#select2Active').select2({
             theme: 'bootstrap4',
             width: '100%'
         });
 
-        $('#select2Pemilik').select2({
+        $('#select2Penyewa').select2({
             theme: 'bootstrap4',
-            dropdownParent: $('#select2Pemilik').parent(),
-            placeholder: "Cari Pemilik",
+            dropdownParent: $('#select2Penyewa').parent(),
+            placeholder: "Cari Penyewa",
             allowClear: true,
             ajax: {
-                url: "{{ route('pemilik.select2') }}",
+                url: "{{ route('penyewa.select2') }}",
                 dataType: "json",
                 cache: true,
                 data: function(e) {
@@ -212,13 +285,25 @@
             },
         });
 
-        $('#select2Jenis').select2({
+        $('#select2Penyewa').on('change', function() {
+            let nik = $('#select2Penyewa option:selected').text().trim();
+            $.ajax({
+                url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nik,
+                success: function(response) {
+                    $('#nama').val(response.data.nama);
+                    $('#alamat').val(response.data.alamat);
+                    $('#no_hp').val(response.data.no_hp);
+                }
+            })
+        });
+
+        $('#select2Kendaraan').select2({
             theme: 'bootstrap4',
-            dropdownParent: $('#select2Jenis').parent(),
-            placeholder: "Cari Jenis",
+            dropdownParent: $('#select2Kendaraan').parent(),
+            placeholder: "Cari Kendaraan",
             allowClear: true,
             ajax: {
-                url: "{{ route('jenis.select2') }}",
+                url: "{{ route('kendaraan.select2') }}",
                 dataType: "json",
                 cache: true,
                 data: function(e) {
@@ -278,15 +363,18 @@
             });
         });
 
-        $(".image").change(function() {
-            let thumb = $(this).parent().find('img');
-            if (this.files && this.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    thumb.attr('src', e.target.result);
+        let radioFile = document.querySelectorAll('input[name="metode_pelunasan"]');
+
+        radioFile.forEach(el => {
+            el.addEventListener('change', () => {
+                let divFile = document.querySelector('input[name="bukti_pelunasan"]').parentNode;
+
+                if (el.checked && el.value == 'transfer') {
+                    divFile.style.display = "";
+                } else {
+                    divFile.style.display = 'none';
                 }
-                reader.readAsDataURL(this.files[0]);
-            }
+            })
         });
     });
 </script>

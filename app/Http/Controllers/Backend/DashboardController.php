@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Puskesmas;
-use App\Models\User;
+use App\Models\Kendaraan;
+use App\Models\Penyewa;
+use App\Models\Transaksi;
 
 class DashboardController extends Controller
 {
@@ -15,12 +16,14 @@ class DashboardController extends Controller
             ['url' => '#', 'title' => ""],
         ];
 
-        $countAdmin = User::where('role_id', '1')->count();
-        $countOperator = User::where('role_id', '2')->count();
+        $countCar = Kendaraan::count();
+        $countPenyewa = Penyewa::count();
+        $countPemesanan = Transaksi::where('tipe', 'pemesanan')->count();
 
         $data = [
-            'countAdmin' => $countAdmin,
-            'countOperator' => $countOperator,
+            'countCar' => $countCar,
+            'countPenyewa' => $countPenyewa,
+            'countPemesanan' => $countPemesanan,
         ];
 
         return view('backend.dashboard.index', compact('config', 'data'));

@@ -28,6 +28,8 @@ class WebController extends Controller
                 })
                 ->where('jenis.id', $request['jenis'])
                 ->paginate(6);
+            $id_jenis = $request['jenis'];
+            $tgl = $request['tgl'];
         } else if ($request['jenis'] != NULL) {
             $kendaraan = DB::table('kendaraan')
                 ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'transaksi.keberangkatan', 'transaksi.id_kendaraan')
@@ -37,6 +39,8 @@ class WebController extends Controller
                 })
                 ->where('jenis.id', $request['jenis'])
                 ->paginate(6);
+            $id_jenis = $request['jenis'];
+            $tgl = '';
         } else if ($request['tgl'] != NULL) {
             $kendaraan = DB::table('kendaraan')
                 ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'transaksi.keberangkatan', 'transaksi.id_kendaraan')
@@ -45,6 +49,8 @@ class WebController extends Controller
                     $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')->where('transaksi.keberangkatan', $request['tgl']);
                 })
                 ->paginate(6);
+            $id_jenis = '';
+            $tgl = $request['tgl'];
         } else {
             $kendaraan = DB::table('kendaraan')
                 ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'transaksi.keberangkatan', 'transaksi.id_kendaraan')
@@ -53,9 +59,11 @@ class WebController extends Controller
                     $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')->where('transaksi.keberangkatan', Carbon::now()->format('Y-m-d'));
                 })
                 ->paginate(6);
+            $id_jenis = '';
+            $tgl = '';
         }
         $jenis = Jenis::select('id', 'nama')->get();
-        return view('web.index', compact('kendaraan', 'jenis'));
+        return view('web.index', compact('kendaraan', 'jenis', 'tgl', 'id_jenis'));
     }
 
     /**

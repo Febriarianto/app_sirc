@@ -108,13 +108,13 @@
                             <select name="jenis" id="jenis" class="custom-select form-control">
                                 <option value="">All</option>
                                 @foreach($jenis as $j)
-                                <option value="{{$j->id}}">{{$j->nama}}</option>
+                                <option value="{{$j->id}}" {{ $j->id == $id_jenis ? 'selected' : ''}}>{{$j->nama}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3 mb-md-0 col-md-3">
                             <div class="form-control-wrap">
-                                <input type="date" id="cf-3" name="tgl" class="form-control">
+                                <input type="date" id="cf-3" name="tgl" class="form-control" value="{{ isset($tgl) ? $tgl : ''}}">
                             </div>
                         </div>
                         <div class="mb-3 mb-md-0 col-md-3">
