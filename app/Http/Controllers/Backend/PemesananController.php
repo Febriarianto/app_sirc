@@ -35,12 +35,13 @@ class PemesananController extends Controller
             ['url' => '#', 'title' => "Pemesanan"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::with('penyewa')->where('tipe', '=', 'pemesanan')->get();
+            $data = Transaksi::with('penyewa', 'kendaraan')->where('tipe', '=', 'pemesanan')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>';
+                        <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>
+                        <a class="btn btn-info" href="' . route('pemesanan.edit', $row->id) . '">Proses</a>';
                     return $actionBtn;
                 })->make();
         }

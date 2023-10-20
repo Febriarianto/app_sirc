@@ -22,6 +22,7 @@ Route::get('/', function () {
 });
 
 Route::get('web', [WebController::class, 'index'])->name('web');
+Route::post('web', [WebController::class, 'index'])->name('web.index');
 
 Route::post('logout', [Auth\LoginController::class, 'logout'])->name('logout');
 Route::prefix('backend')->group(function () {

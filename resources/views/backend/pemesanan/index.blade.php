@@ -24,11 +24,11 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead>
                                 <tr>
-                                    <th>No</th>
                                     <th>Nama Pemesan</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
                                     <th>Tanggal Berangkat</th>
+                                    <th>NO Kendaraan</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -53,10 +53,6 @@
                 url: `{{ route('pemesanan.index') }}`
             },
             columns: [{
-                    data: 'id',
-                    name: 'id'
-                },
-                {
                     data: 'penyewa.nama',
                     name: 'penyewa.nama'
                 },
@@ -71,6 +67,10 @@
                 {
                     data: 'keberangkatan',
                     name: 'keberangkatan'
+                },
+                {
+                    data: 'kendaraan.no_kendaraan',
+                    name: 'kendaraan.no_kendaraan'
                 },
                 {
                     data: 'action',

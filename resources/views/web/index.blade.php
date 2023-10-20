@@ -101,35 +101,26 @@
                         <p class="mb-5">Daftar Mobil Lepas Kunci</p>
                     </div>
                 </div>
-                <form class="trip-form">
-
+                <form class="trip-form" action="{{route('web.index')}}" method="post">
+                    @csrf
                     <div class="row align-items-center">
-
-                        <div class="mb-3 mb-md-0 col-md-9">
-                            <select name="" id="" class="custom-select form-control">
-                                <option value="">Select Type</option>
+                        <div class="mb-3 mb-md-0 col-md-6">
+                            <select name="jenis" id="jenis" class="custom-select form-control">
+                                <option value="">All</option>
                                 @foreach($jenis as $j)
-                                <option value="$j->id">{{$j->nama}}</option>
+                                <option value="{{$j->id}}">{{$j->nama}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <!-- <div class="mb-3 mb-md-0 col-md-3">
-                            <div class="form-control-wrap">
-                                <input type="text" id="cf-3" placeholder="Pick up" class="form-control datepicker px-3">
-                                <span class="icon icon-date_range"></span>
-                            </div>
-                        </div>
                         <div class="mb-3 mb-md-0 col-md-3">
                             <div class="form-control-wrap">
-                                <input type="text" id="cf-4" placeholder="Drop off" class="form-control datepicker px-3">
-                                <span class="icon icon-date_range"></span>
+                                <input type="date" id="cf-3" name="tgl" class="form-control">
                             </div>
-                        </div> -->
+                        </div>
                         <div class="mb-3 mb-md-0 col-md-3">
                             <input type="submit" value="Search Now" class="btn btn-primary btn-block py-3">
                         </div>
                     </div>
-
                 </form>
                 <div class="row mt-5">
                     @foreach($kendaraan as $k)
@@ -140,12 +131,12 @@
                                 <img src="{{ asset ('storage').'/'.$k->foto }}" alt="Image" width="300px" height="200px">
                             </div>
                             <div class="listing-contents h-100">
-                                <h3>{{$k->jenis->nama}}</h3>
+                                <h3>{{$k->nama}}</h3>
                                 <div class="rent-price">
-                                    <strong>Rp. {{ number_format($k->jenis->harga_12)}}</strong><span class="mx-1">/</span>12 Jam
+                                    <strong>Rp. {{ number_format($k->harga_12)}}</strong><span class="mx-1">/</span>12 Jam
                                 </div>
                                 <div class="rent-price">
-                                    <strong>Rp. {{number_format($k->jenis->harga_24)}}</strong><span class="mx-1">/</span>24 Jam
+                                    <strong>Rp. {{number_format($k->harga_24)}}</strong><span class="mx-1">/</span>24 Jam
                                 </div>
                                 <div class="d-block d-md-flex mb-3 border-bottom pb-3">
                                     <div class="listing-feature pr-4">
@@ -158,8 +149,10 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos eos at eum, voluptatem quibusdam.</p> -->
-                                    <p><a href="#" class="btn btn-primary btn-sm float-right">Rent Now</a></p>
+                                    <h3><span class="badge {{$k->id_kendaraan != null ? 'badge-danger' : 'badge-success'}} float-right">{{$k->id_kendaraan != null ? 'Tidak Tersedia' : 'Tersedia'}}</span></h3>
+                                    <a {{$k->id_kendaraan != null ? '' : 'href="https://api.whatsapp.com/send/?phone=6281380101878&text=Hai%27Admin+Saya+ingin%27Menyewa+Mobil+'.$k->nama.'+warna%27'.$k->warna.'&type=phone_number&app_absent=0"'}} class="btn btn-success btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                                            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+                                        </svg> Hubungi Admin</a>
                                 </div>
                             </div>
 
@@ -252,7 +245,6 @@
         </footer>
 
     </div>
-
     <script src="{{ asset ('assets/web/js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset ('assets/web/js/popper.min.js') }}"></script>
     <script src="{{ asset ('assets/web/js/bootstrap.min.js') }}"></script>
@@ -265,6 +257,21 @@
     <script src="{{ asset ('assets/web/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset ('assets/web/js/aos.js') }}"></script>
     <script src="{{ asset ('assets/web/js/main.js') }}"></script>
+
+    <script>
+        $(function() {
+            var dtToday = new Date();
+            var month = dtToday.getMonth() + 1;
+            var day = dtToday.getDate();
+            var year = dtToday.getFullYear();
+            if (month < 10)
+                month = '0' + month.toString();
+            if (day < 10)
+                day = '0' + day.toString();
+            var maxDate = year + '-' + month + '-' + day;
+            $('#cf-3').attr('min', maxDate);
+        });
+    </script>
 
 </body>
 
