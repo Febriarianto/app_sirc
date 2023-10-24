@@ -82,8 +82,12 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     // referral
     Route::get('referral/select2', [Backend\ReferralController::class, 'select2'])->name('referral.select2');
     Route::resource('referral', Backend\ReferralController::class);
-    
+
     //invoice
     Route::resource('invoice', Backend\InvoiceController::class);
 
+
+    //laporan
+    Route::get('laporan-bulanan', [Backend\LaporanController::class, 'bulanan_index'])->name('laporan.bulanan');
+    Route::get('laporan-referral', [Backend\LaporanController::class, 'referral_index'])->name('laporan.referral');
 });
