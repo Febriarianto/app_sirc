@@ -2,8 +2,7 @@
 
 @section('content')
 <div>
-    <form id="formStore" action="{{ $config['form']->action }}" method="POST">
-        @method($config['form']->method)
+    <form id="formStore" action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-sm-12 col-lg-6">
@@ -145,7 +144,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga">Harga Paket :</label>
                                 <div class="col-sm-9">
-                                    <input type="number" class="form-control" id="harga" name="harga" placeholder="Masukan Harga Paket" value="{{ $data->kepulangan ?? '0' }}">
+                                    <input type="number" class="form-control" id="harga" name="harga_paket" placeholder="Masukan Harga Paket" value="{{ $data->kepulangan ?? '0' }}">
                                 </div>
                             </div>
                         </div>
@@ -162,13 +161,13 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="over_time">Biaya Over Time :</label>
                             <div class="col-sm-9">
-                                <input type="number" class="form-control" id="over_time" name="over_time" placeholder="Masukan Biaya Over Time" value="{{ $data->over_time ?? '0' }}">
+                                <input type="number" class="form-control" id="over_time" name="biaya_overtime" placeholder="Masukan Biaya Over Time" value="{{ $data->over_time ?? '0' }}">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="biaya">Total Biaya :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="biaya" name="biaya" placeholder="Masukan Total Biaya" value="{{ $data->biaya ?? '0' }}" readonly>
+                                <input type="text" class="form-control" id="biaya" name="total_biaya" placeholder="Masukan Total Biaya" value="{{ $data->biaya ?? '0' }}" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -315,53 +314,53 @@
             },
         });
 
-        $("#formStore").submit(function(e) {
-            e.preventDefault();
-            let form = $(this);
-            let btnSubmit = form.find("[type='submit']");
-            let btnSubmitHtml = btnSubmit.html();
-            let url = form.attr("action");
-            let data = new FormData(this);
-            $.ajax({
-                cache: false,
-                processData: false,
-                contentType: false,
-                type: "POST",
-                url: url,
-                data: data,
-                beforeSend: function() {
-                    btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
-                },
-                success: function(response) {
-                    let errorCreate = $('#errorCreate');
-                    errorCreate.css('display', 'none');
-                    errorCreate.find('.alert-text').html('');
-                    btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
-                    if (response.status === "success") {
-                        toastr.success(response.message, 'Success !');
-                        setTimeout(function() {
-                            if (response.redirect === "" || response.redirect === "reload") {
-                                location.reload();
-                            } else {
-                                location.href = response.redirect;
-                            }
-                        }, 1000);
-                    } else {
-                        toastr.error((response.message ? response.message : "Please complete your form"), 'Failed !');
-                        if (response.error !== undefined) {
-                            errorCreate.removeAttr('style');
-                            $.each(response.error, function(key, value) {
-                                errorCreate.find('.alert-text').append('<span style="display: block">' + value + '</span>');
-                            });
-                        }
-                    }
-                },
-                error: function(response) {
-                    btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
-                    toastr.error(response.responseJSON.message, 'Failed !');
-                }
-            });
-        });
+        // $("#formStore").submit(function(e) {
+        //     e.preventDefault();
+        //     let form = $(this);
+        //     let btnSubmit = form.find("[type='submit']");
+        //     let btnSubmitHtml = btnSubmit.html();
+        //     let url = form.attr("action");
+        //     let data = new FormData(this);
+        //     $.ajax({
+        //         cache: false,
+        //         processData: false,
+        //         contentType: false,
+        //         type: "POST",
+        //         url: url,
+        //         data: data,
+        //         beforeSend: function() {
+        //             btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
+        //         },
+        //         success: function(response) {
+        //             let errorCreate = $('#errorCreate');
+        //             errorCreate.css('display', 'none');
+        //             errorCreate.find('.alert-text').html('');
+        //             btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+        //             if (response.status === "success") {
+        //                 toastr.success(response.message, 'Success !');
+        //                 setTimeout(function() {
+        //                     if (response.redirect === "" || response.redirect === "reload") {
+        //                         location.reload();
+        //                     } else {
+        //                         location.href = response.redirect;
+        //                     }
+        //                 }, 1000);
+        //             } else {
+        //                 toastr.error((response.message ? response.message : "Please complete your form"), 'Failed !');
+        //                 if (response.error !== undefined) {
+        //                     errorCreate.removeAttr('style');
+        //                     $.each(response.error, function(key, value) {
+        //                         errorCreate.find('.alert-text').append('<span style="display: block">' + value + '</span>');
+        //                     });
+        //                 }
+        //             }
+        //         },
+        //         error: function(response) {
+        //             btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+        //             toastr.error(response.responseJSON.message, 'Failed !');
+        //         }
+        //     });
+        // });
 
         let radioFile = document.querySelectorAll('input[name="metode_pelunasan"]');
 

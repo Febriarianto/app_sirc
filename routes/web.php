@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth as Auth;
-use App\Http\Controllers\Backend as Backend;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth as Auth;
+use App\Http\Controllers\WebController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Backend as Backend;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,4 +82,8 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     // referral
     Route::get('referral/select2', [Backend\ReferralController::class, 'select2'])->name('referral.select2');
     Route::resource('referral', Backend\ReferralController::class);
+    
+    //invoice
+    Route::resource('invoice', Backend\InvoiceController::class);
+
 });

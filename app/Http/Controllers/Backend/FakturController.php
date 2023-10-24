@@ -74,12 +74,12 @@ class FakturController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nik' => 'required|unique:penyewa',
-            'nama' => 'required',
-            'no_hp' => 'required',
-            'alamat' => 'required',
-            'ktp' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'kk' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            // 'nik' => 'required|unique:penyewa',
+            // 'nama' => 'required',
+            // 'no_hp' => 'required',
+            // 'alamat' => 'required',
+            // 'ktp' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            // 'kk' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
