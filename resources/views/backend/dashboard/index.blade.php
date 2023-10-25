@@ -53,26 +53,89 @@
                 </h3>
             </div>
             <div class="card-body">
-                <div class="tab-content p-0">
-
-                    <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;">
-                        <div class="chartjs-size-monitor">
-                            <div class="chartjs-size-monitor-expand">
-                                <div class=""></div>
-                            </div>
-                            <div class="chartjs-size-monitor-shrink">
-                                <div class=""></div>
-                            </div>
-                        </div>
-                        <canvas id="revenue-chart-canvas" height="600" style="height: 300px; display: block; width: 304px;" width="608" class="chartjs-render-monitor"></canvas>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="">Pilih Mobil</label>
                     </div>
-                    <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                        <canvas id="sales-chart-canvas" height="0" style="height: 0px; display: block; width: 0px;" class="chartjs-render-monitor" width="0"></canvas>
+                    <div class="col-6">
+                        <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
+                        </select>
                     </div>
+                </div>
+                <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;">
+                    <canvas id="revenue-chart-canvas" style="height:100%; display: block; width: 100%;" class="chartjs-render-monitor"></canvas>
                 </div>
             </div>
         </div>
 
     </section>
 </div>
+@endsection
+@section('script')
+<script>
+    $(document).ready(function() {
+        $('#select2Kendaraan').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#select2Kendaraan').parent(),
+            placeholder: "Cari Kendaraan",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('kendaraan.select2') }}",
+                dataType: "json",
+                cache: true,
+                data: function(e) {
+                    return {
+                        q: e.term || '',
+                        page: e.page || 1
+                    }
+                },
+            },
+        });
+
+        $('#select2Kendaraan').on('change', function() {
+            $.ajax({
+                url: "{{ route('dashboard.graph') }}",
+                dataType: "json",
+                type: "GET",
+                success: function(response) {
+                    const xValues = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
+                    const yValues = [];
+
+                    for (let i = 1; i < 13; i++) {
+                        yValues.push(response[i])
+                    }
+
+                    console.log(yValues, xValues);
+
+                    new Chart("revenue-chart-canvas", {
+                        type: "line",
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                fill: false,
+                                lineTension: 0,
+                                backgroundColor: "rgba(0,0,255,1.0)",
+                                borderColor: "rgba(0,0,255,0.1)",
+                                data: yValues
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        min: 0,
+                                        max: 20
+                                    }
+                                }],
+                            }
+                        }
+                    });
+                }
+            })
+        });
+    })
+</script>
 @endsection

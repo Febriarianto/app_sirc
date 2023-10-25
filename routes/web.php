@@ -37,6 +37,9 @@ Route::prefix('backend')->group(function () {
 });
 
 Route::prefix('backend')->middleware(['auth:web'])->group(function () {
+    /* Dashboard */
+    Route::get('graph', [Backend\DashboardController::class, 'graph'])->name('dashboard.graph');
+
     /* Role Route */
     Route::get('roles/select2', [Backend\RoleController::class, 'select2'])->name('roles.select2');
     Route::resource('roles', Backend\RoleController::class);
