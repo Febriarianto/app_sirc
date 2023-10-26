@@ -71,6 +71,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
 
     /* Kendaraan Route */
     Route::get('kendaraan/select2', [Backend\KendaraanController::class, 'select2'])->name('kendaraan.select2');
+    Route::get('kendaraan/status', [Backend\KendaraanController::class, 'status'])->name('kendaraan.status');
     Route::resource('kendaraan', Backend\KendaraanController::class);
 
     /* Penyewa Route */

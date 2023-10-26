@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Jenis;
 use App\Models\Kendaraan;
+use Illuminate\Http\Request;
 use App\Traits\ResponseStatus;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class KendaraanController extends Controller
 {
@@ -52,6 +54,41 @@ class KendaraanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function status(Request $request)
+    {
+        $config['title'] = "Data Ketersediaan Mobil";
+        $config['breadcrumbs'] = [
+            ['url' => route('kendaraan.index'), 'title' => "Data Ketersediaan Mobil"],
+        ];
+
+        // $status = Kendaraan::with('transaksis')->paginate(5);
+        // return view('backend.pemesanan.list_ketersediaan', compact('config', 'status'));
+
+        $jenisId = $request->input('jenis');
+        $tanggal = $request->input('tgl') ?? Carbon::now()->format('Y-m-d');
+    
+        $kendaraan = Kendaraan::select(
+            'kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna',
+            'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24',
+            'transaksi.keberangkatan', 'transaksi.id_kendaraan'
+        )
+        ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
+        ->leftJoin('transaksi', function ($join) use ($tanggal) {
+            $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')
+                ->where('transaksi.keberangkatan', $tanggal);
+        })
+        ->when($jenisId, function ($query) use ($jenisId) {
+            return $query->where('jenis.id', $jenisId);
+        })
+        ->paginate(6);
+        $id_jenis = $request['jenis'];
+    
+        $jenis = Jenis::select('id', 'nama')->get();
+    
+        return view('backend.pemesanan.list_ketersediaan', compact('kendaraan', 'jenis', 'tanggal', 'id_jenis', 'config'));
+    }
+
     public function create()
     {
         $config['title'] = "Tambah Kendaraan";

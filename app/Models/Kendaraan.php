@@ -28,4 +28,9 @@ class Kendaraan extends Model
     {
         return $this->belongsTo(Jenis::class, 'id_jenis');
     }
+
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class, 'id_kendaraan', 'id');
+    }
 }

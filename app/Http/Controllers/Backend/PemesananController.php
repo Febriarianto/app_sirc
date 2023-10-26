@@ -151,6 +151,7 @@ class PemesananController extends Controller
             'method' => 'PUT',
             'action' => route('pemesanan.update', $id)
         ];
+        dd($data);
         return view('backend.pemesanan.form', compact('config', 'data'));
     }
 
