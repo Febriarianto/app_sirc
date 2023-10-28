@@ -100,7 +100,10 @@
             },
             columns: [{
                     data: 'id',
-                    name: 'id'
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return meta.row + 1; 
+                    }
                 },
                 {
                     data: 'penyewa.nama',

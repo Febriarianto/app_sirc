@@ -53,8 +53,9 @@ class PemesananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id_kendaraan)
     {
+        $kendaraan = Kendaraan::where('id', $id_kendaraan)->get();
         $config['title'] = "Tambah Pemesanan";
         $config['breadcrumbs'] = [
             ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
@@ -64,7 +65,7 @@ class PemesananController extends Controller
             'method' => 'POST',
             'action' => route('pemesanan.store')
         ];
-        return view('backend.pemesanan.form', compact('config'));
+        return view('backend.pemesanan.form', compact('config', 'id_kendaraan','kendaraan'));
     }
 
     /**
@@ -151,8 +152,7 @@ class PemesananController extends Controller
             'method' => 'PUT',
             'action' => route('pemesanan.update', $id)
         ];
-        dd($data);
-        return view('backend.pemesanan.form', compact('config', 'data'));
+        return view('backend.pemesanan.edit', compact('config', 'data'));
     }
 
     /**

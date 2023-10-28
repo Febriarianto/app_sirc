@@ -9,10 +9,10 @@
                     <div class="header-title">
                         <div class="row">
                             <div class="col-sm-6 col-lg-6">
-                                <h4 class="card-title">Data Pemesanan</h4>
+                                <h4 class="card-title">List Data Pemesanan</h4>
                             </div>
                             <div class="col-sm-6 col-lg-6">
-                                <a href="{{ route('pemesanan.create') }}" class="btn btn-primary float-right">
+                                <a href="{{ route('kendaraan.status') }}" class="btn btn-primary float-right">
                                     <i class="fas fa-plus"></i> Tambah
                                 </a>
                             </div>

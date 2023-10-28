@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use PDF;
 
 
 class InvoiceController extends Controller
@@ -36,7 +37,7 @@ class InvoiceController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('invoice.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>';
+                                  <a class="btn btn-primary btn-cetak" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
                     return $actionBtn;
                 })->make();
         }
@@ -48,14 +49,15 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id_kendaraan)
     {
+        $invoice = Invoice::where('id', $id_kendaraan)->get();
         $config['title'] = "Tambah Pemesanan";
         $config['breadcrumbs'] = [
             ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
             ['url' => '#', 'title' => "Tambah Pemesanan"],
         ];
-        return view('backend.invoice.create', compact('config'));
+        return view('backend.invoice.create', compact('config', 'invoice'));
     }
 
     /**
@@ -90,9 +92,15 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function cetak($id)
     {
-        //
+        $invoice = Invoice::find($id);
+    	$pdf = PDF::loadview('backend.invoice.cetak',['invoice'=>$invoice]);
+    	// return $pdf->download('invoice-pdf');
+        $ukuran = array(0,0,842,750);
+        $pdf->setPaper($ukuran);
+        return $pdf->stream();
+        return view('backend.invoice.cetak', compact('invoice', 'data'));
     }
 
     /**

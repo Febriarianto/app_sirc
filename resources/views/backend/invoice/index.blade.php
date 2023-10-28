@@ -12,7 +12,7 @@
                                 <h4 class="card-title">Data Invoice</h4>
                             </div>
                             <div class="col-sm-6 col-lg-6">
-                                <a href="{{ route('invoice.create') }}" class="btn btn-primary float-right">
+                                <a href="" class="btn btn-primary float-right">
                                     <i class="fas fa-plus"></i> Tambah
                                 </a>
                             </div>
@@ -28,7 +28,8 @@
                                     <th>Nama Penyewa</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
-                                    <th>Tanggal Berangkat</th>
+                                    <th>Berangkat</th>
+                                    <th>Pulang</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -54,7 +55,10 @@
             },
             columns: [{
                     data: 'id',
-                    name: 'id'
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return meta.row + 1; 
+                    }
                 },
                 {
                     data: 'penyewa.nama',
@@ -67,6 +71,10 @@
                 {
                     data: 'penyewa.no_hp',
                     name: 'penyewa.no_hp'
+                },
+                {
+                    data: 'keberangkatan',
+                    name: 'keberangkatan'
                 },
                 {
                     data: 'keberangkatan',

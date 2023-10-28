@@ -61,10 +61,11 @@
                                     <td>{{$k->kepulangan}}</td>
                                     <td>
                                         <span class="badge {{$k->id_kendaraan != null ? 'badge-danger' : 'badge-success'}} ">{{$k->id_kendaraan != null ? 'Tidak Tersedia' : 'Tersedia'}}</span></h3>
+                                        
                                     </td>
                                     <td>
-                                        <a href="{{ route('pemesanan.create') }}"><span class="btn {{$k->id_kendaraan != null ? '' : 'btn-xs btn-success'}} ">{{$k->id_kendaraan != null ? '' : 'Booking'}}</span></h3></a>
-                                        <a href="{{ route('pemesanan.edit', $k->id) }}"><span class="btn {{$k->id_kendaraan != null ? '' : 'btn-xs btn-primary'}} ">{{$k->id_kendaraan != null ? '' : 'Pesan'}}</span></h3></a>
+                                        <a href="{{ route('pemesanan.create', ['id_kendaraan' => $k->id]) }}"><span class="btn {{$k->id_kendaraan != null ? '' : 'btn-xs btn-success'}} ">{{$k->id_kendaraan != null ? '' : 'Booking'}}</span></h3></a>
+                                        <a href=""><span class="btn {{$k->id_kendaraan != null ? '' : 'btn-xs btn-primary'}} ">{{$k->id_kendaraan != null ? '' : 'Sewa'}}</span></h3></a>
                                     </td>
                                 </tr>
                             @endforeach

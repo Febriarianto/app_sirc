@@ -74,11 +74,15 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="select2Kendaraan">Nomor Kendaraan :</label>
                             <div class="col-sm-9">
-                                <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
+                                {{-- <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
                                     @if(isset($data->id_kendaraan))
                                     <option value="{{ $data->id_kendaraan }}">{{ $data->kendaraan->no_kendaraan }}</option>
                                     @endif
-                                </select>
+                                </select> --}}
+                                @foreach ($invoice as $k)
+                                    {{-- <option value="{{ $k->id }}">{{ $k->no_kendaraan }}</option> --}}
+                                    <input type="text" class="form-control" name="id_kendaraan" value="{{ $k->no_kendaraan }}" readonly >
+                                @endforeach
                             </div>
                         </div>
                         <div class="form-group row">
