@@ -20,12 +20,7 @@ class Transaksi extends Model
         'paket',
         'keberangkatan',
         'kepulangan',
-        'over_time',
-        'biaya',
         'dp',
-        'sisa',
-        'metode_pelunasan',
-        'bukti_pelunasan',
         'metode_dp',
         'bukti_dp',
         'tipe',
@@ -38,6 +33,16 @@ class Transaksi extends Model
     }
     public function kendaraan()
     {
-        return $this->belongsTo(Kendaraan::class, 'id_kendaraan','id');
+        return $this->belongsTo(Kendaraan::class, 'id_kendaraan', 'id');
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'id_transaksi', 'id');
+    }
+
+    public function range_transaksi()
+    {
+        return $this->belongsToMany(RangeTransaksi::class);
     }
 }

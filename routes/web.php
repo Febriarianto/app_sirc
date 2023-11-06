@@ -73,21 +73,19 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::get('kendaraan/select2', [Backend\KendaraanController::class, 'select2'])->name('kendaraan.select2');
     Route::get('kendaraan/status', [Backend\KendaraanController::class, 'status'])->name('kendaraan.status');
     Route::resource('kendaraan', Backend\KendaraanController::class);
-    
+
     /* Penyewa Route */
     Route::get('penyewa/select2', [Backend\PenyewaController::class, 'select2'])->name('penyewa.select2');
     Route::get('penyewa/getPenyewa/{nik}', [Backend\PenyewaController::class, 'getPenyewa'])->name('penyewa.getPenyewa');
     Route::resource('penyewa', Backend\PenyewaController::class);
-    
+
     /* Transaksi Route */
     Route::resource('faktur', Backend\FakturController::class);
-    
+
     //booking/pemesanan
     Route::resource('pemesanan', Backend\PemesananController::class);
-    Route::get('pemesanan/create/{id_kendaraan}', [Backend\PemesananController::class, 'create'])->name('pemesanan.create');
-    Route::get('pemesanan', [Backend\PemesananController::class, 'index'])->name('pemesanan.index');
-    Route::post('pemesanan/store', [Backend\PemesananController::class, 'store'])->name('pemesanan.store');
-    
+    Route::get('pemesanan/create/{id_kendaraan}', [Backend\PemesananController::class, 'create'])->name('pemesanan.createId');
+
     // referral
     Route::get('referral/select2', [Backend\ReferralController::class, 'select2'])->name('referral.select2');
     Route::resource('referral', Backend\ReferralController::class);
@@ -95,10 +93,11 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     //invoice
     Route::resource('invoice', Backend\InvoiceController::class);
     Route::get('invoice/{id}/cetak', [Backend\InvoiceController::class, 'cetak'])->name('invoice.cetak');
-    Route::get('invoice/create/{id_kendaraan}', [Backend\InvoiceController::class, 'cetak'])->name('invoice.create');
-
 
     //laporan
     Route::get('laporan-bulanan', [Backend\LaporanController::class, 'bulanan_index'])->name('laporan.bulanan');
     Route::get('laporan-referral', [Backend\LaporanController::class, 'referral_index'])->name('laporan.referral');
+
+    //booking/pemesanan
+    Route::resource('penyewaan', Backend\PenyewaanController::class);
 });

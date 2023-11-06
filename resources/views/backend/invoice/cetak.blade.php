@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,16 +22,14 @@
             </td>
             <td style="text-align: center;"><img src="concept.png" alt="" width="120px" height="120px"></td>
             <td style="text-align: center;">
-                <div
-                    style="background-color: black; color: white; padding: 3px; margin-bottom: 2px; border-radius: 5px 5px 5px 5px;">
+                <div style="background-color: black; color: white; padding: 3px; margin-bottom: 2px; border-radius: 5px 5px 5px 5px;">
                     BUKTI PEMBAYARAN
                 </div>
                 <div style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px;">
                     <div style="border: solid black 1px;"> NO NOTA</div>
                     <div style="border: solid black 1px;"> {{ $invoice->id }}</div>
                 </div>
-                <div
-                    style="background-color: black; color: white; padding: 3px; margin-bottom: 2px; border-radius: 5px 5px 5px 5px;">
+                <div style="background-color: black; color: white; padding: 3px; margin-bottom: 2px; border-radius: 5px 5px 5px 5px;">
                     Rincian Biaya</div>
             </td>
         </tr>
@@ -44,7 +41,7 @@
             <td>NO. HP</td>
             <td>: {{ $invoice->penyewa->no_hp }}</td>
             <td>Biaya</td>
-            <td>: {{ $invoice->total_biaya }}</td>
+            <td>: Rp. {{ number_format($invoice->invoice->biaya) }}</td>
         </tr>
         <tr>
             <td>Alamat</td>
@@ -60,7 +57,7 @@
         </tr>
         <tr>
             <td>Kendaraan</td>
-            <td>: {{ $invoice->kendaraan->jenis->nama }}  No.Pol : {{ $invoice->kendaraan->no_kendaraan }}</td>
+            <td>: {{ $invoice->kendaraan->jenis->nama }} No.Pol : {{ $invoice->kendaraan->no_kendaraan }}</td>
         </tr>
         <tr>
             <td>Lama Sewa</td>
@@ -76,7 +73,7 @@
         </tr>
         <tr>
             <td>Hari/Tanggal Pulang </td>
-            <td>: {{ strftime('%d %B %Y', strtotime($invoice->kepulangan)) }}  / Jam :{{ date('H:i:s', strtotime($invoice->kepulangan)) }}</td>
+            <td>: {{ strftime('%d %B %Y', strtotime($invoice->kepulangan)) }} / Jam :{{ date('H:i:s', strtotime($invoice->kepulangan)) }}</td>
             <td>Ban Cadangan</td>
             <td>: .....................................................</td>
         </tr>
@@ -89,8 +86,7 @@
         <tr>
             <td style="font-weight: bold;">Jaminan:</td>
             <td style="text-align: end;">CEK FISIK :</td>
-            <td colspan="2" rowspan="3" style="text-align: center;;"><img src="car-view.png" alt="" width="190px"
-                    height="80px"></td>
+            <td colspan="2" rowspan="3" style="text-align: center;;"><img src="car-view.png" alt="" width="190px" height="80px"></td>
         </tr>
         <tr>
             <td style="padding-left: 10px;" colspan="2">

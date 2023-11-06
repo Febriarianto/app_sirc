@@ -33,11 +33,11 @@ class DashboardController extends Controller
     public function graph()
     {
         $year = date('Y');
-        $data = Invoice::selectRaw('count(*) as nilai, MONTH(keberangkatan) as bulan')
+        $data = Transaksi::selectRaw('count(*) as nilai, MONTH(keberangkatan) as bulan')
             ->whereYear('keberangkatan', $year)
+            ->where('tipe', '=', 'sewa')
             ->groupByRaw('MONTH(keberangkatan)')
             ->get();
-
 
         $bulan = [];
         $countBulan = [];

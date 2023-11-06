@@ -75,6 +75,12 @@
                                 <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Tgl Kepulangan :</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control" id="kepulangan" name="kepulangan" placeholder="Masukan Tanggal Kepulangan" value="{{ $data->kepulangan ?? '' }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,7 +97,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="metode_dp">Metode DP :</label>
                         </div>
-                        <div class="row">
+                        <div class="row mb-3">
                             <div class="col-sm-3">
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" id="cash" name="metode_dp" value="cash" class="custom-control-input" {{ isset($data) && $data->metode_dp == "cash" ? 'checked' : '' }}>

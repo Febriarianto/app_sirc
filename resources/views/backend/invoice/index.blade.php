@@ -57,7 +57,7 @@
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        return meta.row + 1; 
+                        return meta.row + 1;
                     }
                 },
                 {

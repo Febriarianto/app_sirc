@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kendaraan;
+use App\Models\RangeTransaksi;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Traits\ResponseStatus;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Days;
 use Yajra\DataTables\DataTables;
 
 class PemesananController extends Controller
@@ -41,7 +46,7 @@ class PemesananController extends Controller
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.edit', $row->id) . '">Edit</a>
                         <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>
-                        <a class="btn btn-info" href="' . route('pemesanan.edit', $row->id) . '">Proses</a>';
+                        <a class="btn btn-info" href="' . route('pemesanan.show', $row->id) . '">Proses</a>';
                     return $actionBtn;
                 })->make();
         }
@@ -55,7 +60,7 @@ class PemesananController extends Controller
      */
     public function create($id_kendaraan)
     {
-        $kendaraan = Kendaraan::where('id', $id_kendaraan)->get();
+        $kendaraan = Kendaraan::where('id', $id_kendaraan)->first();
         $config['title'] = "Tambah Pemesanan";
         $config['breadcrumbs'] = [
             ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
@@ -65,7 +70,7 @@ class PemesananController extends Controller
             'method' => 'POST',
             'action' => route('pemesanan.store')
         ];
-        return view('backend.pemesanan.form', compact('config', 'id_kendaraan','kendaraan'));
+        return view('backend.pemesanan.form', compact('config', 'kendaraan'));
     }
 
     /**
@@ -80,43 +85,64 @@ class PemesananController extends Controller
             'id_penyewa' => 'required',
             'id_kendaraan' => 'required',
             'keberangkatan' => 'required',
+            'kepulangan' => 'required',
             'dp' => 'required',
             'metode_dp' => 'required',
             'bukti_dp' => $request['metode_dp'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
         ]);
         if ($validator->passes()) {
-            $cekPemesanan = Transaksi::select('id')
-                ->where('id_kendaraan', $request['id_kendaraan'])
-                ->where('keberangkatan', $request['keberangkatan'])
-                ->first();
-            if ($cekPemesanan == !null) {
-                $response = response()->json($this->responseStore(false, 'Mobil Sudah di Booking , Pada Tanggal Tersebut', NULL));
-            } else {
-                DB::beginTransaction();
-                try {
-                    if ($request['metode_dp'] == 'transfer') {
-                        $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
-                    } else {
-                        $imgTrf = '';
-                    }
-                    $data = Transaksi::create([
-                        'id_penyewa' => $request['id_penyewa'],
-                        'id_kendaraan' => $request['id_kendaraan'],
-                        'keberangkatan' => $request['keberangkatan'],
-                        'dp' => $request['dp'],
-                        'metode_dp' => $request['metode_dp'],
-                        'bukti_dp' => $imgTrf,
-                        'tipe' => 'pemesanan',
-                    ]);
 
-                    DB::commit();
-                    $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
-                } catch (\Throwable $throw) {
-                    DB::rollBack();
-                    Log::error($throw);
-                    $response = response()->json(['error' => $throw->getMessage()]);
+            $period = new DatePeriod(
+                new DateTime($request['keberangkatan']),
+                new DateInterval('P1D'),
+                new DateTime($request['kepulangan'] . '+1 day')
+            );
+
+            // $cekPemesanan = Transaksi::select('id')
+            //     ->where('id_kendaraan', $request['id_kendaraan'])
+            //     ->where('keberangkatan', $request['keberangkatan'])
+            //     ->first();
+            // if ($cekPemesanan == !null) {
+            //     $response = response()->json($this->responseStore(false, 'Mobil Sudah di Booking , Pada Tanggal Tersebut', NULL));
+            // } else {
+
+            DB::beginTransaction();
+            try {
+                if ($request['metode_dp'] == 'transfer') {
+                    $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
+                } else {
+                    $imgTrf = '';
                 }
+                $data = Transaksi::create([
+                    'id_penyewa' => $request['id_penyewa'],
+                    'id_kendaraan' => $request['id_kendaraan'],
+                    'keberangkatan' => $request['keberangkatan'],
+                    'kepulangan' => $request['kepulangan'],
+                    'dp' => $request['dp'],
+                    'metode_dp' => $request['metode_dp'],
+                    'bukti_dp' => $imgTrf,
+                    'tipe' => 'pemesanan',
+                    'status' => 'proses',
+                ]);
+
+                foreach ($period as $key => $value) {
+                    RangeTransaksi::create([
+                        'id_transaksi' => $data->id,
+                        'id_kendaraan' => $request['id_kendaraan'],
+                        'tanggal' => $value->format('Y-m-d'),
+                    ]);
+                }
+
+                DB::commit();
+                $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
+            } catch (\Throwable $throw) {
+                DB::rollBack();
+                Log::error($throw);
+                $response = response()->json(['error' => $throw->getMessage()]);
             }
+
+            // }
+
         } else {
             $response = response()->json(['error' => $validator->errors()->all()]);
         }
@@ -131,7 +157,17 @@ class PemesananController extends Controller
      */
     public function show($id)
     {
-        //
+        $config['title'] = "Proses Pemesanan";
+        $config['breadcrumbs'] = [
+            ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
+            ['url' => '#', 'title' => "Proses Pemesan"],
+        ];
+        $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+        $config['form'] = (object)[
+            'method' => 'PUT',
+            'action' => route('pemesanan.update', $id)
+        ];
+        return view('backend.pemesanan.proses', compact('config', 'data'));
     }
 
     /**

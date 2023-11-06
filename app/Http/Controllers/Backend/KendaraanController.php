@@ -67,25 +67,31 @@ class KendaraanController extends Controller
 
         $jenisId = $request->input('jenis');
         $tanggal = $request->input('tgl') ?? Carbon::now()->format('Y-m-d');
-    
+
         $kendaraan = Kendaraan::select(
-            'kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna',
-            'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24',
-            'transaksi.keberangkatan', 'transaksi.id_kendaraan'
+            'kendaraan.id',
+            'kendaraan.no_kendaraan',
+            'kendaraan.tahun',
+            'kendaraan.warna',
+            'kendaraan.foto',
+            'jenis.nama',
+            'jenis.harga_12',
+            'jenis.harga_24',
+            'range_transaksi.tanggal'
         )
-        ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-        ->leftJoin('transaksi', function ($join) use ($tanggal) {
-            $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')
-                ->where('transaksi.keberangkatan', $tanggal);
-        })
-        ->when($jenisId, function ($query) use ($jenisId) {
-            return $query->where('jenis.id', $jenisId);
-        })
-        ->paginate(6);
+            ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
+            ->leftJoin('range_transaksi', function ($join) use ($tanggal) {
+                $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')
+                    ->where('range_transaksi.tanggal', $tanggal,);
+            })
+            ->when($jenisId, function ($query) use ($jenisId) {
+                return $query->where('jenis.id', $jenisId);
+            })
+            ->paginate(6);
         $id_jenis = $request['jenis'];
-    
+
         $jenis = Jenis::select('id', 'nama')->get();
-    
+
         return view('backend.pemesanan.list_ketersediaan', compact('kendaraan', 'jenis', 'tanggal', 'id_jenis', 'config'));
     }
 
@@ -122,14 +128,16 @@ class KendaraanController extends Controller
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
-                $img = $request->file('foto')->store('kendaraan', 'public');
+                $file = $request->file('foto');
+                $filename = $file->getClientOriginalName();
+                $file->storeAs('public/kendaraan/', $filename);
                 $data = Kendaraan::create([
                     'id_pemilik' => $request['id_pemilik'],
                     'id_jenis' => $request['id_jenis'],
                     'no_kendaraan' => $request['no_kendaraan'],
                     'tahun' => $request['tahun'],
                     'warna' => $request['warna'],
-                    'foto' => $img,
+                    'foto' => $filename,
                 ]);
 
                 DB::commit();
@@ -198,9 +206,11 @@ class KendaraanController extends Controller
             try {
                 $data = Kendaraan::findOrFail($id);
                 if ($request->file('foto') == null) {
-                    $img = $data->foto;
+                    $filename = $data->foto;
                 } else {
-                    $img = $request->file('foto')->store('kendaraan', 'public');
+                    $file = $request->file('foto');
+                    $filename = $file->getClientOriginalName();
+                    $file->storeAs('public/kendaraan/', $filename);
                 }
                 $data->update([
                     'id_pemilik' => $request['id_pemilik'],
@@ -208,7 +218,7 @@ class KendaraanController extends Controller
                     'no_kendaraan' => $request['no_kendaraan'],
                     'tahun' => $request['tahun'],
                     'warna' => $request['warna'],
-                    'foto' => $img,
+                    'foto' => $filename,
                 ]);
 
                 DB::commit();
@@ -240,7 +250,7 @@ class KendaraanController extends Controller
         DB::beginTransaction();
         try {
             $data->delete();
-            \Storage::delete($data->foto);
+            Storage::delete($data->foto);
             DB::commit();
             $response = response()->json([
                 'status' => 'success',

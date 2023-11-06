@@ -62,18 +62,23 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="select2Kendaraan">Nomor Kendaraan :</label>
                             <div class="col-sm-9">
-                                {{-- <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan"> --}}
-                                    @foreach ($kendaraan as $k)
-                                    {{-- <option value="{{ $k->id }}">{{ $k->no_kendaraan }}</option> --}}
-                                    <input type="text" class="form-control" name="id_kendaraan" value="{{ $k->no_kendaraan }}" readonly >
-                                    @endforeach
-                                {{-- </select> --}}
+                                <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
+                                    @if(isset($kendaraan->id))
+                                    <option value="{{ $kendaraan->id }}">{{ $kendaraan->no_kendaraan }}</option>
+                                    @endif
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Keberangkatan :</label>
                             <div class="col-sm-9">
                                 <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Tgl Kepulangan :</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control" id="kepulangan" name="kepulangan" placeholder="Masukan Tanggal Kepulangan" value="{{ $data->kepulangan ?? '' }}">
                             </div>
                         </div>
                     </div>

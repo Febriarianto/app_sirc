@@ -49,7 +49,7 @@
             <div class="card-header ui-sortable-handle" style="cursor: move;">
                 <h3 class="card-title">
                     <i class="fas fa-chart-pie mr-1"></i>
-                    Grafik Penyewaan Permobil
+                    Grafik Penyewaan Mobil Tahun {{ date('Y');}}
                 </h3>
             </div>
             <div class="card-body">

@@ -30,7 +30,7 @@
                                     <th rowspan="2">Nama Kosumen</th>
                                     <th colspan="2">Tanggal dan Waktu</th>
                                     <th rowspan="2">Kredit</th>
-                                    <th rowspan="2">Debit</th>
+                                    <th rowspan="2">Komisi</th>
                                 </tr>
                                 <tr>
                                     <th>Tgl Berangkat</th>
@@ -89,7 +89,8 @@
                 footer: true,
                 className: 'green glyphicon glyphicon-print',
                 text: 'Print',
-                title: ' '
+                title: ' ',
+                orientation: 'landscape'
             }],
             ajax: {
                 url: `{{ route('laporan.referral') }}`,
@@ -100,11 +101,14 @@
             },
             columns: [{
                     data: 'id',
-                    name: 'id'
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return meta.row + 1;
+                    }
                 },
                 {
-                    data: 'penyewa.nama',
-                    name: 'penyewa.nama'
+                    data: 'nama',
+                    name: 'nama'
                 },
                 {
                     data: 'keberangkatan',
@@ -115,12 +119,12 @@
                     name: 'kepulangan'
                 },
                 {
-                    data: 'total_biaya',
-                    name: 'total_biaya'
+                    data: 'biaya',
+                    name: 'biaya'
                 },
                 {
-                    data: 'id_kendaraan',
-                    name: 'id_kendaraan',
+                    data: 'komisi',
+                    name: 'komisi',
                 },
             ],
             rowCallback: function(row, data) {
@@ -144,6 +148,12 @@
                     .data()
                     .reduce((a, b) => intVal(a) + intVal(b), 0);
 
+                // Total over all pages
+                totalKomisi = api
+                    .column(5)
+                    .data()
+                    .reduce((a, b) => intVal(a) + intVal(b), 0);
+
                 // Total over this page
                 pageTotal = api
                     .column(4, {
@@ -152,9 +162,21 @@
                     .data()
                     .reduce((a, b) => intVal(a) + intVal(b), 0);
 
+                // Total over this page
+                pageTotalKomisi = api
+                    .column(5, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce((a, b) => intVal(a) + intVal(b), 0);
+
                 // Update footer
                 api.column(4).footer().innerHTML =
                     'Rp. ' + pageTotal;
+
+                // Update footer
+                api.column(5).footer().innerHTML =
+                    'Rp. ' + pageTotalKomisi;
             }
         });
 

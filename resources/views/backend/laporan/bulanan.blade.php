@@ -89,7 +89,28 @@
                 footer: true,
                 className: 'green glyphicon glyphicon-print',
                 text: 'Print',
-                title: ' '
+                title: ' ',
+                customize: function(win) {
+
+                    var last = null;
+                    var current = null;
+                    var bod = [];
+
+                    var css = '@page { size: landscape; }',
+                        head = win.document.head || win.document.getElementsByTagName('head')[0],
+                        style = win.document.createElement('style');
+
+                    style.type = 'text/css';
+                    style.media = 'print';
+
+                    if (style.styleSheet) {
+                        style.styleSheet.cssText = css;
+                    } else {
+                        style.appendChild(win.document.createTextNode(css));
+                    }
+
+                    head.appendChild(style);
+                }
             }],
             ajax: {
                 url: `{{ route('laporan.bulanan') }}`,
@@ -102,12 +123,12 @@
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        return meta.row + 1; 
+                        return meta.row + 1;
                     }
                 },
                 {
-                    data: 'penyewa.nama',
-                    name: 'penyewa.nama'
+                    data: 'nama',
+                    name: 'nama'
                 },
                 {
                     data: 'keberangkatan',
@@ -118,12 +139,12 @@
                     name: 'kepulangan'
                 },
                 {
-                    data: 'total_biaya',
-                    name: 'total_biaya'
+                    data: 'biaya',
+                    name: 'biaya'
                 },
                 {
-                    data: 'id_kendaraan',
-                    name: 'id_kendaraan',
+                    data: 'id',
+                    name: 'id',
                 },
             ],
             rowCallback: function(row, data) {

@@ -78,7 +78,7 @@
                 <div class="card">
                     <div class="card-body">
                         <label class="mb-2 text-bold d-block">Foto</label>
-                        <img id="avatar" @if(isset($data['foto'])) src="{{ $data['foto'] != NULL ? asset("storage/".$data['foto']) : asset('images/no-content.svg') }}" @else src="{{ asset('images/no-content.svg') }}" @endif style="object-fit: cover; border: 1px solid #d9d9d9" class="mb-2 border-2 mx-auto" height="200px" width="200px" alt="">
+                        <img id="avatar" @if(isset($data['foto'])) src="{{ $data['foto'] != NULL ? asset("storage/kendaraan/".$data['foto']) : asset('images/no-content.svg') }}" @else src="{{ asset('images/no-content.svg') }}" @endif style="object-fit: cover; border: 1px solid #d9d9d9" class="mb-2 border-2 mx-auto" height="200px" width="200px" alt="">
                         <input class="form-control image" type="file" id="customFile1" name="foto" accept=".jpg, .jpeg, .png">
                         <p class="text-muted ms-75 mt-50"><small>Allowed JPG, JPEG or PNG. Max
                                 size of

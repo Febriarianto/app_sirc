@@ -10,29 +10,16 @@ class Invoice extends Model
     use HasFactory;
     protected $fillable = [
         'id',
-        'id_penyewa',
-        'id_kendaraan',
-        'kota_tujuan',
-        'keberangkatan',
-        'kepulangan',
-        'paket',
-        'harga_paket',
-        'lama_sewa',
+        'id_transaksi',
         'biaya_overtime',
         'total_biaya',
-        'dp',
-        'bukti_dp',
+        'sisa',
         'metode_pelunasan',
         'bukti_pelunasan',
     ];
 
-    public function penyewa()
+    public function transaksi()
     {
-        return $this->belongsTo(Penyewa::class, 'id_penyewa');
-    }
-    
-    public function kendaraan()
-    {
-        return $this->belongsTo(Kendaraan::class, 'id_kendaraan');
+        return $this->belongsTo(Transaksi::class, 'transaksi', 'id_transaksi');
     }
 }

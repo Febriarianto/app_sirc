@@ -86,15 +86,21 @@ class PenyewaController extends Controller
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
-                $imgKtp = $request->file('ktp')->store('ktp', 'public');
-                $imgKk = $request->file('kk')->store('kk', 'public');
+                $fileKtp = $request->file('ktp');
+                $filenameKtp = $fileKtp->getClientOriginalName();
+                $fileKtp->storeAs('public/ktp/',$filenameKtp);
+
+                $fileKk = $request->file('kk');
+                $filenameKk = $fileKk->getClientOriginalName();
+                $fileKk->storeAs('public/kk/',$filenameKk);
+
                 $data = Penyewa::create([
                     'nik' => $request['nik'],
                     'nama' => $request['nama'],
                     'no_hp' => $request['no_hp'],
                     'alamat' => $request['alamat'],
-                    'ktp' => $imgKtp,
-                    'kk' => $imgKk,
+                    'ktp' => $filenameKtp,
+                    'kk' => $filenameKk,
                     'referral_id' => $request['$referral_id'],
                 ]);
 
@@ -167,15 +173,19 @@ class PenyewaController extends Controller
             try {
                 $data = Penyewa::findOrFail($id);
                 if (!empty($request->file('ktp'))) {
-                    $imgKtp = $request->file('ktp')->store('ktp', 'public');
+                    $fileKtp = $request->file('ktp');
+                    $filenameKtp = $fileKtp->getClientOriginalName();
+                    $fileKtp->storeAs('public/ktp/',$filenameKtp);
                 } else {
-                    $imgKtp = $data->ktp;
+                    $filenameKtp = $data->ktp;
                 }
 
                 if (!empty($request->file('kk'))) {
-                    $imgKk = $request->file('kk')->store('kk', 'public');
+                    $fileKk = $request->file('kk');
+                    $filenameKk = $fileKk->getClientOriginalName();
+                    $fileKk->storeAs('public/kk/',$filenameKk);
                 } else {
-                    $imgKk = $data->kk;
+                    $filenameKk = $data->kk;
                 }
 
                 $data->update([
@@ -184,8 +194,8 @@ class PenyewaController extends Controller
                     'no_hp' => $request['no_hp'],
                     'alamat' => $request['alamat'],
                     'referral_id' => $request['referral_id'] ?? 0,
-                    'ktp' => $imgKtp,
-                    'kk' => $imgKk,
+                    'ktp' => $filenameKtp,
+                    'kk' => $filenameKk,
                 ]);
 
                 DB::commit();

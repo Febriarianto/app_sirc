@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
+use App\Models\Transaksi;
 use Yajra\DataTables\DataTables;
 use App\Traits\ResponseStatus;
 
@@ -25,8 +26,12 @@ class LaporanController extends Controller
             ['url' => '#', 'title' => "Laporan Bulanan"],
         ];
         if ($request->ajax()) {
-            $data = Invoice::with('penyewa')->where('id_kendaraan', $request['kendaraan'])
-                ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%');
+            $data = Transaksi::where('id_kendaraan', $request['kendaraan'])
+                ->select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'invoices.biaya')
+                ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
+                ->leftJoin('invoices', 'transaksi.id', '=', 'invoices.id_transaksi')
+                ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%')
+                ->where('status', '=', 'selesai');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->make();
@@ -45,11 +50,16 @@ class LaporanController extends Controller
             ['url' => '#', 'title' => "Laporan Referral"],
         ];
         if ($request->ajax()) {
-            $data = Invoice::with('penyewa')
-                ->whereHas('penyewa', function ($query) use ($request) {
-                    return $query->where('penyewa.referral_id', '=', $request['referral']);
-                })
-                ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%');
+            $data = Transaksi::select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'invoices.biaya')
+                ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
+                ->leftJoin('invoices', 'transaksi.id', '=', 'invoices.id_transaksi')
+                ->selectRaw('biaya * 0.1 as komisi')
+                ->where('penyewa.referral_id', '=', $request['referral'])
+                // ->whereHas('penyewa', function ($query) use ($request) {
+                //     return $query->where('penyewa.referral_id', '=', $request['referral']);
+                // })
+                ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%')
+                ->where('status', '=', 'selesai');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->make();

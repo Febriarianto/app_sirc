@@ -128,7 +128,7 @@
 
                         <div class="listing d-block  align-items-stretch">
                             <div class="listing-img h-100 mr-4">
-                                <img src="{{ asset ('storage').'/'.$k->foto }}" alt="Image" width="300px" height="200px">
+                                <img src="{{ asset ('storage/kendaraan/').'/'.$k->foto }}" alt="Image" width="300px" height="200px">
                             </div>
                             <div class="listing-contents h-100">
                                 <h3>{{$k->nama}}</h3>

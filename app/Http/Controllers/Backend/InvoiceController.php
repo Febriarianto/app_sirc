@@ -24,7 +24,7 @@ class InvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    
+
     {
         $config['title'] = "Invoice";
         $config['breadcrumbs'] = [
@@ -32,12 +32,12 @@ class InvoiceController extends Controller
         ];
 
         if ($request->ajax()) {
-            $data = Invoice::with(['penyewa','kendaraan']);
+            $data = Transaksi::with('penyewa', 'kendaraan')->where('tipe', '=', 'sewa')->where('status', '=', 'selesai')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-success" href="' . route('invoice.edit', $row->id) . '">Edit</a>
-                                  <a class="btn btn-primary btn-cetak" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
+                    $actionBtn = '
+                                  <a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
                     return $actionBtn;
                 })->make();
         }
@@ -49,15 +49,14 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id_kendaraan)
+    public function create()
     {
-        $invoice = Invoice::where('id', $id_kendaraan)->get();
         $config['title'] = "Tambah Pemesanan";
         $config['breadcrumbs'] = [
             ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
             ['url' => '#', 'title' => "Tambah Pemesanan"],
         ];
-        return view('backend.invoice.create', compact('config', 'invoice'));
+        return view('backend.invoice.create', compact('config'));
     }
 
     /**
@@ -72,8 +71,8 @@ class InvoiceController extends Controller
 
         // if ($request['metode_pelunasan'] == 'transfer') {
         if ($request->hasFile('bukti_pelunasan')) {
-            
-            $file_name = time().'_'.$request->bukti_pelunasan->getClientOriginalName();
+
+            $file_name = time() . '_' . $request->bukti_pelunasan->getClientOriginalName();
             $bukti_pelunasan = $request->bukti_pelunasan->storeAs('bukti_pelunasan', $file_name);
 
             $data['bukti_pelunasan'] = $bukti_pelunasan;
@@ -94,13 +93,18 @@ class InvoiceController extends Controller
      */
     public function cetak($id)
     {
-        $invoice = Invoice::find($id);
-    	$pdf = PDF::loadview('backend.invoice.cetak',['invoice'=>$invoice]);
-    	// return $pdf->download('invoice-pdf');
-        $ukuran = array(0,0,842,750);
+        $invoice = Transaksi::with('penyewa', 'kendaraan', 'invoice')->find($id);
+        $pdf = PDF::loadview('backend.invoice.cetak', ['invoice' => $invoice]);
+        // return $pdf->download('invoice-pdf');
+        $ukuran = array(0, 0, 842, 750);
         $pdf->setPaper($ukuran);
         return $pdf->stream();
         return view('backend.invoice.cetak', compact('invoice', 'data'));
+    }
+
+    public function show($id)
+    {
+        //
     }
 
     /**

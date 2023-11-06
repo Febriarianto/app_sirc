@@ -28,6 +28,7 @@
                                     <th>Alamat</th>
                                     <th>No Hp</th>
                                     <th>Tanggal Berangkat</th>
+                                    <th>Tanggal Pulang</th>
                                     <th>NO Kendaraan</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -67,6 +68,10 @@
                 {
                     data: 'keberangkatan',
                     name: 'keberangkatan'
+                },
+                {
+                    data: 'kepulangan',
+                    name: 'kepulangan'
                 },
                 {
                     data: 'kendaraan.no_kendaraan',
