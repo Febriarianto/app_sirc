@@ -45,4 +45,5 @@ class Transaksi extends Model
     {
         return $this->belongsToMany(RangeTransaksi::class);
     }
+    
 }

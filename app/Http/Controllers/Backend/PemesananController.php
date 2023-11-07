@@ -163,6 +163,7 @@ class PemesananController extends Controller
             ['url' => '#', 'title' => "Proses Pemesan"],
         ];
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+     
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('pemesanan.update', $id)
@@ -184,6 +185,7 @@ class PemesananController extends Controller
             ['url' => '#', 'title' => "Edit Pemesan"],
         ];
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+        
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('pemesanan.update', $id)
@@ -200,7 +202,32 @@ class PemesananController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:proses,batal', 
+        ]);
+    
+        if ($validator->passes()) {
+            DB::beginTransaction();
+            try {
+                $pemesanan = Transaksi::findOrFail($id);
+                $pemesanan->status = $request->input('status');
+                $pemesanan->kota_tujuan = $request->input('kota_tujuan');
+                $pemesanan->kepulangan = $request->input('kepulangan');
+                $pemesanan->lama_sewa = $request->input('lama_sewa');
+                $pemesanan->save();
+    
+                DB::commit();
+                $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
+            } catch (\Throwable $throw) {
+                DB::rollBack();
+                Log::error($throw);
+                $response = response()->json(['error' => $throw->getMessage()]);
+            }
+        } else {
+            $response = response()->json(['error' => $validator->errors()->all()]);
+        }
+    
+        return $response;
     }
 
     /**
