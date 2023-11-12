@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
+use App\Models\Invoice;
 use App\Traits\ResponseStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -34,12 +35,12 @@ class PenyewaanController extends Controller
             ['url' => '#', 'title' => "Penyewaan"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::with('penyewa', 'kendaraan')->where('tipe', '=', 'sewa')->get();
+            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'proses']);
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-info" href="' . route('pemesanan.show', $row->id) . '">Invoice</a>';
+                        <a class="btn btn-info" href="' . route('penyewaan.show', $row->id) . '">Invoice</a>';
                     return $actionBtn;
                 })->make();
         }
@@ -53,7 +54,17 @@ class PenyewaanController extends Controller
      */
     public function create()
     {
-        //
+        
+        // $config['title'] = "Tambah Cetak";
+        // $config['breadcrumbs'] = [
+        //     ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
+        //     ['url' => '#', 'title' => "Tambah Pemesanan"],
+        // ];
+        // $config['form'] = (object)[
+        //     'method' => 'POST',
+        //     'action' => route('pemesanan.store')
+        // ];
+        // return view('backend.invoice.create', compact('config'));
     }
 
     /**
@@ -75,7 +86,18 @@ class PenyewaanController extends Controller
      */
     public function show($id)
     {
-        //
+        $config['title'] = "Cetak Invoice";
+        $config['breadcrumbs'] = [
+            ['url' => route('invoice.index'), 'title' => "Cetak"],
+            ['url' => '#', 'title' => "Proses Pemesan"],
+        ];
+        $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+     
+        $config['form'] = (object)[
+            'method' => 'PUT',
+            'action' => route('invoice.update', $id)
+        ];
+        return view('backend.invoice.create', compact('config', 'data'));
     }
 
     /**

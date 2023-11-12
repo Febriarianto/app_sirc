@@ -54,8 +54,9 @@
                 url: `{{ route('penyewaan.index') }}`
             },
             columns: [{
-                    data: 'penyewa.nama',
-                    name: 'penyewa.nama'
+                    data: 'id',
+                    name: 'id',
+                    visible :false
                 },
                 {
                     data: 'penyewa.alamat',
@@ -85,6 +86,12 @@
                     searchable: false
                 },
             ],
+            columnDefs: [
+            {
+                targets: [0], // Kolom indeks 0 (kolom 'id')
+                visible: false
+            }
+        ],
             rowCallback: function(row, data) {
                 let api = this.api();
                 $(row).find('.btn-delete').click(function() {

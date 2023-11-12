@@ -24,4 +24,8 @@ class Penyewa extends Model
     {
         return $this->belongsTo(Referral::class, 'referral_id');
     }
+    
+    public function transaksis() {
+        return $this->hasMany(Transaksi::class, 'id_penyewa');
+    }
 }

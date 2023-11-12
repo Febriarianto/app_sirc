@@ -31,6 +31,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {{$data->transaksi->id}}
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewa :</label>
                                 <div class="col-sm-9">
@@ -79,10 +81,9 @@
                                     <option value="{{ $data->id_kendaraan }}">{{ $data->kendaraan->no_kendaraan }}</option>
                                     @endif
                                 </select> --}}
-                                @foreach ($invoice as $k)
-                                    {{-- <option value="{{ $k->id }}">{{ $k->no_kendaraan }}</option> --}}
-                                    <input type="text" class="form-control" name="id_kendaraan" value="{{ $k->no_kendaraan }}" readonly >
-                                @endforeach
+                                @if (isset($data))
+                                    <input type="text" class="form-control" name="id_kendaraan" value="" readonly >
+                                @endif
                             </div>
                         </div>
                         <div class="form-group row">

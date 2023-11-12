@@ -40,13 +40,14 @@ class PemesananController extends Controller
             ['url' => '#', 'title' => "Pemesanan"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::with('penyewa', 'kendaraan')->where('tipe', '=', 'pemesanan')->get();
+            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'pemesanan', 'status' => 'pending']);
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>
-                        <a class="btn btn-info" href="' . route('pemesanan.show', $row->id) . '">Proses</a>';
+                    $actionBtn = '<a class="btn btn-xs btn-success" href="' . route('pemesanan.edit', $row->id) . '">Edit</a>
+                        <a class="btn btn-xs btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>
+                        <a class="btn btn-xs btn-info" href="' . route('pemesanan.show', $row->id) . '">Proses</a>';
                     return $actionBtn;
                 })->make();
         }
@@ -122,7 +123,7 @@ class PemesananController extends Controller
                     'metode_dp' => $request['metode_dp'],
                     'bukti_dp' => $imgTrf,
                     'tipe' => 'pemesanan',
-                    'status' => 'proses',
+                    'status' => 'pending',
                 ]);
 
                 foreach ($period as $key => $value) {
@@ -162,8 +163,8 @@ class PemesananController extends Controller
             ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
             ['url' => '#', 'title' => "Proses Pemesan"],
         ];
-        $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
-     
+        $data = Transaksi::where('id', $id)->first();
+        // @dd($data);
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('pemesanan.update', $id)
@@ -201,34 +202,50 @@ class PemesananController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'status' => 'required|in:proses,batal', 
-        ]);
-    
-        if ($validator->passes()) {
-            DB::beginTransaction();
-            try {
-                $pemesanan = Transaksi::findOrFail($id);
-                $pemesanan->status = $request->input('status');
-                $pemesanan->kota_tujuan = $request->input('kota_tujuan');
-                $pemesanan->kepulangan = $request->input('kepulangan');
-                $pemesanan->lama_sewa = $request->input('lama_sewa');
-                $pemesanan->save();
-    
-                DB::commit();
-                $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
-            } catch (\Throwable $throw) {
-                DB::rollBack();
-                Log::error($throw);
-                $response = response()->json(['error' => $throw->getMessage()]);
+{
+    $validator = Validator::make($request->all(), [
+        'status' => 'required|in:proses,batal',
+    ]);
+
+    if ($validator->passes()) {
+        DB::beginTransaction();
+        try {
+            $pemesanan = Transaksi::findOrFail($id);
+
+            $pemesanan->status = $request->input('status');
+            $pemesanan->kota_tujuan = $request->input('kota_tujuan');
+            $pemesanan->kepulangan = $request->input('kepulangan');
+            $pemesanan->lama_sewa = $request->input('lama_sewa');
+            $pemesanan->paket = $request->input('paket');
+
+            // Update 'tipe' field based on 'status'
+            if ($request->input('status') == 'proses') {
+                // Jika 'status' = 'proses', set 'tipe' menjadi 'sewa'
+                $pemesanan->tipe = 'sewa';
             }
-        } else {
-            $response = response()->json(['error' => $validator->errors()->all()]);
+
+            // Update 'status' field based on 'status' input
+            // Jika 'status' = 'batal', set 'status' menjadi 'batal'
+            if ($request->input('status') == 'batal') {
+                $pemesanan->status = 'batal';
+            }
+
+            $pemesanan->save();
+
+            DB::commit();
+            $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
+        } catch (\Throwable $throw) {
+            DB::rollBack();
+            Log::error($throw);
+            $response = response()->json(['error' => $throw->getMessage()]);
         }
-    
-        return $response;
+    } else {
+        $response = response()->json(['error' => $validator->errors()->all()]);
     }
+
+    return $response;
+}
+
 
     /**
      * Remove the specified resource from storage.
