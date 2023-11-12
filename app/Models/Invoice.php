@@ -11,8 +11,8 @@ class Invoice extends Model
     protected $fillable = [
         'id',
         'id_transaksi',
-        'biaya_overtime',
-        'total_biaya',
+        'over_time',
+        'biaya',
         'sisa',
         'metode_pelunasan',
         'bukti_pelunasan',
@@ -20,6 +20,7 @@ class Invoice extends Model
 
     public function transaksi()
     {
-        return $this->belongsTo(Transaksi::class, 'transaksi', 'id_transaksi');
+        // return $this->belongsTo(Transaksi::class, 'transaksi', 'id_transaksi');
+        return $this->hasOne(Transaksi::class, 'id', 'id_transaksi');
     }
 }

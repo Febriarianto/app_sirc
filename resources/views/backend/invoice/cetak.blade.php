@@ -35,51 +35,51 @@
         </tr>
         <tr>
             <td>Nama Penyewa</td>
-            <td>: {{ $invoice->penyewa->nama }}</td>
+            <td>: {{ $invoice->transaksi->penyewa->nama }}</td>
         </tr>
         <tr>
             <td>NO. HP</td>
-            <td>: {{ $invoice->penyewa->no_hp }}</td>
+            <td>: {{ $invoice->transaksi->penyewa->no_hp }}</td>
             <td>Biaya</td>
-            <td>: Rp. {{ number_format($invoice->invoice->biaya) }}</td>
+            <td>: Rp. {{ number_format($invoice->transaksi->biaya) }}</td>
         </tr>
         <tr>
             <td>Alamat</td>
-            <td>: {{ $invoice->penyewa->alamat }}</td>
+            <td>: {{ $invoice->transaksi->penyewa->alamat }}</td>
             <td>DP</td>
-            <td style="border-bottom: solid black 2px;">: {{ $invoice->dp }}</td>
+            <td style="border-bottom: solid black 2px;">: {{ $invoice->transaksi->dp }}</td>
         </tr>
         <tr>
             <td>Tujuan Kota</td>
-            <td>: {{ $invoice->kota_tujuan }}</td>
+            <td>: {{ $invoice->transaksi->kota_tujuan }}</td>
             <td>Sisa</td>
             <td>: </td>
         </tr>
         <tr>
             <td>Kendaraan</td>
-            <td>: {{ $invoice->kendaraan->jenis->nama }} No.Pol : {{ $invoice->kendaraan->no_kendaraan }}</td>
+            <td>: {{ $invoice->transaksi->kendaraan->jenis->nama }} No.Pol : {{ $invoice->transaksi->kendaraan->no_kendaraan }}</td>
         </tr>
         <tr>
             <td>Lama Sewa</td>
-            <td>: {{ $invoice->lama_sewa }}</td>
+            <td>: {{ $invoice->transaksi->lama_sewa }}</td>
             <td>Kondisi BBM</td>
             <td>: .....................................................</td>
         </tr>
         <tr>
             <td>Hari/Tanggal Berangkat </td>
-            <td>: {{ strftime('%d %B %Y', strtotime($invoice->keberangkatan)) }} / Jam :{{ date('H:i:s', strtotime($invoice->keberangkatan)) }}</td>
+            <td>: {{ strftime('%d %B %Y', strtotime($invoice->transaksi->keberangkatan)) }} / Jam :{{ date('H:i:s', strtotime($invoice->transaksi->keberangkatan)) }}</td>
             <td>Dongkrak</td>
             <td>: .....................................................</td>
         </tr>
         <tr>
             <td>Hari/Tanggal Pulang </td>
-            <td>: {{ strftime('%d %B %Y', strtotime($invoice->kepulangan)) }} / Jam :{{ date('H:i:s', strtotime($invoice->kepulangan)) }}</td>
+            <td>: {{ strftime('%d %B %Y', strtotime($invoice->transaksi->kepulangan)) }} / Jam :{{ date('H:i:s', strtotime($invoice->transaksi->kepulangan)) }}</td>
             <td>Ban Cadangan</td>
             <td>: .....................................................</td>
         </tr>
         <tr>
             <td>Over Time</td>
-            <td>: {{ $invoice->biaya_overtime }}</td>
+            <td>: {{ $invoice->transaksi->biaya_overtime }}</td>
             <td>Kelengkapan</td>
             <td>: </td>
         </tr>
@@ -147,7 +147,7 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;">
-                Pringsewu , {{ strftime('%d %B %Y', strtotime($invoice->keberangkatan)) }}
+                Pringsewu , {{ strftime('%d %B %Y', strtotime($invoice->transaksi->keberangkatan)) }}
             </td>
         </tr>
         <tr>
@@ -159,7 +159,7 @@
         </tr>
         <tr style="text-align: center;">
             <td>.........................</td>
-            <td>{{ $invoice->penyewa->nama }}</td>
+            <td>{{ $invoice->transaksi->penyewa->nama }}</td>
         </tr>
     </table>
 

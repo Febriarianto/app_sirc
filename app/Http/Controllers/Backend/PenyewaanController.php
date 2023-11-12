@@ -35,7 +35,7 @@ class PenyewaanController extends Controller
             ['url' => '#', 'title' => "Penyewaan"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'proses']);
+            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'proses'])->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -55,16 +55,7 @@ class PenyewaanController extends Controller
     public function create()
     {
         
-        // $config['title'] = "Tambah Cetak";
-        // $config['breadcrumbs'] = [
-        //     ['url' => route('pemesanan.index'), 'title' => "Pemesanan"],
-        //     ['url' => '#', 'title' => "Tambah Pemesanan"],
-        // ];
-        // $config['form'] = (object)[
-        //     'method' => 'POST',
-        //     'action' => route('pemesanan.store')
-        // ];
-        // return view('backend.invoice.create', compact('config'));
+       
     }
 
     /**
@@ -75,7 +66,41 @@ class PenyewaanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'biaya' => 'required',
+            'metode_pelunasan' => 'required',
+            'bukti_pelunasan' => $request['metode_pelunasan'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
+        ]);
+       
+            DB::beginTransaction();
+            try {
+                if ($request['metode_pelunasan'] == 'transfer') {
+                    $imgTrf = $request->file('bukti_pelunasan')->store('buktiPelunasan', 'public');
+                } else {
+                    $imgTrf = '';
+                }
+                $data = Invoice::create([
+                    'id_transaksi' => $request['id_transaksi'],
+                    'over_time' => $request['over_time'],
+                    'biaya' => $request['biaya'],
+                    'sisa' => $request['sisa'],
+                    'metode_pelunasan' => $request['metode_pelunasan'],
+                    'bukti_pelunasan' => $imgTrf,
+                ]);
+
+        
+
+                DB::commit();
+                $response = response()->json($this->responseStore(true, NULL, route('invoice.index')));
+            } catch (\Throwable $throw) {
+                DB::rollBack();
+                Log::error($throw);
+                $response = response()->json(['error' => $throw->getMessage()]);
+            }
+
+            // }
+
+        return $response;
     }
 
     /**

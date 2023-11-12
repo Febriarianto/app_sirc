@@ -54,8 +54,10 @@
                 url: `{{ route('pemesanan.index') }}`
             },
             columns: [{
-                    data: 'id',
-                    name: 'id'
+                    // data: 'id',
+                    // name: 'id'
+                    data: 'penyewa.nama',
+                    name: 'penyewa.nama',
                 },
                 {
                     data: 'penyewa.alamat',

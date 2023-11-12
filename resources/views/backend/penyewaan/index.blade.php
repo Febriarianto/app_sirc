@@ -27,9 +27,9 @@
                                     <th>Nama Pemesan</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
-                                    <th>Tanggal Berangkat</th>
-                                    <th>Tanggal Pulang</th>
-                                    <th>NO Kendaraan</th>
+                                    <th>Berangkat</th>
+                                    <th>Pulang</th>
+                                    <th>No Plat</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -54,9 +54,8 @@
                 url: `{{ route('penyewaan.index') }}`
             },
             columns: [{
-                    data: 'id',
-                    name: 'id',
-                    visible :false
+                    data: 'penyewa.nama',
+                    name: 'penyewa.nama',
                 },
                 {
                     data: 'penyewa.alamat',

@@ -152,12 +152,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        {{-- <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="total_bayar">Total Bayar:</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="total_bayar" name="total_bayar">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>

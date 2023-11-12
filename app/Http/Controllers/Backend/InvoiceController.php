@@ -24,25 +24,28 @@ class InvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
+{
+    $config['title'] = "Invoice";
+    $config['breadcrumbs'] = [
+        ['url' => '#', 'title' => "Invoice"],
+    ];
 
-    {
-        $config['title'] = "Invoice";
-        $config['breadcrumbs'] = [
-            ['url' => '#', 'title' => "Invoice"],
-        ];
+    if ($request->ajax()) {
+        $data = Invoice::with(['transaksi' => function ($query) {
+            $query->with(['penyewa', 'kendaraan']);
+        }])->get();
 
-        if ($request->ajax()) {
-            $data = Transaksi::with('penyewa', 'kendaraan')->where('tipe', '=', 'sewa')->where('status', '=', 'selesai')->get();
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function ($row) {
-                    $actionBtn = '
-                                  <a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
-                    return $actionBtn;
-                })->make();
-        }
-        return view('backend.invoice.index', compact('config'));
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                $actionBtn = '<a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
+                return $actionBtn;
+            })
+            ->make();
     }
+
+    return view('backend.invoice.index', compact('config'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -93,7 +96,10 @@ class InvoiceController extends Controller
      */
     public function cetak($id)
     {
-        $invoice = Transaksi::with('penyewa', 'kendaraan', 'invoice')->find($id);
+        // $invoice = Transaksi::with('penyewa', 'kendaraan', 'invoice')->find($id);
+        $invoice = Invoice::with(['transaksi' => function ($query) {
+            $query->with(['penyewa', 'kendaraan']);
+        }])->find($id);
         $pdf = PDF::loadview('backend.invoice.cetak', ['invoice' => $invoice]);
         // return $pdf->download('invoice-pdf');
         $ukuran = array(0, 0, 842, 750);
