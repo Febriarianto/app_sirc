@@ -71,13 +71,13 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Keberangkatan :</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Berangkat:</label>
                             <div class="col-sm-9">
                                 <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Tgl Kepulangan :</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Kembali :</label>
                             <div class="col-sm-9">
                                 <input type="date" class="form-control" id="kepulangan" name="kepulangan" placeholder="Masukan Tanggal Kepulangan" value="{{ $data->kepulangan ?? '' }}">
                             </div>
@@ -142,7 +142,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa">
                             </div>
                         </div>
 
