@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Storage;
 
 class PenyewaController extends Controller
 {
@@ -82,17 +83,22 @@ class PenyewaController extends Controller
             'alamat' => 'required',
             'ktp' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'kk' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'foto' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
                 $fileKtp = $request->file('ktp');
                 $filenameKtp = $fileKtp->getClientOriginalName();
-                $fileKtp->storeAs('public/ktp/',$filenameKtp);
+                $fileKtp->storeAs('public/ktp/', $filenameKtp);
 
                 $fileKk = $request->file('kk');
                 $filenameKk = $fileKk->getClientOriginalName();
-                $fileKk->storeAs('public/kk/',$filenameKk);
+                $fileKk->storeAs('public/kk/', $filenameKk);
+
+                $fileFoto = $request->file('foto');
+                $filenameFoto = $fileFoto->getClientOriginalName();
+                $fileFoto->storeAs('public/foto/', $filenameFoto);
 
                 $data = Penyewa::create([
                     'nik' => $request['nik'],
@@ -101,6 +107,7 @@ class PenyewaController extends Controller
                     'alamat' => $request['alamat'],
                     'ktp' => $filenameKtp,
                     'kk' => $filenameKk,
+                    'foto' => $filenameFoto,
                     'referral_id' => $request['$referral_id'],
                 ]);
 
@@ -175,7 +182,7 @@ class PenyewaController extends Controller
                 if (!empty($request->file('ktp'))) {
                     $fileKtp = $request->file('ktp');
                     $filenameKtp = $fileKtp->getClientOriginalName();
-                    $fileKtp->storeAs('public/ktp/',$filenameKtp);
+                    $fileKtp->storeAs('public/ktp/', $filenameKtp);
                 } else {
                     $filenameKtp = $data->ktp;
                 }
@@ -183,9 +190,17 @@ class PenyewaController extends Controller
                 if (!empty($request->file('kk'))) {
                     $fileKk = $request->file('kk');
                     $filenameKk = $fileKk->getClientOriginalName();
-                    $fileKk->storeAs('public/kk/',$filenameKk);
+                    $fileKk->storeAs('public/kk/', $filenameKk);
                 } else {
                     $filenameKk = $data->kk;
+                }
+
+                if (!empty($request->file('foto'))) {
+                    $fileFoto = $request->file('foto');
+                    $filenameFoto = $fileFoto->getClientOriginalName();
+                    $fileFoto->storeAs('public/foto/', $filenameFoto);
+                } else {
+                    $filenameFoto = $data->foto;
                 }
 
                 $data->update([
@@ -196,6 +211,7 @@ class PenyewaController extends Controller
                     'referral_id' => $request['referral_id'] ?? 0,
                     'ktp' => $filenameKtp,
                     'kk' => $filenameKk,
+                    'foto' => $filenameFoto,
                 ]);
 
                 DB::commit();
@@ -227,8 +243,9 @@ class PenyewaController extends Controller
         DB::beginTransaction();
         try {
             $data->delete();
-            \Storage::delete($data->ktp);
-            \Storage::delete($data->kk);
+            Storage::delete('public/ktp/' . $data->ktp);
+            Storage::delete('public/kk/' . $data->kk);
+            Storage::delete('public/foto/' . $data->foto);
             DB::commit();
             $response = response()->json([
                 'status' => 'success',

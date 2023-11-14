@@ -39,6 +39,7 @@ Route::prefix('backend')->group(function () {
 Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     /* Dashboard */
     Route::get('graph', [Backend\DashboardController::class, 'graph'])->name('dashboard.graph');
+    Route::get('checkin', [Backend\DashboardController::class, 'checkin'])->name('dashboard.checkin');
 
     /* Role Route */
     Route::get('roles/select2', [Backend\RoleController::class, 'select2'])->name('roles.select2');
@@ -85,7 +86,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     //booking/pemesanan
     Route::resource('pemesanan', Backend\PemesananController::class);
     Route::get('pemesanan/create/{id_kendaraan}', [Backend\PemesananController::class, 'create'])->name('pemesanan.createId');
-    
+
 
     // referral
     Route::get('referral/select2', [Backend\ReferralController::class, 'select2'])->name('referral.select2');
@@ -96,6 +97,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::get('invoice/{id}/cetak', [Backend\InvoiceController::class, 'cetak'])->name('invoice.cetak');
 
     //laporan
+    Route::get('laporan-harian', [Backend\LaporanController::class, 'harian_index'])->name('laporan.harian');
     Route::get('laporan-bulanan', [Backend\LaporanController::class, 'bulanan_index'])->name('laporan.bulanan');
     Route::get('laporan-referral', [Backend\LaporanController::class, 'referral_index'])->name('laporan.referral');
 

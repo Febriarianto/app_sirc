@@ -71,4 +71,26 @@ class LaporanController extends Controller
     public function referral_show()
     {
     }
+
+    public function harian_index(Request $request)
+    {
+        $config['title'] = "Laporan Harian";
+        $config['breadcrumbs'] = [
+            ['url' => '#', 'title' => "Laporan Harian"],
+        ];
+        if ($request->ajax()) {
+            $data = Transaksi::select('transaksi.id', 'kendaraan.no_kendaraan as kendaraan', 'penyewa.nama as penyewa', 'transaksi.lama_sewa', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.dp', 'invoices.biaya', 'invoices.metode_pelunasan')
+                ->selectRaw('transaksi.dp + invoices.biaya as total')
+                ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
+                ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
+                ->leftJoin('invoices', 'transaksi.id', '=', 'invoices.id_transaksi')
+                ->where('transaksi.kepulangan', $request->tgl)
+                ->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->make();
+        }
+
+        return view('backend.laporan.harian', compact('config'));
+    }
 }

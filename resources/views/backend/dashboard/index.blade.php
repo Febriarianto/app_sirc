@@ -41,6 +41,21 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-12 col-12">
+        <div class="small-box bg-primary">
+            <div class="inner">
+                <p>Check Out</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <a href="{{route('dashboard.checkin')}}" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+</div>
+
 <div class="row">
 
     <section class="col-lg-12 connectedSortable ui-sortable">

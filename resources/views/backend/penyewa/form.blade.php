@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 col-lg-6 text-center">
+            <div class="col-sm-12 col-lg-4 text-center">
                 <div class="card">
                     <div class="card-body">
                         <label class="mb-2 text-bold d-block">KTP</label>
@@ -83,12 +83,24 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-lg-6 text-center">
+            <div class="col-sm-12 col-lg-4 text-center">
                 <div class="card">
                     <div class="card-body">
                         <label class="mb-2 text-bold d-block">KK</label>
                         <img id="avatar" @if(isset($data['kk'])) src="{{ $data['kk'] != NULL ? asset("storage/kk/".$data['kk']) : asset('images/no-content.svg') }}" @else src="{{ asset('images/no-content.svg') }}" @endif style="object-fit: cover; border: 1px solid #d9d9d9" class="mb-2 border-2 mx-auto" height="200px" width="300px" alt="">
                         <input class="form-control image" type="file" id="customFile1" name="kk" accept=".jpg, .jpeg, .png">
+                        <p class="text-muted ms-75 mt-50"><small>Allowed JPG, JPEG or PNG. Max
+                                size of
+                                2MB</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-lg-4 text-center">
+                <div class="card">
+                    <div class="card-body">
+                        <label class="mb-2 text-bold d-block">Foto</label>
+                        <img id="avatar" @if(isset($data['foto'])) src="{{ $data['foto'] != NULL ? asset("storage/foto/".$data['foto']) : asset('images/no-content.svg') }}" @else src="{{ asset('images/no-content.svg') }}" @endif style="object-fit: cover; border: 1px solid #d9d9d9" class="mb-2 border-2 mx-auto" height="200px" width="300px" alt="">
+                        <input class="form-control image" type="file" id="customFile1" name="foto" accept=".jpg, .jpeg, .png">
                         <p class="text-muted ms-75 mt-50"><small>Allowed JPG, JPEG or PNG. Max
                                 size of
                                 2MB</small></p>

@@ -87,10 +87,8 @@
             buttons: [{
                 extend: 'print',
                 footer: true,
-                className: 'green glyphicon glyphicon-print',
                 text: 'Print',
-                title: ' ',
-                orientation: 'landscape'
+                title: 'Laporan Referal',
             }],
             ajax: {
                 url: `{{ route('laporan.referral') }}`,

@@ -18,14 +18,16 @@ class Penyewa extends Model
         'alamat',
         'ktp',
         'kk',
+        'foto',
         'referral_id',
     ];
     public function referral()
     {
         return $this->belongsTo(Referral::class, 'referral_id');
     }
-    
-    public function transaksis() {
+
+    public function transaksis()
+    {
         return $this->hasMany(Transaksi::class, 'id_penyewa');
     }
 }

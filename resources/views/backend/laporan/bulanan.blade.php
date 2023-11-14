@@ -87,9 +87,8 @@
             buttons: [{
                 extend: 'print',
                 footer: true,
-                className: 'green glyphicon glyphicon-print',
                 text: 'Print',
-                title: ' ',
+                title: 'Laporan Bulanan',
                 customize: function(win) {
 
                     var last = null;

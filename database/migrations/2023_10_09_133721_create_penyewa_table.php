@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('alamat');
             $table->string('ktp');
             $table->string('kk');
+            $table->string('foto');
             $table->timestamps();
         });
     }
