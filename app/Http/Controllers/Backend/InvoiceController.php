@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use PDF;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 
 
 class InvoiceController extends Controller
@@ -24,28 +25,28 @@ class InvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-{
-    $config['title'] = "Invoice";
-    $config['breadcrumbs'] = [
-        ['url' => '#', 'title' => "Invoice"],
-    ];
+    {
+        $config['title'] = "Invoice";
+        $config['breadcrumbs'] = [
+            ['url' => '#', 'title' => "Invoice"],
+        ];
 
-    if ($request->ajax()) {
-        $data = Invoice::with(['transaksi' => function ($query) {
-            $query->with(['penyewa', 'kendaraan']);
-        }])->get();
+        if ($request->ajax()) {
+            $data = Invoice::with(['transaksi' => function ($query) {
+                $query->with(['penyewa', 'kendaraan']);
+            }])->get();
 
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($row) {
-                $actionBtn = '<a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
-                return $actionBtn;
-            })
-            ->make();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '<a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
+                    return $actionBtn;
+                })
+                ->make();
+        }
+
+        return view('backend.invoice.index', compact('config'));
     }
-
-    return view('backend.invoice.index', compact('config'));
-}
 
     /**
      * Show the form for creating a new resource.
@@ -100,12 +101,16 @@ class InvoiceController extends Controller
         $invoice = Invoice::with(['transaksi' => function ($query) {
             $query->with(['penyewa', 'kendaraan']);
         }])->find($id);
-        $pdf = PDF::loadview('backend.invoice.cetak', ['invoice' => $invoice]);
+
+        $generator = new BarcodeGeneratorPNG();
+        $barcode = base64_encode($generator->getBarcode($invoice->transaksi->kendaraan->no_kendaraan, $generator::TYPE_CODE_128));
+
+        $pdf = PDF::loadview('backend.invoice.cetak', ['invoice' => $invoice, 'barcode' => $barcode]);
         // return $pdf->download('invoice-pdf');
         $ukuran = array(0, 0, 842, 750);
         $pdf->setPaper($ukuran);
         return $pdf->stream();
-        return view('backend.invoice.cetak', compact('invoice', 'data'));
+        // return view('backend.invoice.cetak', compact('invoice', 'data'));
     }
 
     public function show($id)

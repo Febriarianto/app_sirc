@@ -36,6 +36,7 @@
         <tr>
             <td>Nama Penyewa</td>
             <td>: {{ $invoice->transaksi->penyewa->nama }}</td>
+            <td colspan="2" style="text-align: center;"><img src="data:image/png;base64,{{ $barcode }}"></td>
         </tr>
         <tr>
             <td>NO. HP</td>
@@ -162,6 +163,10 @@
             <td>{{ $invoice->transaksi->penyewa->nama }}</td>
         </tr>
     </table>
+    <script src="{{ asset ('assets/dist/js/JsBarcode.all.min.js') }}"></script>
+    <script>
+        JsBarcode("#code128", "Hi!");
+    </script>
 
 </body>
 
