@@ -42,7 +42,7 @@
             <td>NO. HP</td>
             <td>: {{ $invoice->transaksi->penyewa->no_hp }}</td>
             <td>Biaya</td>
-            <td>: Rp. {{ number_format($invoice->transaksi->biaya) }}</td>
+            <td>: Rp. {{ number_format($invoice->biaya) }}</td>
         </tr>
         <tr>
             <td>Alamat</td>

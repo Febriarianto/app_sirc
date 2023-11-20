@@ -86,6 +86,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     //booking/pemesanan
     Route::resource('pemesanan', Backend\PemesananController::class);
     Route::get('pemesanan/create/{id_kendaraan}', [Backend\PemesananController::class, 'create'])->name('pemesanan.createId');
+    Route::get('penyewaan/create/{id_kendaraan}', [Backend\PenyewaanController::class, 'create'])->name('penyewaan.createId');
 
 
     // referral

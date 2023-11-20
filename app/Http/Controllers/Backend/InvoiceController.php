@@ -103,7 +103,7 @@ class InvoiceController extends Controller
         }])->find($id);
 
         $generator = new BarcodeGeneratorPNG();
-        $barcode = base64_encode($generator->getBarcode($invoice->transaksi->kendaraan->no_kendaraan, $generator::TYPE_CODE_128));
+        $barcode = base64_encode($generator->getBarcode($invoice->transaksi->id, $generator::TYPE_CODE_128));
 
         $pdf = PDF::loadview('backend.invoice.cetak', ['invoice' => $invoice, 'barcode' => $barcode]);
         // return $pdf->download('invoice-pdf');

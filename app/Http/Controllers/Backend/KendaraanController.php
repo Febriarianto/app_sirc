@@ -62,9 +62,6 @@ class KendaraanController extends Controller
             ['url' => route('kendaraan.index'), 'title' => "Data Ketersediaan Mobil"],
         ];
 
-        // $status = Kendaraan::with('transaksis')->paginate(5);
-        // return view('backend.pemesanan.list_ketersediaan', compact('config', 'status'));
-
         $jenisId = $request->input('jenis');
         $tanggal = $request->input('tgl') ?? Carbon::now()->format('Y-m-d');
 

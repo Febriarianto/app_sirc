@@ -138,7 +138,9 @@
                                 </select>
                             </div>
                         </div>
-                        
+                        <input type="hidden" id="harga_harian" value="{{ $data->kendaraan->jenis->harga_24 ? $data->kendaraan->jenis->harga_24 : '' }}">
+                        <input type="hidden" id="harga_jam" value="{{ $data->kendaraan->jenis->harga_12 ? $data->kendaraan->jenis->harga_12 : '' }}">
+
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
@@ -175,6 +177,12 @@
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="transfer_pelunasan" name="metode_pelunasan" value="transfer" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "transfer" ? 'checked' : '' }}>
                                         <label class="custom-control-label" for="transfer_pelunasan">Transfer</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="lainnya_pelunasan" name="metode_pelunasan" value="lainnya" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "lainnya" ? 'checked' : '' }}>
+                                        <label class="custom-control-label" for="lainnya_pelunasan">Lainnya</label>
                                     </div>
                                 </div>
                                 <div id="fileTrfPelunasan" class="col-sm-6" style="{{ isset($data) && $data->metode_pelunasan == 'transfer' ? '' : 'display:none;' }}">
@@ -396,20 +404,6 @@
         });
 
 
-        document.getElementById('paket').addEventListener('change', function() {
-        let paket = this.value;
-        let hargaSewaInput = document.getElementById('harga_sewa');
-        let hargaSewa = '';
-
-        if (paket === 'harian') {
-            hargaSewa = "{{ $data->kendaraan->jenis->harga_24 }}";
-        } else if (paket === 'jam') {
-            hargaSewa = "{{ $data->kendaraan->jenis->harga_12 }}";
-        }
-
-        hargaSewaInput.value = hargaSewa;
-    });
-
     let radioMetodePelunasan = document.querySelectorAll('input[name="metode_pelunasan"]');
 
         radioMetodePelunasan.forEach(el => {
@@ -426,6 +420,26 @@
                 }
             });
         });
+
+        document.getElementById('paket').addEventListener('change', function() {
+            let paket = this.value;
+            let hargaSewaInput = document.getElementById('harga_sewa');
+
+            if (paket === 'harian') {
+                hargaSewaInput.value = document.getElementById('harga_harian').value;
+            } else if (paket === 'jam') {
+                hargaSewaInput.value = document.getElementById('harga_jam').value;
+            } else if (paket === 'tahunan') {
+                hargaSewaInput.value = document.getElementById('harga_tahunan').value;
+            } else if (paket === 'bulanan') {
+                hargaSewaInput.value = document.getElementById('harga_bulanan').value;
+            } else if (paket === 'mingguan') {
+                hargaSewaInput.value = document.getElementById('harga_mingguan').value;
+            } else {
+                hargaSewaInput.value = ''; 
+            }
+        });
+
 
 
     });

@@ -49,9 +49,9 @@
             serverSide: true,
             processing: true,
             ajax: {
-                url: `{{ route('dashboard.checkin') }}`,
-                data: function(d) {
-                    d.kode = $('#kode').val();
+            url: `{{ route('dashboard.checkin') }}`,
+            data: function(d) {
+                d.kode = $('#kode').val();
                 }
             },
             columns: [{
@@ -125,6 +125,9 @@
             dt.draw();
         })
 
+    //     $('#kode').on('keyup', function() {
+    //     dt.ajax.reload();
+    // })
     });
 </script>
 @endsection

@@ -99,14 +99,6 @@ class PemesananController extends Controller
                 new DateTime($request['kepulangan'] . '+1 day')
             );
 
-            // $cekPemesanan = Transaksi::select('id')
-            //     ->where('id_kendaraan', $request['id_kendaraan'])
-            //     ->where('keberangkatan', $request['keberangkatan'])
-            //     ->first();
-            // if ($cekPemesanan == !null) {
-            //     $response = response()->json($this->responseStore(false, 'Mobil Sudah di Booking , Pada Tanggal Tersebut', NULL));
-            // } else {
-
             DB::beginTransaction();
             try {
                 if ($request['metode_dp'] == 'transfer') {
@@ -218,14 +210,11 @@ class PemesananController extends Controller
             $pemesanan->lama_sewa = $request->input('lama_sewa');
             $pemesanan->paket = $request->input('paket');
 
-            // Update 'tipe' field based on 'status'
             if ($request->input('status') == 'proses') {
-                // Jika 'status' = 'proses', set 'tipe' menjadi 'sewa'
                 $pemesanan->tipe = 'sewa';
             }
 
-            // Update 'status' field based on 'status' input
-            // Jika 'status' = 'batal', set 'status' menjadi 'batal'
+          
             if ($request->input('status') == 'batal') {
                 $pemesanan->status = 'batal';
             }

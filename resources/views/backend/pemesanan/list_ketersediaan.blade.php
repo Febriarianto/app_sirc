@@ -60,7 +60,7 @@
                                 </td>
                                 <td>
                                     <a href="{{ route('pemesanan.createId', ['id_kendaraan' => $k->id]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-success'}} ">{{$k->tanggal != null ? '' : 'Booking'}}</span></h3></a>
-                                    <a href=""><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-primary'}} ">{{$k->tanggal != null ? '' : 'Sewa'}}</span></h3></a>
+                                    <a href="{{ route('penyewaan.createId', ['id_kendaraan' => $k->id]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-primary'}} ">{{$k->tanggal != null ? '' : 'Sewa'}}</span></h3></a>
                                 </td>
                             </tr>
                             @endforeach

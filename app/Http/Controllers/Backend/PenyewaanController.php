@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
+use App\Models\Kendaraan;
 use App\Models\Invoice;
 use App\Traits\ResponseStatus;
 use Illuminate\Support\Facades\DB;
@@ -52,9 +53,24 @@ class PenyewaanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id_kendaraan)
     {
-        
+        $kendaraan = Kendaraan::where('id', $id_kendaraan)->first();
+        $config['title'] = "Tambah Penyewaan";
+        $config['breadcrumbs'] = [
+            ['url' => route('penyewaan.index'), 'title' => "Penyewaan"],
+            ['url' => '#', 'title' => "Tambah Penyewaan"],
+        ];
+        $config['form'] = (object)[
+            'method' => 'POST',
+            'action' => route('penyewaan.store')
+        ];
+
+        $dataTransaksi = Transaksi::where('id_kendaraan', $id_kendaraan)
+        ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
+        ->first(); 
+
+        return view('backend.penyewaan.form', compact('config', 'kendaraan','dataTransaksi'));
        
     }
 
