@@ -41,7 +41,7 @@ class PenyewaanController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-info" href="' . route('penyewaan.show', $row->id) . '">Invoice</a>';
+                        <a class="btn btn-info" href="' . route('invoice-sewa.cetak', $row->id) . '">Cetak Invoice</a>';
                     return $actionBtn;
                 })->make();
         }

@@ -113,6 +113,21 @@ class InvoiceController extends Controller
         // return view('backend.invoice.cetak', compact('invoice', 'data'));
     }
 
+    public function sewaCetak($id)
+    {
+        $transaksi = Transaksi::with(['penyewa', 'kendaraan'])->find($id);
+        $generator = new BarcodeGeneratorPNG();
+        $barcode = base64_encode($generator->getBarcode($transaksi->id, $generator::TYPE_CODE_128));
+
+        $pdf = PDF::loadview('backend.invoice.sewa-cetak', ['transaksi' => $transaksi, 'barcode' => $barcode]);
+        // return $pdf->download('invoice-pdf');
+        $ukuran = array(0, 0, 842, 750);
+        $pdf->setPaper($ukuran);
+        return $pdf->stream();
+        // return view('backend.invoice.cetak', compact('invoice', 'data'));
+    }
+
+
     public function show($id)
     {
         //

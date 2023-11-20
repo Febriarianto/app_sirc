@@ -96,6 +96,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     //invoice
     Route::resource('invoice', Backend\InvoiceController::class);
     Route::get('invoice/{id}/cetak', [Backend\InvoiceController::class, 'cetak'])->name('invoice.cetak');
+    Route::get('invoice-sewa/{id}/cetak', [Backend\InvoiceController::class, 'sewaCetak'])->name('invoice-sewa.cetak');
 
     //laporan
     Route::get('laporan-harian', [Backend\LaporanController::class, 'harian_index'])->name('laporan.harian');
