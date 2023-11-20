@@ -11,7 +11,7 @@
 
     <table border="0" style="height: 907.08661417px; width: 1058.2677165px; padding: 0; margin: 0;">
         <tr>
-            <td style="text-align: center; width: 16%;"><img src="tutwuri.png" alt="" width="80px" height="80px">
+            <td style="text-align: center; width: 16%;"><img src="{{ public_path ('assets/dist/img/tutwuri.png') }}" alt="" width="80px" height="80px">
             </td>
             <td style="text-align: center; width: 44%;">
                 <h2 style="font-size: 28px; line-height: 0;">CV. ANDRA PRATAMA</h2>
@@ -20,7 +20,7 @@
                     Contact Person : 0811 70 9009 / 0853 8023 3151
                 </p>
             </td>
-            <td style="text-align: center;"><img src="concept.png" alt="" width="120px" height="120px"></td>
+            <td style="text-align: center;"><img src="{{ public_path ('assets/dist/img/concept.png') }}" alt="" width="120px" height="120px"></td>
             <td style="text-align: center;">
                 <div style="background-color: black; color: white; padding: 3px; margin-bottom: 2px; border-radius: 5px 5px 5px 5px;">
                     BUKTI PEMBAYARAN
@@ -87,7 +87,7 @@
         <tr>
             <td style="font-weight: bold;">Jaminan:</td>
             <td style="text-align: end;">CEK FISIK :</td>
-            <td colspan="2" rowspan="3" style="text-align: center;;"><img src="car-view.png" alt="" width="190px" height="80px"></td>
+            <td colspan="2" rowspan="3" style="text-align: center;;"><img src="{{ public_path ('assets/dist/img/car-view.png')}}" alt="" width="190px" height="80px"></td>
         </tr>
         <tr>
             <td style="padding-left: 10px;" colspan="2">
