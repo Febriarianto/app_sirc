@@ -209,6 +209,7 @@ class PemesananController extends Controller
             $pemesanan->kepulangan = $request->input('kepulangan');
             $pemesanan->lama_sewa = $request->input('lama_sewa');
             $pemesanan->paket = $request->input('paket');
+            $pemesanan->harga_sewa = $request->input('harga_sewa');
 
             if ($request->input('status') == 'proses') {
                 $pemesanan->tipe = 'sewa';

@@ -26,7 +26,8 @@ return new class extends Migration
             $table->enum('metode_dp', ['cash', 'transfer']);
             $table->string('bukti_dp');
             $table->enum('tipe', ['pemesanan', 'sewa',]);
-            $table->enum('status', ['proses', 'selesai', 'batal']);
+            $table->enum('status', ['pending','proses', 'selesai', 'batal']);
+            $table->unsignedBigInteger('harga_sewa');
             $table->timestamps();
         });
     }

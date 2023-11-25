@@ -84,7 +84,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="lama_sewa">Lama Sewa :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" value="">
+                                <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '' }}">
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '' }}">
                             </div>
                         </div>
 
@@ -162,7 +162,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" placeholder="Masukan Kota Tujuan">
+                                <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" placeholder="Masukan Kota Tujuan" value="{{ $data->kota_tujuan ?? '' }}">
                             </div>
                         </div>
                     </div>

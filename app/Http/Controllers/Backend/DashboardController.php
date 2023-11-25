@@ -66,7 +66,7 @@ class DashboardController extends Controller
 
 
     public function checkin(Request $request)
-{
+    {
     $config['title'] = "Check In";
     $config['breadcrumbs'] = [
         ['url' => '#', 'title' => "Check In"],
@@ -81,9 +81,7 @@ class DashboardController extends Controller
             )
             ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
             ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-            ->when($request->kode, function ($query) use ($request) {
-                return $query->where('transaksi.id', $request->kode);
-            })
+            ->where('transaksi.id', $request->kode)
             ->get();
 
         return DataTables::of($data)
@@ -96,31 +94,5 @@ class DashboardController extends Controller
     }
 
     return view('backend.dashboard.checkin', compact('config'));
-}
-
-    // public function checkin(Request $request)
-    // {
-    //     $config['title'] = "Check In";
-    //     $config['breadcrumbs'] = [
-    //         ['url' => '#', 'title' => "Check In"],
-    //     ];
-    //     if ($request->ajax()) {
-    //         $data = Transaksi::select('transaksi.id', 'kendaraan.no_kendaraan as kendaraan', 'penyewa.nama as penyewa', 'transaksi.keberangkatan')
-    //             ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
-    //             ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-    //             ->where('kendaraan.no_kendaraan', $request->kode)
-    //             ->get();
-    //         return DataTables::of($data)
-    //             ->addIndexColumn()
-    //             ->addColumn('action', function ($row) {
-    //                 $actionBtn = '<a class="btn btn-info btn-info" href="#" data-id="' . $row->id . '" >Check IN</a>';
-    //                 return $actionBtn;
-    //             })->make();
-    //     }
-    //     return view('backend.dashboard.checkin', compact('config'));
-    // }
-
-    public function getTrasaksi()
-    {
     }
 }

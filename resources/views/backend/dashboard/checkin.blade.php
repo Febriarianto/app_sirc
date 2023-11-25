@@ -41,6 +41,7 @@
 <script>
     $(document).ready(function() {
 
+
         var dt = $('#dt').DataTable({
             searching: false,
             paging: false,
@@ -51,7 +52,10 @@
             ajax: {
             url: `{{ route('dashboard.checkin') }}`,
             data: function(d) {
-                d.kode = $('#kode').val();
+                let text =  $('#kode').val();
+                const myArray = text.split("-");
+                let id = myArray[1];
+                d.kode = id;
                 }
             },
             columns: [{
@@ -81,44 +85,6 @@
                     searchable: false
                 },
             ],
-            rowCallback: function(row, data) {
-                let api = this.api();
-                $(row).find('.btn-info').click(function() {
-                    let pk = $(this).data('id'),
-                        url = `{{ route("dashboard.checkin") }}/` + pk;
-                    Swal.fire({
-                        title: "Anda Yakin ?",
-                        text: "Yakin kendaraan Ini Sudah kembali ?",
-                        icon: "info",
-                        showCancelButton: true,
-                        confirmButtonColor: "#33F0FF",
-                        confirmButtonText: "Ya, Checkin!",
-                        cancelButtonText: "Tidak, Batalkan",
-                    }).then((result) => {
-                        if (result.value) {
-                            $.ajax({
-                                url: url,
-                                type: "DELETE",
-                                data: {
-                                    _token: '{{ csrf_token() }}',
-                                    _method: 'DELETE'
-                                },
-                                error: function(response) {
-                                    toastr.error(response, 'Failed !');
-                                },
-                                success: function(response) {
-                                    if (response.status === "success") {
-                                        toastr.success(response.message, 'Success !');
-                                        api.draw();
-                                    } else {
-                                        toastr.error((response.message ? response.message : "Please complete your form"), 'Failed !');
-                                    }
-                                }
-                            });
-                        }
-                    });
-                });
-            }
         });
 
         $('#kode').on('keyup', function() {

@@ -40,7 +40,7 @@ class PenyewaanController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.edit', $row->id) . '">Edit</a>
+                    $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>
                         <a class="btn btn-info" href="' . route('invoice-sewa.cetak', $row->id) . '">Cetak Invoice</a>';
                     return $actionBtn;
                 })->make();
@@ -149,7 +149,18 @@ class PenyewaanController extends Controller
      */
     public function edit($id)
     {
-        //
+        $config['title'] = "Edit Penyewaan";
+        $config['breadcrumbs'] = [
+            ['url' => route('penyewaan.index'), 'title' => "Penyewaan"],
+            ['url' => '#', 'title' => "Edit Pemesan"],
+        ];
+        $data = Transaksi::where('id', $id)->first();
+        // @dd($data);
+        $config['form'] = (object)[
+            'method' => 'PUT',
+            'action' => route('pemesanan.update', $id)
+        ];
+        return view('backend.pemesanan.proses', compact('config', 'data'));
     }
 
     /**

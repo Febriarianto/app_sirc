@@ -30,8 +30,8 @@
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewa :</label>
                                 <div class="col-sm-9">
                                     <select id="select2Penyewa" style="width: 100% !important;" name="id_penyewa">
-                                        @if(isset($data->penyewa->id_penyewa))
-                                        <option value="{{ $data->penyewa->id_penyewa }}">{{ $data->penyewa->nik }}</option>
+                                        @if(isset($data->penyewa->id))
+                                        <option value="{{ $data->penyewa->id }}">{{ $data->penyewa->nik }}</option>
                                         @endif
                                     </select>
                                 </div>

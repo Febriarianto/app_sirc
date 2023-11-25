@@ -48,7 +48,7 @@
             <td>Alamat</td>
             <td>: {{ $invoice->transaksi->penyewa->alamat }}</td>
             <td>DP</td>
-            <td style="border-bottom: solid black 2px;">: {{ $invoice->transaksi->dp }}</td>
+            <td style="border-bottom: solid black 2px;">: Rp. {{ number_format($invoice->transaksi->dp) }}</td>
         </tr>
         <tr>
             <td>Tujuan Kota</td>
