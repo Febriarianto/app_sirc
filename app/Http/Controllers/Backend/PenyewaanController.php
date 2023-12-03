@@ -10,6 +10,7 @@ use App\Models\Kendaraan;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use Carbon\Carbon;
 use App\Traits\ResponseStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -55,7 +56,7 @@ class PenyewaanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id_kendaraan)
+    public function create($id_kendaraan, $tanggal)
     {
         $kendaraan = Kendaraan::where('id', $id_kendaraan)->first();
         $config['title'] = "Tambah Penyewaan";
@@ -72,7 +73,12 @@ class PenyewaanController extends Controller
             ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
             ->first();
 
-        return view('backend.penyewaan.form', compact('config', 'kendaraan', 'dataTransaksi'));
+        $config['form'] = (object)[
+            'method' => 'POST',
+            'action' => route('penyewaan.store')
+        ];
+            $tanggal = $tanggal;
+        return view('backend.penyewaan.form', compact('config', 'kendaraan', 'dataTransaksi','tanggal'));
     }
 
     /**
@@ -88,9 +94,9 @@ class PenyewaanController extends Controller
             'id_kendaraan' => 'required',
             'keberangkatan' => 'required',
             'kepulangan' => 'required',
-            'dp' => 'required',
-            'metode_dp' => 'required',
-            'bukti_dp' => $request['metode_dp'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
+            'harga_sewa' => 'required',
+            'kota_tujuan' => 'required',
+            'bukti_dp' => $request['metode_dp'] == 'transfer' ? 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
         ]);
         if ($validator->passes()) {
 
@@ -107,16 +113,36 @@ class PenyewaanController extends Controller
                 } else {
                     $imgTrf = '';
                 }
+
+                if ($request->hasFile('bukti_pelunasan')) {
+
+                    $file_name = time() . '_' . $request->bukti_pelunasan->getClientOriginalName();
+                    $bukti_pelunasan = $request->bukti_pelunasan->storeAs('bukti_pelunasan', $file_name);
+        
+                    $data['bukti_pelunasan'] = $bukti_pelunasan;
+                } else {
+                    $bukti_pelunasan = '';
+                }
+
+                $keberangkatan_time = Carbon::now();
                 $data = Transaksi::create([
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
                     'keberangkatan' => $request['keberangkatan'],
+                    'keberangkatan_time' => $keberangkatan_time,
                     'kepulangan' => $request['kepulangan'],
                     'dp' => $request['dp'],
                     'metode_dp' => $request['metode_dp'],
                     'bukti_dp' => $imgTrf,
+                    'metode_pelunasan' => $request['metode_pelunasan'],
+                    'bukti_pelunasan' => $bukti_pelunasan,
                     'tipe' => 'sewa',
                     'status' => 'proses',
+                    'lama_sewa' => $request['lama_sewa'],
+                    'harga_sewa' => $request['harga_sewa'],
+                    'biaya' => $request['biaya'],
+                    'sisa' => $request['sisa'],
+                    'kota_tujuan' => $request['kota_tujuan'],
                 ]);
 
                 foreach ($period as $key => $value) {

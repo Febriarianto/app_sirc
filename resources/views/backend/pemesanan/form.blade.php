@@ -27,7 +27,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewa :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewas :</label>
                                 <div class="col-sm-9">
                                     <select id="select2Penyewa" style="width: 100% !important;" name="id_penyewa">
                                         @if(isset($data->id_penyewa))

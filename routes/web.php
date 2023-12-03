@@ -105,6 +105,8 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
 
     //booking/pemesanan
     Route::put('penyewaan/proses/{penyewaan}', [Backend\PenyewaanController::class, 'proses'])->name('penyewaan.proses');
-    Route::get('penyewaan/create/{id_kendaraan}', [Backend\PenyewaanController::class, 'create'])->name('penyewaan.createId');
+    // Route::get('penyewaan/create/{id_kendaraan}', [Backend\PenyewaanController::class, 'create'])->name('penyewaan.createId');
+    Route::get('penyewaan/create/{id_kendaraan}/{tanggal}', [Backend\PenyewaanController::class, 'create'])->name('penyewaan.createId');
+
     Route::resource('penyewaan', Backend\PenyewaanController::class);
 });

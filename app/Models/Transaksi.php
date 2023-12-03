@@ -17,6 +17,7 @@ class Transaksi extends Model
         'id_kendaraan',
         'kota_tujuan',
         'lama_sewa',
+        'harga_sewa',
         'paket',
         'keberangkatan',
         'keberangkatan_time',
@@ -33,6 +34,7 @@ class Transaksi extends Model
         'metode_pelunasan',
         'keterangan',
         'bukti_pelunasan',
+        'kota_tujuan',
     ];
 
     public function penyewa()

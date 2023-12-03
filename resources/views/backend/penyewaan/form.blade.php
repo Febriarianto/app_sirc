@@ -2,8 +2,8 @@
 
 @section('content')
 <div>
-    <form id="formStore" action="{{ $config['form']->action }}" method="POST">
-        @method($config['form']->method)
+    <form id="formStore" action="{{ route('penyewaan.store') }}" method="POST">
+        {{-- @method($config['form']->method) --}}
         @csrf
         <div class="row">
             <div class="col-sm-12 col-lg-6">
@@ -26,11 +26,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="id_transaksi" value="{{ $data->id }}">
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewa :</label>
                                 <div class="col-sm-9">
-                                    <select id="select2Penyewa" style="width: 100% !important;" name="id_penyewa" disabled>
+                                    <select id="select2Penyewa" style="width: 100% !important;" name="id_penyewa">
                                         @if(isset($data->id_penyewa))
                                         <option value="{{ $data->id_penyewa }}">{{ $data->penyewa->nik }}</option>
                                         @endif
@@ -63,21 +62,21 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="select2Kendaraan">Nomor Kendaraan :</label>
                             <div class="col-sm-9">
-                                <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan" disabled>
-                                    @if(isset($data->id_kendaraan))
-                                    <option value="{{ $data->id_kendaraan }}">{{ $data->kendaraan->no_kendaraan }}</option>
+                                <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
+                                    @if(isset($kendaraan->id))
+                                    <option value="{{ $kendaraan->id }}">{{ $kendaraan->no_kendaraan }}</option>
                                     @endif
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Berangkat:</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Berangkat :</label>
                             <div class="col-sm-9">
-                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}" readonly>
+                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? $tanggal }}">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Kembali :</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="kepulangan">Pulang :</label>
                             <div class="col-sm-9">
                                 <input type="date" class="form-control" id="kepulangan" name="kepulangan" placeholder="Masukan Tanggal Kepulangan" value="{{ $data->kepulangan ?? '' }}">
                             </div>
@@ -85,13 +84,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="lama_sewa">Lama Sewa :</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa }}">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan }}">
+                                <input type="text" class="form-control" id="lama_sewa" name="lama_sewa">
                             </div>
                         </div>
                     </div>
@@ -103,23 +96,23 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="dp">DP:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="dp" name="dp" placeholder="Masukan Nominal DP" value="{{ $data->dp ?? '' }}" readonly>
+                                <input type="text" class="form-control" id="dp" name="dp" placeholder="Masukan Nominal DP" value="{{ $data->dp ?? '' }}">
                             </div>
                         </div>
                         <hr>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="metode_dp">Metode DP :</label>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="cash" name="metode_dp" value="cash" class="custom-control-input" {{ isset($data) && $data->metode_dp == "cash" ? 'checked' : '' }} disabled>
+                                    <input type="radio" id="cash" name="metode_dp" value="cash" class="custom-control-input" {{ isset($data) && $data->metode_dp == "cash" ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="cash">Cash</label>
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="transfer" name="metode_dp" value="transfer" class="custom-control-input" {{ isset($data) && $data->metode_dp == "transfer" ? 'checked' : '' }} disabled>
+                                    <input type="radio" id="transfer" name="metode_dp" value="transfer" class="custom-control-input" {{ isset($data) && $data->metode_dp == "transfer" ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="transfer">Transfer</label>
                                 </div>
                             </div>
@@ -129,83 +122,81 @@
                             </div>
                         </div>
 
-
-
-                        <div class="form-group row">
+                        <div class="form-group row mt-3">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
                             <div class="col-sm-9">
                                 <select id="paket" name="paket" class="form-control">
                                     <option value="">.: Pilih Paket:.</option>
-                                    <option value="harian" {{ $data->paket === 'harian' ? 'selected' : '' }}>Harian</option>
-                                    <option value="jam" {{ $data->paket === 'jam' ? 'selected' : '' }}>Jam</option>
-                                    <option value="tahunan" {{ $data->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
-                                    <option value="bulanan" {{ $data->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
-                                    <option value="mingguan" {{ $data->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                                    <option value="harian" {{ $dataTransaksi->paket === 'harian' ? 'selected' : '' }}>Harian</option>
+                                    <option value="jam" {{ $dataTransaksi->paket === 'jam' ? 'selected' : '' }}>Jam</option>
+                                    <option value="tahunan" {{ $dataTransaksi->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
+                                    <option value="bulanan" {{ $dataTransaksi->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                                    <option value="mingguan" {{ $dataTransaksi->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
                                 </select>
                             </div>
                         </div>
-                        <input type="hidden" id="harga_harian" value="{{ $data->kendaraan->jenis->harga_24 ? $data->kendaraan->jenis->harga_24 : '' }}">
-                        <input type="hidden" id="harga_jam" value="{{ $data->kendaraan->jenis->harga_12 ? $data->kendaraan->jenis->harga_12 : '' }}">
+
+                        <input type="hidden" id="harga_harian" value="{{ $dataTransaksi->kendaraan->jenis->harga_24 ? $dataTransaksi->kendaraan->jenis->harga_24 : '' }}">
+                        <input type="hidden" id="harga_jam" value="{{ $dataTransaksi->kendaraan->jenis->harga_12 ? $dataTransaksi->kendaraan->jenis->harga_12 : '' }}">
+
 
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa }}">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa">
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="over_time">Biaya Overtime:</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="biaya">Total Biaya:</label>
                             <div class="col-sm-9">
-                                <input type="number" class="form-control" id="over_time" name="over_time" value="0">
+                                <input type="text" class="form-control" id="biaya" name="biaya">
                             </div>
                         </div>
 
 
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="total_bayar">Total Bayar:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="biaya" name="biaya" readonly>
-                            </div>
+                            <label class="control-label col-sm-6 align-self-center mb-0" for="metode_pelunasan">Metode Pelunasan :</label>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="cash_pelunasan" name="metode_pelunasan" value="cash" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "cash" ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="cash_pelunasan">Cash</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="transfer_pelunasan" name="metode_pelunasan" value="transfer" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "transfer" ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="transfer_pelunasan">Transfer</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="lainnya" name="metode_pelunasan" value="lainnya" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "transfer" ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="lainnya">Lainnya</label>
+                                </div>
+                            </div>
+                            <div id="fileTrfPelunasan" class="col-sm-6" style="{{ isset($data) && $data->metode_pelunasan == 'transfer' ? '' : 'display:none;' }}">
+                                <input type="file" class="form-control" id="bukti_pelunasan" name="bukti_pelunasan" value="{{ $data->bukti_pelunasan ?? '' }}">
+                                <label for="">{{ $data->bukti_pelunasan ?? '' }}</label>
+                            </div>
 
-                        <div class="form-group row">
+                            
+                        </div> 
+                    <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="total_bayar">Sisa:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="sisa" name="sisa" readonly>
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-6 align-self-center mb-0" for="metode_pelunasan">Metode Pelunasan :</label>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="cash_pelunasan" name="metode_pelunasan" value="cash" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "cash" ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="cash_pelunasan">Cash</label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="transfer_pelunasan" name="metode_pelunasan" value="transfer" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "transfer" ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="transfer_pelunasan">Transfer</label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="lainnya_pelunasan" name="metode_pelunasan" value="lainnya" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "lainnya" ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="lainnya_pelunasan">Lainnya</label>
-                                    </div>
-                                </div>
-                                <div id="fileTrfPelunasan" class="col-sm-6" style="{{ isset($data) && $data->metode_pelunasan == 'transfer' ? '' : 'display:none;' }}">
-                                    <input type="file" class="form-control" id="bukti_pelunasan" name="bukti_pelunasan" value="{{ $data->bukti_pelunasan ?? '' }}">
-                                    <label for="">{{ $data->bukti_pelunasan ?? '' }}</label>
-                                </div>
-                            </div>
+                               <div class="col-sm-9">
+                                   <input type="text" class="form-control" id="total_bayar" name="sisa">
+                               </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" >
                         </div>
                     </div>
+                </div>
                     <div class="card-footer">
                         <div class="btn-group float-right" role="group" aria-label="Basic outlined example">
                             <a onclick="history.back()" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-rotate-left"></i> Kembali</a>
@@ -222,30 +213,6 @@
 <script>
     $(document).ready(function() {
 
-        let hargaPaket = $('#harga_sewa'),
-            overTime = $('#over_time'),
-            totalBiaya = $('#biaya'),
-            dp = $('#dp');
-
-        var CalResult = function() {
-            let calTotal = parseInt(hargaPaket.val()) + parseInt(overTime.val()),
-                sisa = calTotal - parseInt(dp.val());
-
-            totalBiaya.val(calTotal);
-
-            console.log(calTotal);
-            $('#sisa').val(sisa);
-        }
-        CalResult();
-
-        $("#harga_sewa").on("keyup", function() {
-            console.log(CalResult());
-        });
-
-        $("#over_time").on("keyup", function() {
-            console.log(CalResult());
-        });
-
         let nik2 = $('#select2Penyewa option:selected').text().trim();
         $.ajax({
             url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nik2,
@@ -255,16 +222,6 @@
                 $('#no_hp').val(response.data.no_hp);
             }
         })
-
-        if ($('#transfer').is(':checked')) {
-            let divFile = document.querySelector('input[name="bukti_dp"]').parentNode;
-            divFile.style.display = "";
-        }
-
-        if ($('#cash').is(':checked')) {
-            let divFile = document.querySelector('input[name="bukti_dp"]').parentNode;
-            divFile.style.display = "none";
-        }
 
         $('#select2Active').select2({
             theme: 'bootstrap4',
@@ -337,7 +294,6 @@
                     btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
                 },
                 success: function(response) {
-                    console.log("Server Response:", response);
                     let errorCreate = $('#errorCreate');
                     errorCreate.css('display', 'none');
                     errorCreate.find('.alert-text').html('');
@@ -352,7 +308,6 @@
                             }
                         }, 1000);
                     } else {
-                        console.error("AJAX Error:", response);
                         toastr.error((response.message ? response.message : "Please complete your form"), 'Failed !');
                         if (response.error !== undefined) {
                             errorCreate.removeAttr('style');
@@ -369,18 +324,46 @@
             });
         });
 
-        let radioFile = document.querySelectorAll('input[name="metode_pelunasan"]');
+        let radioFileDP = document.querySelectorAll('input[name="metode_dp"]');
+        let divFileDP = document.querySelector('#fileTrf');
 
-        radioFile.forEach(el => {
+        radioFileDP.forEach(el => {
             el.addEventListener('change', () => {
-                let divFile = document.querySelector('input[name="bukti_pelunasan"]').parentNode;
-
-                if (el.checked && el.value == 'transfer') {
-                    divFile.style.display = "";
+                if (el.checked && el.value === 'transfer') {
+                    divFileDP.style.display = '';
                 } else {
-                    divFile.style.display = 'none';
+                    divFileDP.style.display = 'none';
                 }
-            })
+            });
+        });
+
+        let radioFilePelunasan = document.querySelectorAll('input[name="metode_pelunasan"]');
+        let divFilePelunasan = document.querySelector('#fileTrfPelunasan');
+
+        radioFilePelunasan.forEach(el => {
+            el.addEventListener('change', () => {
+                if (el.checked && el.value === 'transfer') {
+                    divFilePelunasan.style.display = '';
+                } else {
+                    divFilePelunasan.style.display = 'none';
+                }
+            });
+        });
+
+        
+
+        document.getElementById('paket').addEventListener('change', function() {
+        let paket = this.value;
+        let hargaSewaInput = document.getElementById('harga_sewa');
+        let hargaSewa = '';
+
+        if (paket === 'harian') {
+            hargaSewa = document.getElementById('harga_harian').value;
+        } else if (paket === 'jam') {
+            hargaSewa = document.getElementById('harga_jam').value;
+        }
+
+         hargaSewaInput.value = hargaSewa;
         });
 
         let keberangkatanInput = document.getElementById('keberangkatan');
@@ -389,7 +372,6 @@
 
         keberangkatanInput.addEventListener('change', hitungLamaSewa);
         kepulanganInput.addEventListener('change', hitungLamaSewa);
-
 
         function hitungLamaSewa() {
             let tanggalKeberangkatan = new Date(keberangkatanInput.value);
@@ -403,69 +385,6 @@
                 lamaSewaInput.value = 0;
             }
         }
-
-        document.addEventListener('DOMContentLoaded', hitungLamaSewa);
-
-
-        let statusDropdown = document.getElementById('status');
-        let kotaTujuanLabel = document.querySelector('label[for="kota_tujuan"]');
-        let kotaTujuanInput = document.getElementById('kota_tujuan');
-
-        document.addEventListener('DOMContentLoaded', function() {
-            kotaTujuanLabel.style.display = 'block';
-            if (statusDropdown.value !== 'batal') {
-                kotaTujuanInput.style.display = 'none';
-            }
-        });
-
-
-        statusDropdown.addEventListener('change', function() {
-            if (statusDropdown.value === 'batal') {
-                kotaTujuanInput.value = '';
-                kotaTujuanInput.style.display = 'none';
-            } else {
-                kotaTujuanInput.style.display = 'block';
-            }
-        });
-
-
-        let radioMetodePelunasan = document.querySelectorAll('input[name="metode_pelunasan"]');
-
-        radioMetodePelunasan.forEach(el => {
-            el.addEventListener('change', () => {
-                let divFilePelunasan = document.getElementById('fileTrfPelunasan');
-                let inputBuktiPelunasan = document.querySelector('input[name="bukti_pelunasan"]');
-
-                if (el.checked && el.value == 'transfer') {
-                    divFilePelunasan.style.display = "";
-                    inputBuktiPelunasan.setAttribute('required', 'required');
-                } else {
-                    divFilePelunasan.style.display = 'none';
-                    inputBuktiPelunasan.removeAttribute('required');
-                }
-            });
-        });
-
-        document.getElementById('paket').addEventListener('change', function() {
-            let paket = this.value;
-            let hargaSewaInput = document.getElementById('harga_sewa');
-
-            if (paket === 'harian') {
-                hargaSewaInput.value = document.getElementById('harga_harian').value;
-            } else if (paket === 'jam') {
-                hargaSewaInput.value = document.getElementById('harga_jam').value;
-            } else if (paket === 'tahunan') {
-                hargaSewaInput.value = document.getElementById('harga_tahunan').value;
-            } else if (paket === 'bulanan') {
-                hargaSewaInput.value = document.getElementById('harga_bulanan').value;
-            } else if (paket === 'mingguan') {
-                hargaSewaInput.value = document.getElementById('harga_mingguan').value;
-            } else {
-                hargaSewaInput.value = '';
-            }
-        });
-
-
 
     });
 </script>
