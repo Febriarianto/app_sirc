@@ -14,17 +14,25 @@ class Transaksi extends Model
     protected $fillable = [
         'id',
         'id_penyewa',
-        'kota_tujuan',
         'id_kendaraan',
+        'kota_tujuan',
         'lama_sewa',
         'paket',
         'keberangkatan',
+        'keberangkatan_time',
         'kepulangan',
+        'kepulangan_time',
         'dp',
         'metode_dp',
         'bukti_dp',
         'tipe',
         'status',
+        'over_time',
+        'biaya',
+        'sisa',
+        'metode_pelunasan',
+        'keterangan',
+        'bukti_pelunasan',
     ];
 
     public function penyewa()
@@ -45,5 +53,4 @@ class Transaksi extends Model
     {
         return $this->belongsToMany(RangeTransaksi::class);
     }
-    
 }

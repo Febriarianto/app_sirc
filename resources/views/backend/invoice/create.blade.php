@@ -123,8 +123,8 @@
                             </div>
                         </div>
 
-                           
-                        
+
+
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
                             <div class="col-sm-9">
@@ -381,7 +381,7 @@
 
         document.addEventListener('DOMContentLoaded', hitungLamaSewa);
 
-       
+
         let statusDropdown = document.getElementById('status');
         let kotaTujuanLabel = document.querySelector('label[for="kota_tujuan"]');
         let kotaTujuanInput = document.getElementById('kota_tujuan');
@@ -393,10 +393,10 @@
             }
         });
 
-       
+
         statusDropdown.addEventListener('change', function() {
             if (statusDropdown.value === 'batal') {
-                kotaTujuanInput.value = ''; 
+                kotaTujuanInput.value = '';
                 kotaTujuanInput.style.display = 'none';
             } else {
                 kotaTujuanInput.style.display = 'block';
@@ -404,7 +404,7 @@
         });
 
 
-    let radioMetodePelunasan = document.querySelectorAll('input[name="metode_pelunasan"]');
+        let radioMetodePelunasan = document.querySelectorAll('input[name="metode_pelunasan"]');
 
         radioMetodePelunasan.forEach(el => {
             el.addEventListener('change', () => {
@@ -436,7 +436,7 @@
             } else if (paket === 'mingguan') {
                 hargaSewaInput.value = document.getElementById('harga_mingguan').value;
             } else {
-                hargaSewaInput.value = ''; 
+                hargaSewaInput.value = '';
             }
         });
 

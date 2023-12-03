@@ -13,16 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('invoices', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('id_transaksi')->references('id')->on('transaksi')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedBigInteger('over_time');
-            $table->unsignedBigInteger('biaya');
-            $table->unsignedBigInteger('sisa');
-            $table->enum('metode_pelunasan', ['cash', 'transfer']);
-            $table->string('bukti_pelunasan');
-            $table->timestamps();
-        });
+        // Schema::create('invoices', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('id_transaksi')->references('id')->on('transaksi')->onUpdate('cascade')->onDelete('cascade');
+        //     $table->unsignedBigInteger('over_time');
+        //     $table->unsignedBigInteger('biaya');
+        //     $table->unsignedBigInteger('sisa');
+        //     $table->enum('metode_pelunasan', ['cash', 'transfer']);
+        //     $table->string('bukti_pelunasan');
+        //     $table->timestamps();
+        // });
     }
 
     /**

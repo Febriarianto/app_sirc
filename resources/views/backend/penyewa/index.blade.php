@@ -28,6 +28,7 @@
                                     <th>Nama</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
+                                    <th>Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -66,6 +67,18 @@
                 {
                     data: 'no_hp',
                     name: 'no_hp'
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    render: function(data, type, full, meta) {
+                        console.log(data);
+                        if ( data == 'aktif') {
+                            return '<span class="badge badge-success">Aktif</span>';
+                        } else {
+                            return '<span class="badge badge-danger">Non Aktif</span>';
+                        }
+                    }
                 },
                 {
                     data: 'action',

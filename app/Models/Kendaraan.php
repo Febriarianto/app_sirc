@@ -18,6 +18,8 @@ class Kendaraan extends Model
         'tahun',
         'warna',
         'foto',
+        'barcode',
+        'status',
     ];
 
     public function pemilik()

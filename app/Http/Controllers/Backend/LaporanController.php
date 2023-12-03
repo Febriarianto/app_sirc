@@ -27,11 +27,10 @@ class LaporanController extends Controller
         ];
         if ($request->ajax()) {
             $data = Transaksi::where('id_kendaraan', $request['kendaraan'])
-                ->select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'invoices.biaya')
+                ->select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-                ->leftJoin('invoices', 'transaksi.id', '=', 'invoices.id_transaksi')
                 ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%')
-                ->where('status', '=', 'selesai');
+                ->where('transaksi.status', '=', 'selesai');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->make();
@@ -50,16 +49,12 @@ class LaporanController extends Controller
             ['url' => '#', 'title' => "Laporan Referral"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'invoices.biaya')
+            $data = Transaksi::select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-                ->leftJoin('invoices', 'transaksi.id', '=', 'invoices.id_transaksi')
                 ->selectRaw('biaya * 0.1 as komisi')
                 ->where('penyewa.referral_id', '=', $request['referral'])
-                // ->whereHas('penyewa', function ($query) use ($request) {
-                //     return $query->where('penyewa.referral_id', '=', $request['referral']);
-                // })
                 ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%')
-                ->where('status', '=', 'selesai');
+                ->where('transaksi.status', '=', 'selesai');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->make();
@@ -79,18 +74,17 @@ class LaporanController extends Controller
             ['url' => '#', 'title' => "Laporan Harian"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::select('transaksi.id', 'kendaraan.no_kendaraan as kendaraan', 'penyewa.nama as penyewa', 'transaksi.lama_sewa', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.dp', 'invoices.biaya', 'invoices.metode_pelunasan')
-                ->selectRaw('transaksi.dp + invoices.biaya as total')
+            $data = Transaksi::select('transaksi.id', 'transaksi.paket', 'kendaraan.no_kendaraan as kendaraan', 'penyewa.nama as penyewa', 'transaksi.lama_sewa', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.dp', 'transaksi.sisa', 'transaksi.metode_pelunasan', 'transaksi.status')
+                ->selectRaw('transaksi.dp + transaksi.sisa as total')
                 ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-                ->leftJoin('invoices', 'transaksi.id', '=', 'invoices.id_transaksi')
+                ->where('transaksi.status', '=', 'selesai')
                 ->where('transaksi.kepulangan', $request->tgl)
                 ->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->make();
         }
-
         return view('backend.laporan.harian', compact('config'));
     }
 }

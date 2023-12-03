@@ -65,6 +65,8 @@
                                 <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
                                     @if(isset($kendaraan->id))
                                     <option value="{{ $kendaraan->id }}">{{ $kendaraan->no_kendaraan }}</option>
+                                    @elseif(isset($data->id_kendaraan))
+                                    <option value="{{ $data->id_kendaraan }}">{{ $data->kendaraan->no_kendaraan }}</option>
                                     @endif
                                 </select>
                             </div>
@@ -72,7 +74,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Keberangkatan :</label>
                             <div class="col-sm-9">
-                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}">
+                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? $tanggal }}">
                             </div>
                         </div>
                         <div class="form-group row">

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('tahun');
             $table->string('warna');
             $table->string('foto');
+            $table->string('barcode');
+            $table->enum('status', ['aktif', 'non-aktif']);
             $table->timestamps();
         });
     }

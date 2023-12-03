@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
+use App\Models\RangeTransaksi;
 use App\Models\Kendaraan;
-use App\Models\Invoice;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use App\Traits\ResponseStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -40,8 +43,7 @@ class PenyewaanController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-info" href="' . route('invoice-sewa.cetak', $row->id) . '">Cetak Invoice</a>';
+                    $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>';
                     return $actionBtn;
                 })->make();
         }
@@ -67,11 +69,10 @@ class PenyewaanController extends Controller
         ];
 
         $dataTransaksi = Transaksi::where('id_kendaraan', $id_kendaraan)
-        ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
-        ->first(); 
+            ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
+            ->first();
 
-        return view('backend.penyewaan.form', compact('config', 'kendaraan','dataTransaksi'));
-       
+        return view('backend.penyewaan.form', compact('config', 'kendaraan', 'dataTransaksi'));
     }
 
     /**
@@ -83,31 +84,51 @@ class PenyewaanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'biaya' => 'required',
-            'metode_pelunasan' => 'required',
-            'bukti_pelunasan' => $request['metode_pelunasan'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
+            'id_penyewa' => 'required',
+            'id_kendaraan' => 'required',
+            'keberangkatan' => 'required',
+            'kepulangan' => 'required',
+            'dp' => 'required',
+            'metode_dp' => 'required',
+            'bukti_dp' => $request['metode_dp'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
         ]);
-       
+        if ($validator->passes()) {
+
+            $period = new DatePeriod(
+                new DateTime($request['keberangkatan']),
+                new DateInterval('P1D'),
+                new DateTime($request['kepulangan'] . '+1 day')
+            );
+
             DB::beginTransaction();
             try {
-                if ($request['metode_pelunasan'] == 'transfer') {
-                    $imgTrf = $request->file('bukti_pelunasan')->store('buktiPelunasan', 'public');
+                if ($request['metode_dp'] == 'transfer') {
+                    $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
                 } else {
                     $imgTrf = '';
                 }
-                $data = Invoice::create([
-                    'id_transaksi' => $request['id_transaksi'],
-                    'over_time' => $request['over_time'],
-                    'biaya' => $request['biaya'],
-                    'sisa' => $request['sisa'],
-                    'metode_pelunasan' => $request['metode_pelunasan'],
-                    'bukti_pelunasan' => $imgTrf,
+                $data = Transaksi::create([
+                    'id_penyewa' => $request['id_penyewa'],
+                    'id_kendaraan' => $request['id_kendaraan'],
+                    'keberangkatan' => $request['keberangkatan'],
+                    'kepulangan' => $request['kepulangan'],
+                    'dp' => $request['dp'],
+                    'metode_dp' => $request['metode_dp'],
+                    'bukti_dp' => $imgTrf,
+                    'tipe' => 'sewa',
+                    'status' => 'proses',
                 ]);
 
-        
+                foreach ($period as $key => $value) {
+                    RangeTransaksi::create([
+                        'id_transaksi' => $data->id,
+                        'id_kendaraan' => $request['id_kendaraan'],
+                        'tanggal' => $value->format('Y-m-d'),
+                    ]);
+                }
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('invoice.index')));
+                $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -116,6 +137,9 @@ class PenyewaanController extends Controller
 
             // }
 
+        } else {
+            $response = response()->json(['error' => $validator->errors()->all()]);
+        }
         return $response;
     }
 
@@ -130,15 +154,15 @@ class PenyewaanController extends Controller
         $config['title'] = "Cetak Invoice";
         $config['breadcrumbs'] = [
             ['url' => route('invoice.index'), 'title' => "Cetak"],
-            ['url' => '#', 'title' => "Proses Pemesan"],
+            ['url' => '#', 'title' => "Proses Pemyewaan"],
         ];
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
-     
+
         $config['form'] = (object)[
             'method' => 'PUT',
-            'action' => route('invoice.update', $id)
+            'action' => route('penyewaan.proses', $id)
         ];
-        return view('backend.invoice.create', compact('config', 'data'));
+        return view('backend.penyewaan.proses', compact('config', 'data'));
     }
 
     /**
@@ -158,9 +182,9 @@ class PenyewaanController extends Controller
         // @dd($data);
         $config['form'] = (object)[
             'method' => 'PUT',
-            'action' => route('pemesanan.update', $id)
+            'action' => route('penyewaan.update', $id)
         ];
-        return view('backend.pemesanan.proses', compact('config', 'data'));
+        return view('backend.penyewaan.form', compact('config', 'data'));
     }
 
     /**
@@ -172,9 +196,123 @@ class PenyewaanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'kepulangan' => 'required',
+            'over_time' => 'required',
+            'biaya' => 'required',
+            'sisa' => 'required',
+            'metode_pelunasan' => 'required',
+        ]);
+        if ($validator->passes()) {
+
+            $period = new DatePeriod(
+                new DateTime($request['keberangkatan']),
+                new DateInterval('P1D'),
+                new DateTime($request['kepulangan'] . '+1 day')
+            );
+
+            DB::beginTransaction();
+            try {
+                if ($request['metode_pelunasan'] == 'transfer') {
+                    $imgTrf = $request->file('bukti_pelunasan')->store('buktiPelunasan', 'public');
+                } else {
+                    $imgTrf = '';
+                }
+                $data = Transaksi::find($id);
+
+                $data->update([
+                    'kepulangan' => $request['kepulangan'],
+                    'metode_pelunasan' => $request['metode_pelunasan'],
+                    'status' => 'selesai',
+                    'over_time' => $request['over_time'],
+                    'biaya' => $request['biaya'],
+                    'sisa' => $request['sisa'],
+                    'bukti_pelunasan' => $imgTrf,
+                ]);
+
+                // foreach ($period as $key => $value) {
+                //     RangeTransaksi::create([
+                //         'id_transaksi' => $data->id,
+                //         'id_kendaraan' => $request['id_kendaraan'],
+                //         'tanggal' => $value->format('Y-m-d'),
+                //     ]);
+                // }
+
+                DB::commit();
+                $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
+            } catch (\Throwable $throw) {
+                DB::rollBack();
+                Log::error($throw);
+                $response = response()->json(['error' => $throw->getMessage()]);
+            }
+
+            // }
+
+        } else {
+            $response = response()->json(['error' => $validator->errors()->all()]);
+        }
+        return $response;
     }
 
+    public function proses(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'kepulangan' => 'required',
+            'over_time' => 'required',
+            'biaya' => 'required',
+            'sisa' => 'required',
+            'metode_pelunasan' => 'required',
+        ]);
+        if ($validator->passes()) {
+
+            $period = new DatePeriod(
+                new DateTime($request['keberangkatan']),
+                new DateInterval('P1D'),
+                new DateTime($request['kepulangan'] . '+1 day')
+            );
+
+            DB::beginTransaction();
+            try {
+                if ($request['metode_pelunasan'] == 'transfer') {
+                    $imgTrf = $request->file('bukti_pelunasan')->store('buktiPelunasan', 'public');
+                } else {
+                    $imgTrf = '';
+                }
+                $data = Transaksi::find($id);
+
+                $data->update([
+                    'kepulangan' => $request['kepulangan'],
+                    'metode_pelunasan' => $request['metode_pelunasan'],
+                    'status' => 'selesai',
+                    'over_time' => $request['over_time'],
+                    'biaya' => $request['biaya'],
+                    'sisa' => $request['sisa'],
+                    'bukti_pelunasan' => $imgTrf,
+                ]);
+
+                // foreach ($period as $key => $value) {
+                //     RangeTransaksi::create([
+                //         'id_transaksi' => $data->id,
+                //         'id_kendaraan' => $request['id_kendaraan'],
+                //         'tanggal' => $value->format('Y-m-d'),
+                //     ]);
+                // }
+
+                DB::commit();
+                $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
+            } catch (\Throwable $throw) {
+                DB::rollBack();
+                Log::error($throw);
+                $response = response()->json(['error' => $throw->getMessage()]);
+            }
+
+            // }
+
+        } else {
+            $response = response()->json(['error' => $validator->errors()->all()]);
+        }
+        return $response;
+    }
     /**
      * Remove the specified resource from storage.
      *

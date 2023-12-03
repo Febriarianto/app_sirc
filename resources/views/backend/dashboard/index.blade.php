@@ -46,7 +46,7 @@
     <div class="col-lg-12 col-12">
         <div class="small-box bg-primary">
             <div class="inner">
-                <p>Check Out</p>
+                <p>Check In</p>
             </div>
             <div class="icon">
                 <i class="fas fa-clock"></i>

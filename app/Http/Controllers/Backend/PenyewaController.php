@@ -81,6 +81,7 @@ class PenyewaController extends Controller
             'nama' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
+            'status' => 'required',
             'ktp' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'kk' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'foto' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -105,10 +106,11 @@ class PenyewaController extends Controller
                     'nama' => $request['nama'],
                     'no_hp' => $request['no_hp'],
                     'alamat' => $request['alamat'],
+                    'status' => $request['status'],
                     'ktp' => $filenameKtp,
                     'kk' => $filenameKk,
                     'foto' => $filenameFoto,
-                    'referral_id' => $request['$referral_id'],
+                    'referral_id' => $request['referral_id'],
                 ]);
 
                 DB::commit();
@@ -172,6 +174,7 @@ class PenyewaController extends Controller
             'no_hp' => 'required',
             'alamat' => 'required',
             'referral_id' => 'required',
+            'status' => 'required',
             // 'ktp' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
             // 'kk' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -208,6 +211,7 @@ class PenyewaController extends Controller
                     'nama' => $request['nama'],
                     'no_hp' => $request['no_hp'],
                     'alamat' => $request['alamat'],
+                    'status' => $request['status'],
                     'referral_id' => $request['referral_id'] ?? 0,
                     'ktp' => $filenameKtp,
                     'kk' => $filenameKk,
@@ -264,6 +268,7 @@ class PenyewaController extends Controller
         $resultCount = 10;
         $offset = ($page - 1) * $resultCount;
         $data = Penyewa::where('nik', 'LIKE', '%' . $request->q . '%')
+            ->where('status','=','aktif')
             ->orderBy('nik')
             ->skip($offset)
             ->take($resultCount)
@@ -271,6 +276,7 @@ class PenyewaController extends Controller
             ->get();
 
         $count = Penyewa::where('nik', 'LIKE', '%' . $request->q . '%')
+            ->where('status','=','aktif')
             ->get()
             ->count();
 

@@ -20,7 +20,7 @@
                                             </select>
                                         </div>
                                         <div class="col">
-                                            <input type="date" id="cf-3" name="tgl" class="form-control" value="{{ isset($tgl) ? $tgl : ''}}">
+                                            <input type="date" id="cf-3" name="tgl" class="form-control" value="{{ isset($tanggal) ? $tanggal : ''}}">
                                         </div>
                                         <div class="col-auto">
                                             <button type="submit" class="btn btn-primary mb-2">Cari</button>
@@ -56,11 +56,10 @@
                                 <td>{{$k->tahun}}</td>
                                 <td>
                                     <span class="badge {{$k->tanggal != null ? 'badge-danger' : 'badge-success'}} ">{{$k->tanggal != null ? 'Tidak Tersedia' : 'Tersedia'}}</span></h3>
-
                                 </td>
                                 <td>
-                                    <a href="{{ route('pemesanan.createId', ['id_kendaraan' => $k->id]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-success'}} ">{{$k->tanggal != null ? '' : 'Booking'}}</span></h3></a>
-                                    <a href="{{ route('penyewaan.createId', ['id_kendaraan' => $k->id]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-primary'}} ">{{$k->tanggal != null ? '' : 'Sewa'}}</span></h3></a>
+                                    <a href="{{ route('pemesanan.createId', ['id_kendaraan' => $k->id, 'tanggal' => $tanggal]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-success'}} ">{{$k->tanggal != null ? '' : 'Booking'}}</span></h3></a>
+                                    <a href="{{ route('penyewaan.createId', ['id_kendaraan' => $k->id, 'tanggal' => $tanggal]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-primary'}} ">{{$k->tanggal != null ? '' : 'Sewa'}}</span></h3></a>
                                 </td>
                             </tr>
                             @endforeach

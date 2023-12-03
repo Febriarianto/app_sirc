@@ -20,6 +20,7 @@ class Penyewa extends Model
         'kk',
         'foto',
         'referral_id',
+        'status',
     ];
     public function referral()
     {

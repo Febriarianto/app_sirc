@@ -65,6 +65,16 @@
                                     <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Masukan No Hp" value="{{ $data->no_hp ?? '' }}">
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-1 align-self-center mb-0" for="status">Status :</label>
+                                <div class="col-sm-9">
+                                    <select id="status" name="status" class="form-control">
+                                        <option value="">.: Pilih :.</option>
+                                        <option value="aktif" {{ isset($data->status) && $data->status == 'aktif' ? 'selected' : ''}}>Aktif</option>
+                                        <option value="non-aktif" {{ isset($data->status) && $data->status == 'non-aktif' ? 'selected' : ''}}>Non Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -30,7 +30,6 @@
                                     <th rowspan="2">Nama Kosumen</th>
                                     <th colspan="2">Tanggal dan Waktu</th>
                                     <th rowspan="2">Kredit</th>
-                                    <th rowspan="2">Debit</th>
                                 </tr>
                                 <tr>
                                     <th>Tgl Berangkat</th>
@@ -44,7 +43,6 @@
                                     <th></th>
                                     <th></th>
                                     <th style="text-align:right">Total:</th>
-                                    <th></th>
                                     <th></th>
                                 </tr>
                             </tfoot>
@@ -140,10 +138,6 @@
                 {
                     data: 'biaya',
                     name: 'biaya'
-                },
-                {
-                    data: 'id',
-                    name: 'id',
                 },
             ],
             rowCallback: function(row, data) {

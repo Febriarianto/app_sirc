@@ -2,8 +2,8 @@
 
 @section('content')
 <div>
-    <form id="formStore" action="{{ route('pemesanan.update', $data->id) }}" method="POST">
-        @method('PUT')
+    <form id="formStore" action="{{ $config['form']->action }}" method="POST">
+        @method($config['form']->method)
         @csrf
         <div class="row">
             <div class="col-sm-12 col-lg-6">
@@ -131,38 +131,33 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
-                            <div class="col-sm-9">
-                                <select id="paket" name="paket" class="form-control">
-                                    <option value="">.: Pilih Paket:.</option>
-                                    <option value="harian" {{ $data->paket === 'harian' ? 'selected' : '' }}>Harian</option>
-                                    <option value="jam" {{ $data->paket === 'jam' ? 'selected' : '' }}>Jam</option>
-                                    <option value="tahunan" {{ $data->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
-                                    <option value="bulanan" {{ $data->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
-                                    <option value="mingguan" {{ $data->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
-                                </select>
+                        <div id="prose" style="display: none;">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
+                                <div class="col-sm-9">
+                                    <select id="paket" name="paket" class="form-control">
+                                        <option value="">.: Pilih Paket:.</option>
+                                        <option value="harian" {{ $data->paket === 'harian' ? 'selected' : '' }}>Harian</option>
+                                        <option value="jam" {{ $data->paket === 'jam' ? 'selected' : '' }}>Jam</option>
+                                        <option value="tahunan" {{ $data->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
+                                        <option value="bulanan" {{ $data->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                                        <option value="mingguan" {{ $data->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '' }}">
-                            </div>
-                        </div>
 
-                        {{-- <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="total_bayar">Total Bayar:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="total_bayar" name="total_bayar">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '' }}">
+                                </div>
                             </div>
-                        </div> --}}
 
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" placeholder="Masukan Kota Tujuan" value="{{ $data->kota_tujuan ?? '' }}">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" placeholder="Masukan Kota Tujuan" value="{{ $data->kota_tujuan ?? '' }}">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -324,6 +319,8 @@
         keberangkatanInput.addEventListener('change', hitungLamaSewa);
         kepulanganInput.addEventListener('change', hitungLamaSewa);
 
+        hitungLamaSewa();
+
         function hitungLamaSewa() {
             let tanggalKeberangkatan = new Date(keberangkatanInput.value);
             let tanggalKepulangan = new Date(kepulanganInput.value);
@@ -339,7 +336,7 @@
 
         document.addEventListener('DOMContentLoaded', hitungLamaSewa);
 
-       
+
         let statusDropdown = document.getElementById('status');
         let kotaTujuanLabel = document.querySelector('label[for="kota_tujuan"]');
         let kotaTujuanInput = document.getElementById('kota_tujuan');
@@ -351,30 +348,31 @@
             }
         });
 
-       
+
         statusDropdown.addEventListener('change', function() {
+            let divProses = document.querySelector('input[name="harga_sewa"]').parentNode.parentNode.parentNode;
             if (statusDropdown.value === 'batal') {
-                kotaTujuanInput.value = ''; 
-                kotaTujuanInput.style.display = 'none';
+                kotaTujuanInput.value = '';
+                divProses.style.display = 'none';
             } else {
-                kotaTujuanInput.style.display = 'block';
+                divProses.style.display = 'block';
             }
         });
 
 
         document.getElementById('paket').addEventListener('change', function() {
-        let paket = this.value;
-        let hargaSewaInput = document.getElementById('harga_sewa');
-        let hargaSewa = '';
+            let paket = this.value;
+            let hargaSewaInput = document.getElementById('harga_sewa');
+            let hargaSewa = '';
 
-        if (paket === 'harian') {
-            hargaSewa = "{{ $data->kendaraan->jenis->harga_24 }}";
-        } else if (paket === 'jam') {
-            hargaSewa = "{{ $data->kendaraan->jenis->harga_12 }}";
-        }
+            if (paket === 'harian') {
+                hargaSewa = "{{ $data->kendaraan->jenis->harga_24 }}";
+            } else if (paket === 'jam') {
+                hargaSewa = "{{ $data->kendaraan->jenis->harga_12 }}";
+            }
 
-        hargaSewaInput.value = hargaSewa;
-    });
+            hargaSewaInput.value = hargaSewa;
+        });
 
 
 

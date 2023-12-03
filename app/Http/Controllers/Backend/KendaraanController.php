@@ -74,8 +74,10 @@ class KendaraanController extends Controller
             'jenis.nama',
             'jenis.harga_12',
             'jenis.harga_24',
-            'range_transaksi.tanggal'
+            'range_transaksi.tanggal',
+            'kendaraan.status'
         )
+            ->where('kendaraan.status', '=', 'aktif')
             ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
             ->leftJoin('range_transaksi', function ($join) use ($tanggal) {
                 $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')
@@ -86,6 +88,8 @@ class KendaraanController extends Controller
             })
             ->paginate(6);
         $id_jenis = $request['jenis'];
+
+        // dd($id_jenis);
 
         $jenis = Jenis::select('id', 'nama')->get();
 
@@ -120,11 +124,18 @@ class KendaraanController extends Controller
             'no_kendaraan' => 'required',
             'tahun' => 'required',
             'warna' => 'required',
+            'status' => 'required',
             'foto' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
+                $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                $charactersLength = strlen($characters);
+                $randomString = '';
+                for ($i = 0; $i < 50; $i++) {
+                    $randomString .= $characters[random_int(0, $charactersLength - 1)];
+                }
                 $file = $request->file('foto');
                 $filename = $file->getClientOriginalName();
                 $file->storeAs('public/kendaraan/', $filename);
@@ -134,7 +145,9 @@ class KendaraanController extends Controller
                     'no_kendaraan' => $request['no_kendaraan'],
                     'tahun' => $request['tahun'],
                     'warna' => $request['warna'],
+                    'status' => $request['status'],
                     'foto' => $filename,
+                    'barcode' => $randomString,
                 ]);
 
                 DB::commit();
@@ -197,6 +210,7 @@ class KendaraanController extends Controller
             'no_kendaraan' => 'required',
             'tahun' => 'required',
             'warna' => 'required',
+            'status' => 'required',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
@@ -215,6 +229,7 @@ class KendaraanController extends Controller
                     'no_kendaraan' => $request['no_kendaraan'],
                     'tahun' => $request['tahun'],
                     'warna' => $request['warna'],
+                    'status' => $request['status'],
                     'foto' => $filename,
                 ]);
 
@@ -265,6 +280,7 @@ class KendaraanController extends Controller
         $resultCount = 10;
         $offset = ($page - 1) * $resultCount;
         $data = Kendaraan::where('no_kendaraan', 'LIKE', '%' . $request->q . '%')
+            ->where('status', '=', 'aktif')
             ->orderBy('no_kendaraan')
             ->skip($offset)
             ->take($resultCount)
@@ -272,6 +288,7 @@ class KendaraanController extends Controller
             ->get();
 
         $count = Kendaraan::where('no_kendaraan', 'LIKE', '%' . $request->q . '%')
+            ->where('status', '=', 'aktif')
             ->get()
             ->count();
 

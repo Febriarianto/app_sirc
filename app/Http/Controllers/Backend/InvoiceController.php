@@ -32,9 +32,7 @@ class InvoiceController extends Controller
         ];
 
         if ($request->ajax()) {
-            $data = Invoice::with(['transaksi' => function ($query) {
-                $query->with(['penyewa', 'kendaraan']);
-            }])->get();
+            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'selesai'])->get();;
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -98,26 +96,24 @@ class InvoiceController extends Controller
     public function cetak($id)
     {
         // $invoice = Transaksi::with('penyewa', 'kendaraan', 'invoice')->find($id);
-        $invoice = Invoice::with(['transaksi' => function ($query) {
-            $query->with(['penyewa', 'kendaraan']);
-        }])->find($id);
+        $invoice = Transaksi::with(['penyewa', 'kendaraan'])->find($id);
 
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < 5; $i++) {
-            $randomString .= $characters[random_int(0, $charactersLength - 1)];
-        }
+        // $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // $charactersLength = strlen($characters);
+        // $randomString = '';
+        // for ($i = 0; $i < 5; $i++) {
+        //     $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        // }
 
-        $generator = new BarcodeGeneratorPNG();
-        $barcode = base64_encode($generator->getBarcode($randomString.'-'.$invoice->transaksi->id, $generator::TYPE_CODE_128));
+        // $generator = new BarcodeGeneratorPNG();
+        // $barcode = base64_encode($generator->getBarcode($randomString.'-'.$invoice->transaksi->id, $generator::TYPE_CODE_128));
 
-        $pdf = PDF::loadview('backend.invoice.cetak', ['invoice' => $invoice, 'barcode' => $barcode]);
-        // return $pdf->download('invoice-pdf');
-        $ukuran = array(0, 0, 842, 750);
-        $pdf->setPaper($ukuran);
-        return $pdf->stream();
-        // return view('backend.invoice.cetak', compact('invoice', 'data'));
+        // $pdf = PDF::loadview('backend.invoice.cetak', ['invoice' => $invoice, 'barcode' => $barcode]);
+        // // return $pdf->download('invoice-pdf');
+        // $ukuran = array(0, 0, 842, 750);
+        // $pdf->setPaper($ukuran);
+        // return $pdf->stream();
+        return view('backend.invoice.cetak', compact('invoice'));
     }
 
     public function sewaCetak($id)
@@ -132,7 +128,7 @@ class InvoiceController extends Controller
         }
 
         $generator = new BarcodeGeneratorPNG();
-        $barcode = base64_encode($generator->getBarcode($randomString.'-'.$transaksi->id, $generator::TYPE_CODE_128));
+        $barcode = base64_encode($generator->getBarcode($randomString . '-' . $transaksi->id, $generator::TYPE_CODE_128));
 
         $pdf = PDF::loadview('backend.invoice.sewa-cetak', ['transaksi' => $transaksi, 'barcode' => $barcode]);
         // return $pdf->download('invoice-pdf');

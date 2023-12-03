@@ -61,24 +61,24 @@
                     }
                 },
                 {
-                    data: 'transaksi.penyewa.nama',
-                    name: 'transaksi.penyewa.nama'
+                    data: 'penyewa.nama',
+                    name: 'penyewa.nama'
                 },
                 {
-                    data: 'transaksi.penyewa.alamat',
-                    name: 'transaksi.penyewa.alamat'
+                    data: 'penyewa.alamat',
+                    name: 'penyewa.alamat'
                 },
                 {
-                    data: 'transaksi.penyewa.no_hp',
-                    name: 'transaksi.penyewa.no_hp'
-                },
-                { 
-                    data: 'transaksi.keberangkatan',
-                    name: 'transaksi.keberangkatan'
+                    data: 'penyewa.no_hp',
+                    name: 'penyewa.no_hp'
                 },
                 {
-                    data: 'transaksi.kepulangan',
-                    name: 'transaksi.kepulangan'
+                    data: 'keberangkatan',
+                    name: 'keberangkatan'
+                },
+                {
+                    data: 'kepulangan',
+                    name: 'kepulangan'
                 },
                 {
                     data: 'action',

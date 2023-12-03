@@ -59,7 +59,7 @@ class PemesananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id_kendaraan)
+    public function create($id_kendaraan, $tanggal)
     {
         $kendaraan = Kendaraan::where('id', $id_kendaraan)->first();
         $config['title'] = "Tambah Pemesanan";
@@ -71,7 +71,8 @@ class PemesananController extends Controller
             'method' => 'POST',
             'action' => route('pemesanan.store')
         ];
-        return view('backend.pemesanan.form', compact('config', 'kendaraan'));
+        $tanggal = $tanggal;
+        return view('backend.pemesanan.form', compact('config', 'kendaraan', 'tanggal'));
     }
 
     /**
@@ -92,50 +93,54 @@ class PemesananController extends Controller
             'bukti_dp' => $request['metode_dp'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
         ]);
         if ($validator->passes()) {
+            $cehTgl = RangeTransaksi::where([['id_kendaraan', $request->id_kendaraan], ['tanggal', $request->keberangkatan]])->first();
+            if ($cehTgl == null) {
+                $period = new DatePeriod(
+                    new DateTime($request['keberangkatan']),
+                    new DateInterval('P1D'),
+                    new DateTime($request['kepulangan'] . '+1 day')
+                );
 
-            $period = new DatePeriod(
-                new DateTime($request['keberangkatan']),
-                new DateInterval('P1D'),
-                new DateTime($request['kepulangan'] . '+1 day')
-            );
-
-            DB::beginTransaction();
-            try {
-                if ($request['metode_dp'] == 'transfer') {
-                    $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
-                } else {
-                    $imgTrf = '';
-                }
-                $data = Transaksi::create([
-                    'id_penyewa' => $request['id_penyewa'],
-                    'id_kendaraan' => $request['id_kendaraan'],
-                    'keberangkatan' => $request['keberangkatan'],
-                    'kepulangan' => $request['kepulangan'],
-                    'dp' => $request['dp'],
-                    'metode_dp' => $request['metode_dp'],
-                    'bukti_dp' => $imgTrf,
-                    'tipe' => 'pemesanan',
-                    'status' => 'pending',
-                ]);
-
-                foreach ($period as $key => $value) {
-                    RangeTransaksi::create([
-                        'id_transaksi' => $data->id,
+                DB::beginTransaction();
+                try {
+                    if ($request['metode_dp'] == 'transfer') {
+                        $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
+                    } else {
+                        $imgTrf = '';
+                    }
+                    $data = Transaksi::create([
+                        'id_penyewa' => $request['id_penyewa'],
                         'id_kendaraan' => $request['id_kendaraan'],
-                        'tanggal' => $value->format('Y-m-d'),
+                        'keberangkatan' => $request['keberangkatan'],
+                        'kepulangan' => $request['kepulangan'],
+                        'dp' => $request['dp'],
+                        'metode_dp' => $request['metode_dp'],
+                        'bukti_dp' => $imgTrf,
+                        'tipe' => 'pemesanan',
+                        'status' => 'pending',
                     ]);
+
+                    foreach ($period as $key => $value) {
+                        RangeTransaksi::create([
+                            'id_transaksi' => $data->id,
+                            'id_kendaraan' => $request['id_kendaraan'],
+                            'tanggal' => $value->format('Y-m-d'),
+                        ]);
+                    }
+
+                    DB::commit();
+                    $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
+                } catch (\Throwable $throw) {
+                    DB::rollBack();
+                    Log::error($throw);
+                    $response = response()->json(['error' => $throw->getMessage()]);
                 }
-
-                DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
-            } catch (\Throwable $throw) {
-                DB::rollBack();
-                Log::error($throw);
-                $response = response()->json(['error' => $throw->getMessage()]);
+            } else {
+                $response = response()->json([
+                    'status' => 'Gagal',
+                    'message' => 'Mobil di Tanggal Tersebut sudah di booking'
+                ]);
             }
-
-            // }
-
         } else {
             $response = response()->json(['error' => $validator->errors()->all()]);
         }
@@ -159,7 +164,7 @@ class PemesananController extends Controller
         // @dd($data);
         $config['form'] = (object)[
             'method' => 'PUT',
-            'action' => route('pemesanan.update', $id)
+            'action' => route('pemesanan.proses', $id)
         ];
         return view('backend.pemesanan.proses', compact('config', 'data'));
     }
@@ -178,12 +183,12 @@ class PemesananController extends Controller
             ['url' => '#', 'title' => "Edit Pemesan"],
         ];
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
-        
+
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('pemesanan.update', $id)
         ];
-        return view('backend.pemesanan.edit', compact('config', 'data'));
+        return view('backend.pemesanan.form', compact('config', 'data'));
     }
 
     /**
@@ -193,48 +198,118 @@ class PemesananController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
-{
-    $validator = Validator::make($request->all(), [
-        'status' => 'required|in:proses,batal',
-    ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'id_penyewa' => 'required',
+            'id_kendaraan' => 'required',
+            'keberangkatan' => 'required',
+            'kepulangan' => 'required',
+            'dp' => 'required',
+            'metode_dp' => 'required',
+            'bukti_dp' => $request['metode_dp'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
+        ]);
+        if ($validator->passes()) {
 
-    if ($validator->passes()) {
-        DB::beginTransaction();
-        try {
-            $pemesanan = Transaksi::findOrFail($id);
+            $cehTgl = RangeTransaksi::where([['id_kendaraan', $request->id_kendaraan], ['tanggal', $request->keberangkatan]])->first();
 
-            $pemesanan->status = $request->input('status');
-            $pemesanan->kota_tujuan = $request->input('kota_tujuan');
-            $pemesanan->kepulangan = $request->input('kepulangan');
-            $pemesanan->lama_sewa = $request->input('lama_sewa');
-            $pemesanan->paket = $request->input('paket');
-            $pemesanan->harga_sewa = $request->input('harga_sewa');
+            if ($cehTgl->tanggal == $request->keberangkatan) {
 
-            if ($request->input('status') == 'proses') {
-                $pemesanan->tipe = 'sewa';
+                // $period = new DatePeriod(
+                //     new DateTime($request['keberangkatan']),
+                //     new DateInterval('P1D'),
+                //     new DateTime($request['kepulangan'] . '+1 day')
+                // );
+
+                DB::beginTransaction();
+                try {
+                    if ($request['metode_dp'] == 'transfer') {
+                        $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
+                    } else {
+                        $imgTrf = '';
+                    }
+                    $data = Transaksi::find($id);
+
+                    $data->update([
+                        'id_penyewa' => $request['id_penyewa'],
+                        'id_kendaraan' => $request['id_kendaraan'],
+                        'keberangkatan' => $request['keberangkatan'],
+                        'kepulangan' => $request['kepulangan'],
+                        'dp' => $request['dp'],
+                        'metode_dp' => $request['metode_dp'],
+                        'bukti_dp' => $imgTrf,
+                        'tipe' => 'pemesanan',
+                        'status' => 'pending',
+                    ]);
+
+                    // foreach ($period as $key => $value) {
+                    //     RangeTransaksi::create([
+                    //         'id_transaksi' => $data->id,
+                    //         'id_kendaraan' => $request['id_kendaraan'],
+                    //         'tanggal' => $value->format('Y-m-d'),
+                    //     ]);
+                    // }
+
+                    DB::commit();
+                    $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
+                } catch (\Throwable $throw) {
+                    DB::rollBack();
+                    Log::error($throw);
+                    $response = response()->json(['error' => $throw->getMessage()]);
+                }
+            } else {
+                $response = response()->json([
+                    'status' => 'Gagal',
+                    'message' => 'Mobil di Tanggal Tersebut sudah di booking'
+                ]);
             }
-
-          
-            if ($request->input('status') == 'batal') {
-                $pemesanan->status = 'batal';
-            }
-
-            $pemesanan->save();
-
-            DB::commit();
-            $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
-        } catch (\Throwable $throw) {
-            DB::rollBack();
-            Log::error($throw);
-            $response = response()->json(['error' => $throw->getMessage()]);
+        } else {
+            $response = response()->json(['error' => $validator->errors()->all()]);
         }
-    } else {
-        $response = response()->json(['error' => $validator->errors()->all()]);
+        return $response;
     }
 
-    return $response;
-}
+    public function proses(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:proses,batal',
+        ]);
+
+        if ($validator->passes()) {
+            DB::beginTransaction();
+            try {
+                $pemesanan = Transaksi::findOrFail($id);
+
+                $pemesanan->status = $request->input('status');
+                $pemesanan->kota_tujuan = $request->input('kota_tujuan');
+                $pemesanan->kepulangan = $request->input('kepulangan');
+                $pemesanan->lama_sewa = $request->input('lama_sewa');
+                $pemesanan->paket = $request->input('paket');
+                $pemesanan->harga_sewa = $request->input('harga_sewa');
+
+                if ($request->input('status') == 'proses') {
+                    $pemesanan->tipe = 'sewa';
+                }
+
+                if ($request->input('status') == 'batal') {
+                    $pemesanan->status = 'batal';
+                }
+
+                $pemesanan->save();
+
+                DB::commit();
+                $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
+            } catch (\Throwable $throw) {
+                DB::rollBack();
+                Log::error($throw);
+                $response = response()->json(['error' => $throw->getMessage()]);
+            }
+        } else {
+            $response = response()->json(['error' => $validator->errors()->all()]);
+        }
+        return $response;
+    }
 
 
     /**
@@ -253,7 +328,6 @@ class PemesananController extends Controller
         DB::beginTransaction();
         try {
             $data->delete();
-            // \Storage::delete($data->ktp);
             DB::commit();
             $response = response()->json([
                 'status' => 'success',

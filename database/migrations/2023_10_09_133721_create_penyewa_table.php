@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('ktp');
             $table->string('kk');
             $table->string('foto');
+            $table->enum('status', ['aktif', 'non-aktif']);
             $table->timestamps();
         });
     }

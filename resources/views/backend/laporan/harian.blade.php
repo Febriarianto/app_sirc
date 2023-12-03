@@ -25,7 +25,7 @@
                                     <th rowspan="2">No</th>
                                     <th rowspan="2">No Kendaraan</th>
                                     <th rowspan="2">Nama Pelanggan</th>
-                                    <th rowspan="2">Total jam</th>
+                                    <th rowspan="2">Total Sewa</th>
                                     <th rowspan="2">Keberangkatan</th>
                                     <th rowspan="2">Kepulangan</th>
                                     <th colspan="3">Pembayaran</th>
@@ -117,7 +117,10 @@
                 },
                 {
                     data: 'lama_sewa',
-                    name: 'lama_sewa'
+                    name: 'lama_sewa',
+                    render: function(data, type, full, meta) {
+                        return data + " " + full.paket;
+                    }
                 },
                 {
                     data: 'keberangkatan',
@@ -136,7 +139,7 @@
                     name: 'id',
                     render: function(data, type, full, meta) {
                         if (full.metode_pelunasan == 'transfer') {
-                            return full.biaya
+                            return full.sisa
                         } else {
                             return "-";
                         }
@@ -147,7 +150,7 @@
                     name: 'id',
                     render: function(data, type, full, meta) {
                         if (full.metode_pelunasan == 'cash') {
-                            return full.biaya
+                            return full.sisa
                         } else {
                             return "-";
                         }
@@ -156,6 +159,9 @@
                 {
                     data: 'id',
                     name: 'id',
+                    render: function(data, type, full, meta) {
+                        return "-"
+                    }
                 },
                 {
                     data: 'total',

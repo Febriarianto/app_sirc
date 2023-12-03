@@ -84,9 +84,9 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::resource('faktur', Backend\FakturController::class);
 
     //booking/pemesanan
+    Route::put('pemesanan/proses/{penyewaan}', [Backend\PemesananController::class, 'proses'])->name('pemesanan.proses');
     Route::resource('pemesanan', Backend\PemesananController::class);
-    Route::get('pemesanan/create/{id_kendaraan}', [Backend\PemesananController::class, 'create'])->name('pemesanan.createId');
-    Route::get('penyewaan/create/{id_kendaraan}', [Backend\PenyewaanController::class, 'create'])->name('penyewaan.createId');
+    Route::get('pemesanan/create/{id_kendaraan}/{tanggal}', [Backend\PemesananController::class, 'create'])->name('pemesanan.createId');
 
 
     // referral
@@ -104,5 +104,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::get('laporan-referral', [Backend\LaporanController::class, 'referral_index'])->name('laporan.referral');
 
     //booking/pemesanan
+    Route::put('penyewaan/proses/{penyewaan}', [Backend\PenyewaanController::class, 'proses'])->name('penyewaan.proses');
+    Route::get('penyewaan/create/{id_kendaraan}', [Backend\PenyewaanController::class, 'create'])->name('penyewaan.createId');
     Route::resource('penyewaan', Backend\PenyewaanController::class);
 });
