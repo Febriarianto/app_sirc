@@ -45,6 +45,9 @@ class PenyewaanController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>';
+                    $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit_sewa', [$row->id, $row->id_kendaraan]) . '">Edit</a>';
+
+
                     return $actionBtn;
                 })->make();
         }
@@ -197,21 +200,29 @@ class PenyewaanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        $config['title'] = "Edit Penyewaan";
-        $config['breadcrumbs'] = [
-            ['url' => route('penyewaan.index'), 'title' => "Penyewaan"],
-            ['url' => '#', 'title' => "Edit Pemesan"],
-        ];
-        $data = Transaksi::where('id', $id)->first();
-        // @dd($data);
-        $config['form'] = (object)[
-            'method' => 'PUT',
-            'action' => route('penyewaan.update', $id)
-        ];
-        return view('backend.penyewaan.form', compact('config', 'data'));
-    }
+    public function edit($id, $id_kendaraan)
+{
+    $config['title'] = "Edit Penyewaan";
+    $config['breadcrumbs'] = [
+        ['url' => route('penyewaan.index'), 'title' => "Penyewaan"],
+        ['url' => '#', 'title' => "Edit Pemesan"],
+    ];
+
+    $data = Transaksi::where('id', $id)->first();
+    $kendaraan = Kendaraan::where('id', $id_kendaraan)->first();
+
+    $dataTransaksi = Transaksi::where('id_kendaraan', $id_kendaraan)
+        ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
+        ->first();
+
+    $config['form'] = (object)[
+        'method' => 'PUT',
+        'action' => route('penyewaan.update', $id)
+    ];
+
+    return view('backend.penyewaan.form', compact('config', 'data', 'kendaraan', 'dataTransaksi'));
+}
+
 
     /**
      * Update the specified resource in storage.
