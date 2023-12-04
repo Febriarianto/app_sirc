@@ -2,8 +2,10 @@
 
 @section('content')
 <div>
-    <form id="formStore" action="{{ route('penyewaan.store') }}" method="POST">
+    {{-- <form id="formStore" action="{{ route('penyewaan.store') }}" method="POST"> --}}
         {{-- @method($config['form']->method) --}}
+        <form id="formStore" action="{{ $config['form']->action }}" method="POST">
+        @method($config['form']->method)
         @csrf
         <div class="row">
             <div class="col-sm-12 col-lg-6">

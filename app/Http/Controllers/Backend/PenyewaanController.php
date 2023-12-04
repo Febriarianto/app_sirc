@@ -235,10 +235,10 @@ class PenyewaanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'kepulangan' => 'required',
-            'over_time' => 'required',
+            // 'over_time' => 'required',
             'biaya' => 'required',
             'sisa' => 'required',
-            'metode_pelunasan' => 'required',
+            // 'metode_pelunasan' => 'required',
         ]);
         if ($validator->passes()) {
 
@@ -260,20 +260,13 @@ class PenyewaanController extends Controller
                 $data->update([
                     'kepulangan' => $request['kepulangan'],
                     'metode_pelunasan' => $request['metode_pelunasan'],
-                    'status' => 'selesai',
+                    'lama_sewa' => $request['lama_sewa'],
+                    // 'status' => 'selesai',
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
                     'bukti_pelunasan' => $imgTrf,
                 ]);
-
-                // foreach ($period as $key => $value) {
-                //     RangeTransaksi::create([
-                //         'id_transaksi' => $data->id,
-                //         'id_kendaraan' => $request['id_kendaraan'],
-                //         'tanggal' => $value->format('Y-m-d'),
-                //     ]);
-                // }
 
                 DB::commit();
                 $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
