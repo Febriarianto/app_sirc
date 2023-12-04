@@ -186,6 +186,14 @@
 
                             
                         </div> 
+
+                    <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keterangan" id="label-keterangan">Keterangan</label>
+                               <div class="col-sm-9">
+                                   <input type="text" class="form-control" id="keterangan" name="keterangan" value="{{ $data->keterangan ?? ''}}">
+                               </div>
+                    </div>
+
                     <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="total_bayar">Sisa:</label>
                                <div class="col-sm-9">
@@ -352,7 +360,20 @@
             });
         });
 
-        
+        $('input[name="metode_pelunasan"]').on('change', function() {
+            if ($(this).val() === 'lainnya') {
+                $('#keterangan').removeAttr('hidden');
+                $('#label-keterangan').removeAttr('hidden');
+            } else {
+                $('#keterangan').prop('hidden', true);
+                $('#label-keterangan').prop('hidden', true);
+            }
+        });
+
+        if ($('input[name="metode_pelunasan"]:checked').val() !== 'lainnya') {
+            $('#keterangan').prop('hidden', true);
+            $('#label-keterangan').prop('hidden', true);
+        }
 
         document.getElementById('paket').addEventListener('change', function() {
         let paket = this.value;

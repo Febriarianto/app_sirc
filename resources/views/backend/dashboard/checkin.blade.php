@@ -52,10 +52,10 @@
             ajax: {
             url: `{{ route('dashboard.checkin') }}`,
             data: function(d) {
-                let text =  $('#kode').val();
-                const myArray = text.split("-");
-                let id = myArray[1];
-                d.kode = id;
+                // let text =  $('#kode').val();
+                // const myArray = text.split("-");
+                // let id = myArray[1];
+                d.kode = $('#kode').val();
                 }
             },
             columns: [{
