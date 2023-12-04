@@ -76,12 +76,8 @@ class PenyewaanController extends Controller
             ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
             ->first();
 
-        $config['form'] = (object)[
-            'method' => 'POST',
-            'action' => route('penyewaan.store')
-        ];
-            $tanggal = $tanggal;
-        return view('backend.penyewaan.form', compact('config', 'kendaraan', 'dataTransaksi','tanggal'));
+        $tanggal = $tanggal;
+        return view('backend.penyewaan.form', compact('config', 'kendaraan', 'dataTransaksi', 'tanggal'));
     }
 
     /**
@@ -121,7 +117,7 @@ class PenyewaanController extends Controller
 
                     $file_name = time() . '_' . $request->bukti_pelunasan->getClientOriginalName();
                     $bukti_pelunasan = $request->bukti_pelunasan->storeAs('bukti_pelunasan', $file_name);
-        
+
                     $data['bukti_pelunasan'] = $bukti_pelunasan;
                 } else {
                     $bukti_pelunasan = '';
@@ -201,27 +197,27 @@ class PenyewaanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id, $id_kendaraan)
-{
-    $config['title'] = "Edit Penyewaan";
-    $config['breadcrumbs'] = [
-        ['url' => route('penyewaan.index'), 'title' => "Penyewaan"],
-        ['url' => '#', 'title' => "Edit Pemesan"],
-    ];
+    {
+        $config['title'] = "Edit Penyewaan";
+        $config['breadcrumbs'] = [
+            ['url' => route('penyewaan.index'), 'title' => "Penyewaan"],
+            ['url' => '#', 'title' => "Edit Pemesan"],
+        ];
 
-    $data = Transaksi::where('id', $id)->first();
-    $kendaraan = Kendaraan::where('id', $id_kendaraan)->first();
+        $data = Transaksi::where('id', $id)->first();
+        $kendaraan = Kendaraan::where('id', $id_kendaraan)->first();
 
-    $dataTransaksi = Transaksi::where('id_kendaraan', $id_kendaraan)
-        ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
-        ->first();
+        $dataTransaksi = Transaksi::where('id_kendaraan', $id_kendaraan)
+            ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
+            ->first();
 
-    $config['form'] = (object)[
-        'method' => 'PUT',
-        'action' => route('penyewaan.update', $id)
-    ];
+        $config['form'] = (object)[
+            'method' => 'PUT',
+            'action' => route('penyewaan.update', $id)
+        ];
 
-    return view('backend.penyewaan.form', compact('config', 'data', 'kendaraan', 'dataTransaksi'));
-}
+        return view('backend.penyewaan.form', compact('config', 'data', 'kendaraan', 'dataTransaksi'));
+    }
 
 
     /**

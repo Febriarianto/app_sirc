@@ -2,9 +2,7 @@
 
 @section('content')
 <div>
-    {{-- <form id="formStore" action="{{ route('penyewaan.store') }}" method="POST"> --}}
-        {{-- @method($config['form']->method) --}}
-        <form id="formStore" action="{{ $config['form']->action }}" method="POST">
+    <form id="formStore" action="{{ $config['form']->action }}" method="POST">
         @method($config['form']->method)
         @csrf
         <div class="row">
@@ -89,6 +87,12 @@
                                 <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? ''}}">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -152,10 +156,15 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="biaya">Total Biaya:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="biaya" name="biaya" value="{{ $data->biaya ?? '' }}">
+                                <input type="text" class="form-control" id="biaya" name="biaya" value="{{ $data->biaya ?? '' }}" readonly>
                             </div>
                         </div>
-
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Sisa:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="sisa" name="sisa" value="{{ $data->sisa ?? ''}}" readonly>
+                            </div>
+                        </div>
 
                         <div class="form-group row">
                             <label class="control-label col-sm-6 align-self-center mb-0" for="metode_pelunasan">Metode Pelunasan :</label>
@@ -184,29 +193,17 @@
                                 <label for="">{{ $data->bukti_pelunasan ?? '' }}</label>
                             </div>
 
-                            
-                        </div> 
 
-                    <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="keterangan" id="label-keterangan">Keterangan</label>
-                               <div class="col-sm-9">
-                                   <input type="text" class="form-control" id="keterangan" name="keterangan" value="{{ $data->keterangan ?? ''}}">
-                               </div>
-                    </div>
-
-                    <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="total_bayar">Sisa:</label>
-                               <div class="col-sm-9">
-                                   <input type="text" class="form-control" id="total_bayar" name="sisa" value="{{ $data->sisa ?? ''}}">
-                               </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}" >
                         </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keterangan" id="label-keterangan">Keterangan</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="keterangan" name="keterangan" value="{{ $data->keterangan ?? ''}}">
+                            </div>
+                        </div>
+
                     </div>
-                </div>
                     <div class="card-footer">
                         <div class="btn-group float-right" role="group" aria-label="Basic outlined example">
                             <a onclick="history.back()" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-rotate-left"></i> Kembali</a>
@@ -232,6 +229,29 @@
                 $('#no_hp').val(response.data.no_hp);
             }
         })
+
+        let hargaPaket = $('#harga_sewa'),
+            totalBiaya = $('#biaya'),
+            dp = $('#dp');
+
+        var CalResult = function() {
+            let calTotal = parseInt(hargaPaket.val()),
+                sisa = calTotal - parseInt(dp.val());
+
+            totalBiaya.val(calTotal);
+
+            console.log(calTotal);
+            $('#sisa').val(sisa);
+        }
+        CalResult();
+
+        $("#harga_sewa").on("keyup", function() {
+            console.log(CalResult());
+        });
+
+        $("#dp").on("keyup", function() {
+            console.log(CalResult());
+        });
 
         $('#select2Active').select2({
             theme: 'bootstrap4',
@@ -376,17 +396,17 @@
         }
 
         document.getElementById('paket').addEventListener('change', function() {
-        let paket = this.value;
-        let hargaSewaInput = document.getElementById('harga_sewa');
-        let hargaSewa = '';
+            let paket = this.value;
+            let hargaSewaInput = document.getElementById('harga_sewa');
+            let hargaSewa = '';
 
-        if (paket === 'harian') {
-            hargaSewa = document.getElementById('harga_harian').value;
-        } else if (paket === 'jam') {
-            hargaSewa = document.getElementById('harga_jam').value;
-        }
+            if (paket === 'harian') {
+                hargaSewa = document.getElementById('harga_harian').value;
+            } else if (paket === 'jam') {
+                hargaSewa = document.getElementById('harga_jam').value;
+            }
 
-         hargaSewaInput.value = hargaSewa;
+            hargaSewaInput.value = hargaSewa;
         });
 
         let keberangkatanInput = document.getElementById('keberangkatan');

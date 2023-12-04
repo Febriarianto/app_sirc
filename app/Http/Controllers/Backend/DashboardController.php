@@ -67,32 +67,34 @@ class DashboardController extends Controller
 
     public function checkin(Request $request)
     {
-    $config['title'] = "Check In";
-    $config['breadcrumbs'] = [
-        ['url' => '#', 'title' => "Check In"],
-    ];
+        $config['title'] = "Check In";
+        $config['breadcrumbs'] = [
+            ['url' => '#', 'title' => "Check In"],
+        ];
 
-    if ($request->ajax()) {
-        $data = Transaksi::select(
+        if ($request->ajax()) {
+            $data = Transaksi::select(
                 'transaksi.id',
                 'kendaraan.no_kendaraan as kendaraan',
                 'penyewa.nama as penyewa',
-                'transaksi.keberangkatan'
+                'transaksi.keberangkatan',
+                'kendaraan.barcode',
             )
-            ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
-            ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-            ->where('transaksi.id', $request->kode)
-            ->get();
+                ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
+                ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
+                ->where('kendaraan.barcode', $request->kode)
+                ->where('transaksi.status', '=', 'proses')
+                ->get();
 
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($row) {
-                $actionBtn = '<a class="btn btn-info btn-info" href="' . route('penyewaan.show', $row->id) . '">Check IN</a>';
-                return $actionBtn;
-            })
-            ->make();
-    }
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '<a class="btn btn-info btn-info" href="' . route('penyewaan.show', $row->id) . '">Check IN</a>';
+                    return $actionBtn;
+                })
+                ->make();
+        }
 
-    return view('backend.dashboard.checkin', compact('config'));
+        return view('backend.dashboard.checkin', compact('config'));
     }
 }
