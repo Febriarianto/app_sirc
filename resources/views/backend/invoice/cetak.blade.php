@@ -49,6 +49,14 @@
             <td></td>
             <td colspan="2"> - {{ $invoice->kendaraan->jenis->nama }} No.Pol : {{ $invoice->kendaraan->no_kendaraan }}</td>
         </tr>
+        <tr>
+            <td>Lama Sewa</td>
+            <td colspan="2">: {{ $invoice->lama_sewa }}</td>
+        </tr>
+        <tr>
+            <td>Total Harga</td>
+            <td colspan="2">: Rp. {{ number_format($invoice->biaya) }}</td>
+        </tr>
         <tr class="border_bottom">
             <td colspan="3"></td>
         </tr>

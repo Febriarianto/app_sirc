@@ -72,8 +72,8 @@ class PenyewaanController extends Controller
             'action' => route('penyewaan.store')
         ];
 
-        $dataTransaksi = Transaksi::where('id_kendaraan', $id_kendaraan)
-            ->with(['kendaraan.jenis:id,nama,harga_12,harga_24'])
+        $dataTransaksi = Kendaraan::where('id', $id_kendaraan)
+            ->with(['jenis'])
             ->first();
 
         $tanggal = $tanggal;

@@ -102,7 +102,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="dp">DP:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="dp" name="dp" placeholder="Masukan Nominal DP" value="{{ $data->dp ?? '' }}">
+                                <input type="text" class="form-control" id="dp" name="dp" placeholder="Masukan Nominal DP" value="{{ $data->dp ?? '0' }}">
                             </div>
                         </div>
                         <hr>
@@ -133,23 +133,23 @@
                             <div class="col-sm-9">
                                 <select id="paket" name="paket" class="form-control">
                                     <option value="">.: Pilih Paket:.</option>
-                                    <option value="harian" {{ $dataTransaksi->paket === 'harian' ? 'selected' : '' }}>Harian</option>
-                                    <option value="jam" {{ $dataTransaksi->paket === 'jam' ? 'selected' : '' }}>Jam</option>
-                                    <option value="tahunan" {{ $dataTransaksi->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
-                                    <option value="bulanan" {{ $dataTransaksi->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
-                                    <option value="mingguan" {{ $dataTransaksi->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                                    <option value="harian" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'harian' ? 'selected' : '' }}>Harian</option>
+                                    <option value="jam" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'jam' ? 'selected' : '' }}>Jam</option>
+                                    <option value="tahunan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
+                                    <option value="bulanan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                                    <option value="mingguan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
                                 </select>
                             </div>
                         </div>
 
-                        <input type="hidden" id="harga_harian" value="{{ $dataTransaksi->kendaraan->jenis->harga_24 ? $dataTransaksi->kendaraan->jenis->harga_24 : '' }}">
-                        <input type="hidden" id="harga_jam" value="{{ $dataTransaksi->kendaraan->jenis->harga_12 ? $dataTransaksi->kendaraan->jenis->harga_12 : '' }}">
+                        <input type="hidden" id="harga_harian" value="{{ isset($dataTransaksi->jenis->harga_24) ? $dataTransaksi->jenis->harga_24 : '' }}">
+                        <input type="hidden" id="harga_jam" value="{{ isset($dataTransaksi->jenis->harga_12) ? $dataTransaksi->jenis->harga_12 : '' }}">
 
 
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? ''}}">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}">
                             </div>
                         </div>
 
@@ -396,6 +396,7 @@
         }
 
         document.getElementById('paket').addEventListener('change', function() {
+
             let paket = this.value;
             let hargaSewaInput = document.getElementById('harga_sewa');
             let hargaSewa = '';
@@ -407,6 +408,7 @@
             }
 
             hargaSewaInput.value = hargaSewa;
+            CalResult();
         });
 
         let keberangkatanInput = document.getElementById('keberangkatan');
