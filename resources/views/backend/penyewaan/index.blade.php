@@ -46,7 +46,6 @@
 <script>
     $(document).ready(function() {
         $('#dt').DataTable({
-
             responsive: true,
             serverSide: true,
             processing: true,
@@ -55,7 +54,7 @@
             },
             columns: [{
                     data: 'penyewa.nama',
-                    name: 'penyewa.nama',
+                    name: 'penyewa.nama'
                 },
                 {
                     data: 'penyewa.alamat',
@@ -85,12 +84,6 @@
                     searchable: false
                 },
             ],
-            columnDefs: [
-            {
-                targets: [0], // Kolom indeks 0 (kolom 'id')
-                visible: false
-            }
-        ],
             rowCallback: function(row, data) {
                 let api = this.api();
                 $(row).find('.btn-delete').click(function() {

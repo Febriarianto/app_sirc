@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 
 class KendaraanController extends Controller
 {
@@ -42,7 +43,8 @@ class KendaraanController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('kendaraan.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>';
+                        <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>
+                        <a class="btn btn-info" target="_blank" href="' . route('kendaraan.show', $row->id) . '"><i class="fas fa-barcode"></i></a>';
                     return $actionBtn;
                 })->make();
         }
@@ -133,7 +135,7 @@ class KendaraanController extends Controller
                 $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 $charactersLength = strlen($characters);
                 $randomString = '';
-                for ($i = 0; $i < 50; $i++) {
+                for ($i = 0; $i < 10; $i++) {
                     $randomString .= $characters[random_int(0, $charactersLength - 1)];
                 }
                 $file = $request->file('foto');
@@ -171,7 +173,21 @@ class KendaraanController extends Controller
      */
     public function show($id)
     {
-        //
+        $generator = new BarcodeGeneratorPNG();
+
+        if ($id == 0) {
+            $data = Kendaraan::get();
+        } else {
+            $data = Kendaraan::where('id', $id)->get();
+        }
+
+        foreach ($data as $key => $d) {
+            $arr[$key] = [
+                'no_pol' => $d->no_kendaraan,
+                'barcode' => $barcode = base64_encode($generator->getBarcode($d->barcode, $generator::TYPE_CODE_128)),
+            ];
+        }
+        return view('backend.kendaraan.barcode', compact('arr'));
     }
 
     /**
