@@ -78,6 +78,7 @@ class DashboardController extends Controller
                 'kendaraan.no_kendaraan as kendaraan',
                 'penyewa.nama as penyewa',
                 'transaksi.keberangkatan',
+                'transaksi.kepulangan',
                 'kendaraan.barcode',
             )
                 ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
@@ -89,7 +90,7 @@ class DashboardController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-info btn-info" href="' . route('penyewaan.show', $row->id) . '">Check IN</a>';
+                    $actionBtn = '<a class="btn btn-info btn-checkin"  href="#" data-id="' . $row->id . '">Check IN</a>';
                     return $actionBtn;
                 })
                 ->make();

@@ -11,6 +11,7 @@ use App\Traits\ResponseStatus;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -280,26 +281,31 @@ class PemesananController extends Controller
             DB::beginTransaction();
             try {
                 $pemesanan = Transaksi::findOrFail($id);
-
-                $pemesanan->status = $request->input('status');
-                $pemesanan->kota_tujuan = $request->input('kota_tujuan');
-                $pemesanan->kepulangan = $request->input('kepulangan');
-                $pemesanan->lama_sewa = $request->input('lama_sewa');
-                $pemesanan->paket = $request->input('paket');
-                $pemesanan->harga_sewa = $request->input('harga_sewa');
-
-                if ($request->input('status') == 'proses') {
+                $keberangkatan_time = Carbon::now();
+                if ($request->input('status') == 'proses' &&  $request->input('keberangkatan') == Carbon::now()->format('Y-m-d')) {
+                    $pemesanan->status = $request->input('status');
+                    $pemesanan->keberangkatan_time = $keberangkatan_time;
+                    $pemesanan->kota_tujuan = $request->input('kota_tujuan');
+                    $pemesanan->kepulangan = $request->input('kepulangan');
+                    $pemesanan->lama_sewa = $request->input('lama_sewa');
+                    $pemesanan->paket = $request->input('paket');
+                    $pemesanan->harga_sewa = $request->input('harga_sewa');
                     $pemesanan->tipe = 'sewa';
+                    $pemesanan->save();
+                    DB::commit();
+                    $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
+                } else {
+                    $response = response()->json([
+                        'status' => 'Gagal!',
+                        'message' => 'Tidak Bisa di proses sebelum tanggal Keberangaktan'
+                    ]);
                 }
-
                 if ($request->input('status') == 'batal') {
                     $pemesanan->status = 'batal';
+                    $pemesanan->save();
+                    DB::commit();
+                    $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
                 }
-
-                $pemesanan->save();
-
-                DB::commit();
-                $response = response()->json($this->responseStore(true, 'Data berhasil diperbarui', route('pemesanan.index')));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);

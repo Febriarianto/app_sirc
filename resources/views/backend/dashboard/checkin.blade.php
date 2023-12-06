@@ -22,10 +22,11 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead class="text-center">
                                 <tr>
-                                    <th>No</th>
+                                    <th width="1%">No</th>
                                     <th>No Kendaraan</th>
                                     <th>Nama Pelanggan</th>
                                     <th>Keberangkatan</th>
+                                    <th>Kepulangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -40,8 +41,6 @@
 @section('script')
 <script>
     $(document).ready(function() {
-
-
         var dt = $('#dt').DataTable({
             searching: false,
             paging: false,
@@ -50,12 +49,12 @@
             serverSide: true,
             processing: true,
             ajax: {
-            url: `{{ route('dashboard.checkin') }}`,
-            data: function(d) {
-                // let text =  $('#kode').val();
-                // const myArray = text.split("-");
-                // let id = myArray[1];
-                d.kode = $('#kode').val();
+                url: `{{ route('dashboard.checkin') }}`,
+                data: function(d) {
+                    // let text =  $('#kode').val();
+                    // const myArray = text.split("-");
+                    // let id = myArray[1];
+                    d.kode = $('#kode').val();
                 }
             },
             columns: [{
@@ -78,6 +77,10 @@
                     name: 'keberangkatan'
                 },
                 {
+                    data: 'kepulangan',
+                    name: 'kepulangan'
+                },
+                {
                     data: 'action',
                     name: 'action',
                     className: "text-center",
@@ -85,15 +88,37 @@
                     searchable: false
                 },
             ],
+            rowCallback: function(row, data) {
+                var d = new Date();
+
+                var month = d.getMonth() + 1;
+                var day = d.getDate();
+
+                var today = d.getFullYear() + '-' +
+                    (month < 10 ? '0' : '') + month + '-' +
+                    (day < 10 ? '0' : '') + day;
+
+                let api = this.api();
+                $(row).find('.btn-checkin').click(function() {
+                    let pk = $(this).data('id');
+                    if (data.kepulangan !== today) {
+                        console.log("Error");
+                        toastr.error("Jadwal Kepulangan Bukan Hari ini", 'Failed !');
+                    } else {
+                        console.log("ok");
+                        location.href = `{{ route("penyewaan.index") }}/` + pk;;
+                    }
+                });
+            }
         });
 
         $('#kode').on('keyup', function() {
             dt.draw();
         })
 
-    //     $('#kode').on('keyup', function() {
-    //     dt.ajax.reload();
-    // })
+        //     $('#kode').on('keyup', function() {
+        //     dt.ajax.reload();
+        // })
     });
 </script>
 @endsection

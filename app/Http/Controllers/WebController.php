@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kendaraan;
 use App\Models\Jenis;
-use App\Models\Transaksi;
+use App\Models\range_transaksi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use League\CommonMark\Node\Query\AndExpr;
@@ -21,43 +21,47 @@ class WebController extends Controller
     {
         if ($request['jenis'] != NULL && $request['tgl'] != NULL) {
             $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'transaksi.keberangkatan', 'transaksi.id_kendaraan')
+                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
                 ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('transaksi', function ($join) use ($request) {
-                    $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')->where('transaksi.keberangkatan', $request['tgl']);
+                ->leftJoin('range_transaksi', function ($join) use ($request) {
+                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', $request['tgl']);
                 })
                 ->where('jenis.id', $request['jenis'])
+                ->where('kendaraan.status', '=', 'aktif')
                 ->paginate(6);
             $id_jenis = $request['jenis'];
             $tgl = $request['tgl'];
         } else if ($request['jenis'] != NULL) {
             $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'transaksi.keberangkatan', 'transaksi.id_kendaraan')
+                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
                 ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('transaksi', function ($join) {
-                    $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')->where('transaksi.keberangkatan', Carbon::now()->format('Y-m-d'));
+                ->leftJoin('range_transaksi', function ($join) {
+                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', Carbon::now()->format('Y-m-d'));
                 })
                 ->where('jenis.id', $request['jenis'])
+                ->where('kendaraan.status', '=', 'aktif')
                 ->paginate(6);
             $id_jenis = $request['jenis'];
             $tgl = '';
         } else if ($request['tgl'] != NULL) {
             $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'transaksi.keberangkatan', 'transaksi.id_kendaraan')
+                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
                 ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('transaksi', function ($join) use ($request) {
-                    $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')->where('transaksi.keberangkatan', $request['tgl']);
+                ->leftJoin('range_transaksi', function ($join) use ($request) {
+                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', $request['tgl']);
                 })
+                ->where('kendaraan.status', '=', 'aktif')
                 ->paginate(6);
             $id_jenis = '';
             $tgl = $request['tgl'];
         } else {
             $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'transaksi.keberangkatan', 'transaksi.id_kendaraan')
+                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
                 ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('transaksi', function ($join) {
-                    $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')->where('transaksi.keberangkatan', Carbon::now()->format('Y-m-d'));
+                ->leftJoin('range_transaksi', function ($join) {
+                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', Carbon::now()->format('Y-m-d'));
                 })
+                ->where('kendaraan.status', '=', 'aktif')
                 ->paginate(6);
             $id_jenis = '';
             $tgl = '';

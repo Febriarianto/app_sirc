@@ -291,12 +291,6 @@ class PenyewaanController extends Controller
         ]);
         if ($validator->passes()) {
 
-            $period = new DatePeriod(
-                new DateTime($request['keberangkatan']),
-                new DateInterval('P1D'),
-                new DateTime($request['kepulangan'] . '+1 day')
-            );
-
             DB::beginTransaction();
             try {
                 if ($request['metode_pelunasan'] == 'transfer') {
@@ -304,25 +298,22 @@ class PenyewaanController extends Controller
                 } else {
                     $imgTrf = '';
                 }
+
+                $kepulangan_time = Carbon::now();
                 $data = Transaksi::find($id);
 
                 $data->update([
                     'kepulangan' => $request['kepulangan'],
+                    'kepulangan_time' => $kepulangan_time,
                     'metode_pelunasan' => $request['metode_pelunasan'],
-                    'status' => 'selesai',
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
                     'bukti_pelunasan' => $imgTrf,
+                    'status' => 'selesai',
                 ]);
 
-                // foreach ($period as $key => $value) {
-                //     RangeTransaksi::create([
-                //         'id_transaksi' => $data->id,
-                //         'id_kendaraan' => $request['id_kendaraan'],
-                //         'tanggal' => $value->format('Y-m-d'),
-                //     ]);
-                // }
+                $delRange = RangeTransaksi::where('id_transaksi', $data->id)->delete();
 
                 DB::commit();
                 $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
@@ -331,9 +322,6 @@ class PenyewaanController extends Controller
                 Log::error($throw);
                 $response = response()->json(['error' => $throw->getMessage()]);
             }
-
-            // }
-
         } else {
             $response = response()->json(['error' => $validator->errors()->all()]);
         }

@@ -171,8 +171,10 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <h2 class="footer-heading mb-4">About Us</h2>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
-                            blind texts. </p>
+                        <p>Jl. Melati III Linkungan IV No. 023 Rt.06 Rw.04 Pringsewu Timur <br>
+                            Kec. Pringsewu - Lampung 35373 Telp. (0729) 7081967<br>
+                            Contact Person : 0811 70 9009 / 0853 8023 3151
+                        </p>
                         <ul class="list-unstyled social">
                             <li><a href="http://www.facebook.com/{{ SettingWeb::get_setting()->facebook }}" target="_blank"><span class="icon-facebook"></span></a></li>
                             <li><a href="https://www.instagram.com/{{ SettingWeb::get_setting()->instagram }}" target="_blank"><span class="icon-instagram"></span></a></li>
