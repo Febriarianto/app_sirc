@@ -59,7 +59,9 @@
                                 </td>
                                 <td>
                                     <a href="{{ route('pemesanan.createId', ['id_kendaraan' => $k->id, 'tanggal' => $tanggal]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-success'}} ">{{$k->tanggal != null ? '' : 'Booking'}}</span></h3></a>
+                                    @if (isset($tanggal) && $tanggal == date('Y-m-d'))
                                     <a href="{{ route('penyewaan.createId', ['id_kendaraan' => $k->id, 'tanggal' => $tanggal]) }}"><span class="btn {{$k->tanggal != null ? '' : 'btn-xs btn-primary'}} ">{{$k->tanggal != null ? '' : 'Sewa'}}</span></h3></a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -78,4 +80,20 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+<script>
+    $(function() {
+        var dtToday = new Date();
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+        var maxDate = year + '-' + month + '-' + day;
+        $('#cf-3').attr('min', maxDate);
+    });
+</script>
 @endsection

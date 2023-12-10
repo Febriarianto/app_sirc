@@ -217,11 +217,13 @@ class PemesananController extends Controller
 
             if ($cehTgl->tanggal == $request->keberangkatan) {
 
-                // $period = new DatePeriod(
-                //     new DateTime($request['keberangkatan']),
-                //     new DateInterval('P1D'),
-                //     new DateTime($request['kepulangan'] . '+1 day')
-                // );
+                $period = new DatePeriod(
+                    new DateTime($request['keberangkatan']),
+                    new DateInterval('P1D'),
+                    new DateTime($request['kepulangan'] . '+1 day')
+                );
+
+                $dataTgl = RangeTransaksi::where('id_transaksi', $id)->delete();
 
                 DB::beginTransaction();
                 try {
@@ -244,13 +246,13 @@ class PemesananController extends Controller
                         'status' => 'pending',
                     ]);
 
-                    // foreach ($period as $key => $value) {
-                    //     RangeTransaksi::create([
-                    //         'id_transaksi' => $data->id,
-                    //         'id_kendaraan' => $request['id_kendaraan'],
-                    //         'tanggal' => $value->format('Y-m-d'),
-                    //     ]);
-                    // }
+                    foreach ($period as $key => $value) {
+                        RangeTransaksi::create([
+                            'id_transaksi' => $data->id,
+                            'id_kendaraan' => $request['id_kendaraan'],
+                            'tanggal' => $value->format('Y-m-d'),
+                        ]);
+                    }
 
                     DB::commit();
                     $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));

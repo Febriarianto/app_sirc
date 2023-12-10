@@ -51,7 +51,7 @@
         </tr>
         <tr>
             <td>Lama Sewa</td>
-            <td colspan="2">: {{ $invoice->lama_sewa }}</td>
+            <td colspan="2">: {{ $invoice->lama_sewa . " " . $invoice->paket }}</td>
         </tr>
         <tr>
             <td>Total Harga</td>

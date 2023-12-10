@@ -72,7 +72,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Berangkat :</label>
                             <div class="col-sm-9">
-                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? $tanggal }}">
+                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? $tanggal }}" {{ isset($data->keberangkatan) ? 'readonly' : '' }}>
                             </div>
                         </div>
                         <div class="form-group row">

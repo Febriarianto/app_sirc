@@ -244,6 +244,8 @@ class PenyewaanController extends Controller
                 new DateTime($request['kepulangan'] . '+1 day')
             );
 
+            $dataTgl = RangeTransaksi::where('id_transaksi', $id)->delete();
+
             DB::beginTransaction();
             try {
                 if ($request['metode_pelunasan'] == 'transfer') {
@@ -263,6 +265,14 @@ class PenyewaanController extends Controller
                     'sisa' => $request['sisa'],
                     'bukti_pelunasan' => $imgTrf,
                 ]);
+
+                foreach ($period as $key => $value) {
+                    RangeTransaksi::create([
+                        'id_transaksi' => $data->id,
+                        'id_kendaraan' => $request['id_kendaraan'],
+                        'tanggal' => $value->format('Y-m-d'),
+                    ]);
+                }
 
                 DB::commit();
                 $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
