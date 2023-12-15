@@ -157,11 +157,8 @@
                     }
                 },
                 {
-                    data: 'id',
-                    name: 'id',
-                    render: function(data, type, full, meta) {
-                        return "-"
-                    }
+                    data: 'keterangan',
+                    name: 'keterangan',
                 },
                 {
                     data: 'total',

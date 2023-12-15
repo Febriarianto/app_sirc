@@ -81,12 +81,8 @@
                                 <input type="date" class="form-control" id="kepulangan" name="kepulangan" placeholder="Masukan Tanggal Kepulangan" value="{{ $data->kepulangan ?? '' }}">
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="lama_sewa">Lama Sewa :</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? ''}}">
-                            </div>
-                        </div>
+
+
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan :</label>
                             <div class="col-sm-9">
@@ -122,9 +118,9 @@
                                     <label class="custom-control-label" for="transfer">Transfer</label>
                                 </div>
                             </div>
-                            <div id="fileTrf" class="col-sm-6" style="display:none;">
+                            <div id="fileTrfDP" class="col-sm-6" style="{{ isset($data) && $data->metode_dp == 'transfer' ? '' : 'display:none;' }}">
                                 <input type="file" class="form-control" id="bukti_dp" name="bukti_dp" value="{{ $data->bukti_dp ?? '' }}">
-                                <label for="">{{ $data->bukti_dp ?? '' }}</label>
+                                <a href="{{ isset($data->bukti_dp) ? asset ('storage/buktiDP/'.$data->bukti_dp) : '' }}" target="_blank">{{ $data->bukti_dp ?? '' }}</a>
                             </div>
                         </div>
 
@@ -133,11 +129,11 @@
                             <div class="col-sm-9">
                                 <select id="paket" name="paket" class="form-control">
                                     <option value="">.: Pilih Paket:.</option>
-                                    <option value="harian" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'harian' ? 'selected' : '' }}>Harian</option>
                                     <option value="jam" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'jam' ? 'selected' : '' }}>Jam</option>
-                                    <option value="tahunan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
-                                    <option value="bulanan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                                    <option value="harian" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'harian' ? 'selected' : '' }}>Harian</option>
                                     <option value="mingguan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                                    <option value="bulanan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                                    <option value="tahunan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
                                 </select>
                             </div>
                         </div>
@@ -184,25 +180,24 @@
                             </div>
                             <div class="col-sm-3">
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="lainnya" name="metode_pelunasan" value="lainnya" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "transfer" ? 'checked' : '' }}>
+                                    <input type="radio" id="lainnya" name="metode_pelunasan" value="lainnya" class="custom-control-input" {{ isset($data) && $data->metode_pelunasan == "lainnya" ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="lainnya">Lainnya</label>
                                 </div>
                             </div>
-                            <div id="fileTrfPelunasan" class="col-sm-6" style="{{ isset($data) && $data->metode_pelunasan == 'transfer' ? '' : 'display:none;' }}">
-                                <input type="file" class="form-control" id="bukti_pelunasan" name="bukti_pelunasan" value="{{ $data->bukti_pelunasan ?? '' }}">
-                                <label for="">{{ $data->bukti_pelunasan ?? '' }}</label>
-                            </div>
-
-
                         </div>
-
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="keterangan" id="label-keterangan">Keterangan</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="keterangan" name="keterangan" value="{{ $data->keterangan ?? ''}}">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div id="fileTrfPelunasan" style="{{ isset($data) && $data->metode_pelunasan == 'transfer' ? '' : 'display:none;' }}">
+                                    <input type="file" class="form-control" id="bukti_pelunasan" name="bukti_pelunasan" value="{{ $data->bukti_pelunasan ?? '' }}">
+                                    <a href="{{ isset($data->bukti_pelunasan) ? asset ('storage/buktiPelunasan/'.$data->bukti_pelunasan) : '' }}" target="_blank">{{ $data->bukti_pelunasan ?? '' }}</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div id="inputKeterangan" style="{{ isset($data) && $data->metode_pelunasan == 'lainnya' ? '' : 'display:none;' }}">
+                                    <input type="input" class="form-control" id="keterangan" name="keterangan" value="{{ $data->keterangan?? '' }}">
+                                </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="card-footer">
                         <div class="btn-group float-right" role="group" aria-label="Basic outlined example">
@@ -243,6 +238,7 @@
             console.log(calTotal);
             $('#sisa').val(sisa);
         }
+
         CalResult();
 
         $("#harga_sewa").on("keyup", function() {
@@ -355,82 +351,41 @@
         });
 
         let radioFileDP = document.querySelectorAll('input[name="metode_dp"]');
-        let divFileDP = document.querySelector('#fileTrf');
 
         radioFileDP.forEach(el => {
             el.addEventListener('change', () => {
-                if (el.checked && el.value === 'transfer') {
-                    divFileDP.style.display = '';
+                let divFileDP = document.querySelector('input[name="bukti_dp"]').parentNode;
+                if (el.checked && el.value == 'transfer') {
+                    divFileDP.style.display = "";
                 } else {
                     divFileDP.style.display = 'none';
                 }
-            });
+            })
         });
 
-        let radioFilePelunasan = document.querySelectorAll('input[name="metode_pelunasan"]');
-        let divFilePelunasan = document.querySelector('#fileTrfPelunasan');
 
-        radioFilePelunasan.forEach(el => {
+        let radioFile = document.querySelectorAll('input[name="metode_pelunasan"]');
+
+        radioFile.forEach(el => {
             el.addEventListener('change', () => {
-                if (el.checked && el.value === 'transfer') {
-                    divFilePelunasan.style.display = '';
+                let divFile = document.querySelector('input[name="bukti_pelunasan"]').parentNode;
+                let divKeterangan = document.querySelector('input[name="keterangan"]').parentNode;
+
+                if (el.checked && el.value == 'transfer') {
+                    divFile.style.display = "";
+                    divKeterangan.style.display = 'none';
+                } else if (el.checked && el.value == 'lainnya') {
+                    divKeterangan.style.display = "";
+                    divFile.style.display = 'none';
                 } else {
-                    divFilePelunasan.style.display = 'none';
+                    divFile.style.display = 'none';
+                    divKeterangan.style.display = 'none';
                 }
-            });
+            })
         });
-
-        $('input[name="metode_pelunasan"]').on('change', function() {
-            if ($(this).val() === 'lainnya') {
-                $('#keterangan').removeAttr('hidden');
-                $('#label-keterangan').removeAttr('hidden');
-            } else {
-                $('#keterangan').prop('hidden', true);
-                $('#label-keterangan').prop('hidden', true);
-            }
-        });
-
-        if ($('input[name="metode_pelunasan"]:checked').val() !== 'lainnya') {
-            $('#keterangan').prop('hidden', true);
-            $('#label-keterangan').prop('hidden', true);
-        }
-
         document.getElementById('paket').addEventListener('change', function() {
-
-            let paket = this.value;
-            let hargaSewaInput = document.getElementById('harga_sewa');
-            let hargaSewa = '';
-
-            if (paket === 'harian') {
-                hargaSewa = document.getElementById('harga_harian').value;
-            } else if (paket === 'jam') {
-                hargaSewa = document.getElementById('harga_jam').value;
-            }
-
-            hargaSewaInput.value = hargaSewa;
             CalResult();
         });
-
-        let keberangkatanInput = document.getElementById('keberangkatan');
-        let kepulanganInput = document.getElementById('kepulangan');
-        let lamaSewaInput = document.getElementById('lama_sewa');
-
-        keberangkatanInput.addEventListener('change', hitungLamaSewa);
-        kepulanganInput.addEventListener('change', hitungLamaSewa);
-
-        function hitungLamaSewa() {
-            let tanggalKeberangkatan = new Date(keberangkatanInput.value);
-            let tanggalKepulangan = new Date(kepulanganInput.value);
-
-            let selisihHari = Math.ceil((tanggalKepulangan - tanggalKeberangkatan) / (1000 * 60 * 60 * 24));
-
-            lamaSewaInput.value = selisihHari;
-
-            if (selisihHari < 0) {
-                lamaSewaInput.value = 0;
-            }
-        }
-
     });
 </script>
 @endsection

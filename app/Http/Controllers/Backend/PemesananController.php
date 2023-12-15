@@ -8,6 +8,7 @@ use App\Models\RangeTransaksi;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Traits\ResponseStatus;
+use Illuminate\Support\Facades\Storage;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -105,7 +106,9 @@ class PemesananController extends Controller
                 DB::beginTransaction();
                 try {
                     if ($request['metode_dp'] == 'transfer') {
-                        $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
+                        $fileTrf = $request->file('bukti_dp');
+                        $imgTrf = $fileTrf->getClientOriginalName();
+                        $fileTrf->storeAs('public/buktiDP/', $imgTrf);
                     } else {
                         $imgTrf = '';
                     }
@@ -209,63 +212,57 @@ class PemesananController extends Controller
             'kepulangan' => 'required',
             'dp' => 'required',
             'metode_dp' => 'required',
-            'bukti_dp' => $request['metode_dp'] == 'transfer' ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
+            'bukti_dp' => isset($request['bukti_dp']) ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
         ]);
         if ($validator->passes()) {
 
-            $cehTgl = RangeTransaksi::where([['id_kendaraan', $request->id_kendaraan], ['tanggal', $request->keberangkatan]])->first();
+            $period = new DatePeriod(
+                new DateTime($request['keberangkatan']),
+                new DateInterval('P1D'),
+                new DateTime($request['kepulangan'] . '+1 day')
+            );
 
-            if ($cehTgl->tanggal == $request->keberangkatan) {
+            $dataTgl = RangeTransaksi::where('id_transaksi', $id)->delete();
 
-                $period = new DatePeriod(
-                    new DateTime($request['keberangkatan']),
-                    new DateInterval('P1D'),
-                    new DateTime($request['kepulangan'] . '+1 day')
-                );
+            DB::beginTransaction();
+            try {
+                $data = Transaksi::find($id);
 
-                $dataTgl = RangeTransaksi::where('id_transaksi', $id)->delete();
-
-                DB::beginTransaction();
-                try {
-                    if ($request['metode_dp'] == 'transfer') {
-                        $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
-                    } else {
-                        $imgTrf = '';
-                    }
-                    $data = Transaksi::find($id);
-
-                    $data->update([
-                        'id_penyewa' => $request['id_penyewa'],
-                        'id_kendaraan' => $request['id_kendaraan'],
-                        'keberangkatan' => $request['keberangkatan'],
-                        'kepulangan' => $request['kepulangan'],
-                        'dp' => $request['dp'],
-                        'metode_dp' => $request['metode_dp'],
-                        'bukti_dp' => $imgTrf,
-                        'tipe' => 'pemesanan',
-                        'status' => 'pending',
-                    ]);
-
-                    foreach ($period as $key => $value) {
-                        RangeTransaksi::create([
-                            'id_transaksi' => $data->id,
-                            'id_kendaraan' => $request['id_kendaraan'],
-                            'tanggal' => $value->format('Y-m-d'),
-                        ]);
-                    }
-
-                    DB::commit();
-                    $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
-                } catch (\Throwable $throw) {
-                    DB::rollBack();
-                    Log::error($throw);
-                    $response = response()->json(['error' => $throw->getMessage()]);
+                if ($request['metode_dp'] == 'transfer' && isset($request['bukti_dp'])) {
+                    $fileTrf = $request->file('bukti_dp');
+                    $imgTrf = $fileTrf->getClientOriginalName();
+                    $fileTrf->storeAs('public/buktiDP/', $imgTrf);
+                    Storage::delete('public/buktiDP/' . $data->bukti_dp);
+                } else {
+                    $imgTrf = $data->bukti_dp;
                 }
-            } else {
-                $response = response()->json([
-                    'status' => 'Gagal',
-                    'message' => 'Mobil di Tanggal Tersebut sudah di booking'
+
+                $data->update([
+                    'id_penyewa' => $request['id_penyewa'],
+                    'id_kendaraan' => $request['id_kendaraan'],
+                    'keberangkatan' => $request['keberangkatan'],
+                    'kepulangan' => $request['kepulangan'],
+                    'dp' => $request['dp'],
+                    'metode_dp' => $request['metode_dp'],
+                    'bukti_dp' => $imgTrf,
+                    'tipe' => 'pemesanan',
+                    'status' => 'pending',
                 ]);
+
+                foreach ($period as $key => $value) {
+                    RangeTransaksi::create([
+                        'id_transaksi' => $data->id,
+                        'id_kendaraan' => $request['id_kendaraan'],
+                        'tanggal' => $value->format('Y-m-d'),
+                    ]);
+                }
+
+                DB::commit();
+                $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
+            } catch (\Throwable $throw) {
+                DB::rollBack();
+                Log::error($throw);
+                $response = response()->json(['error' => $throw->getMessage()]);
             }
         } else {
             $response = response()->json(['error' => $validator->errors()->all()]);
@@ -333,9 +330,11 @@ class PemesananController extends Controller
             'message' => 'Data gagal dihapus'
         ]);
         $data = Transaksi::find($id);
+        $dataTgl = RangeTransaksi::where('id_transaksi', $id)->delete();
         DB::beginTransaction();
         try {
             $data->delete();
+            Storage::delete('public/buktiDP/' . $data->bukti_dp);
             DB::commit();
             $response = response()->json([
                 'status' => 'success',

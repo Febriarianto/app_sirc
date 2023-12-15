@@ -125,7 +125,7 @@
                             </div>
                             <div id="fileTrf" class="col-sm-6" style="display:none;">
                                 <input type="file" class="form-control" id="bukti_dp" name="bukti_dp" value="{{ $data->bukti_dp ?? '' }}">
-                                <label for="">{{ $data->bukti_dp ?? '' }}</label>
+                                <a href="{{ asset ('storage/buktiDP/'.$data->bukti_dp)}}" target="_blank">{{ $data->bukti_dp ?? '' }}</a>
                             </div>
                         </div>
 
@@ -201,7 +201,10 @@
                                 </div>
                                 <div id="fileTrfPelunasan" class="col-sm-6" style="{{ isset($data) && $data->metode_pelunasan == 'transfer' ? '' : 'display:none;' }}">
                                     <input type="file" class="form-control" id="bukti_pelunasan" name="bukti_pelunasan" value="{{ $data->bukti_pelunasan ?? '' }}">
-                                    <label for="">{{ $data->bukti_pelunasan ?? '' }}</label>
+                                    <a href="" target="_blank">{{ $data->bukti_pelunasan ?? '' }}</a>
+                                </div>
+                                <div id="inputKeterangan" class="col-sm-6" style="{{ isset($data) && $data->metode_pelunasan == 'lainnya' ? '' : 'display:none;' }}">
+                                    <input type="input" class="form-control" id="keterangan" name="keterangan" value="{{ $data->keterangan?? '' }}">
                                 </div>
                             </div>
                         </div>
@@ -374,11 +377,17 @@
         radioFile.forEach(el => {
             el.addEventListener('change', () => {
                 let divFile = document.querySelector('input[name="bukti_pelunasan"]').parentNode;
+                let divKeterangan = document.querySelector('input[name="keterangan"]').parentNode;
 
                 if (el.checked && el.value == 'transfer') {
                     divFile.style.display = "";
+                    divKeterangan.style.display = 'none';
+                } else if (el.checked && el.value == 'lainnya') {
+                    divKeterangan.style.display = "";
+                    divFile.style.display = 'none';
                 } else {
                     divFile.style.display = 'none';
+                    divKeterangan.style.display = 'none';
                 }
             })
         });
@@ -426,24 +435,6 @@
             } else {
                 kotaTujuanInput.style.display = 'block';
             }
-        });
-
-
-        let radioMetodePelunasan = document.querySelectorAll('input[name="metode_pelunasan"]');
-
-        radioMetodePelunasan.forEach(el => {
-            el.addEventListener('change', () => {
-                let divFilePelunasan = document.getElementById('fileTrfPelunasan');
-                let inputBuktiPelunasan = document.querySelector('input[name="bukti_pelunasan"]');
-
-                if (el.checked && el.value == 'transfer') {
-                    divFilePelunasan.style.display = "";
-                    inputBuktiPelunasan.setAttribute('required', 'required');
-                } else {
-                    divFilePelunasan.style.display = 'none';
-                    inputBuktiPelunasan.removeAttribute('required');
-                }
-            });
         });
 
         document.getElementById('paket').addEventListener('change', function() {

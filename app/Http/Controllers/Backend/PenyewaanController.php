@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\RangeTransaksi;
 use App\Models\Kendaraan;
+use Illuminate\Support\Facades\Storage;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -108,19 +109,19 @@ class PenyewaanController extends Controller
             DB::beginTransaction();
             try {
                 if ($request['metode_dp'] == 'transfer') {
-                    $imgTrf = $request->file('bukti_dp')->store('buktiDP', 'public');
+                    $fileTrf = $request->file('bukti_dp');
+                    $imgTrf = $fileTrf->getClientOriginalName();
+                    $fileTrf->storeAs('public/buktiDP/', $imgTrf);
                 } else {
                     $imgTrf = '';
                 }
 
                 if ($request->hasFile('bukti_pelunasan')) {
-
-                    $file_name = time() . '_' . $request->bukti_pelunasan->getClientOriginalName();
-                    $bukti_pelunasan = $request->bukti_pelunasan->storeAs('bukti_pelunasan', $file_name);
-
-                    $data['bukti_pelunasan'] = $bukti_pelunasan;
+                    $fileP = $request->file('bukti_pelunasan');
+                    $imgP = $fileP->getClientOriginalName();
+                    $fileP->storeAs('public/buktiPelunasan/', $imgP);
                 } else {
-                    $bukti_pelunasan = '';
+                    $imgP = '';
                 }
 
                 $keberangkatan_time = Carbon::now();
@@ -134,7 +135,7 @@ class PenyewaanController extends Controller
                     'metode_dp' => $request['metode_dp'],
                     'bukti_dp' => $imgTrf,
                     'metode_pelunasan' => $request['metode_pelunasan'],
-                    'bukti_pelunasan' => $bukti_pelunasan,
+                    'bukti_pelunasan' => $imgP,
                     'tipe' => 'sewa',
                     'status' => 'proses',
                     'lama_sewa' => $request['lama_sewa'],
@@ -248,22 +249,39 @@ class PenyewaanController extends Controller
 
             DB::beginTransaction();
             try {
-                if ($request['metode_pelunasan'] == 'transfer') {
-                    $imgTrf = $request->file('bukti_pelunasan')->store('buktiPelunasan', 'public');
-                } else {
-                    $imgTrf = '';
-                }
+
                 $data = Transaksi::find($id);
 
+
+                if ($request['metode_dp'] == 'transfer' && isset($request['bukti_dp'])) {
+                    $fileTrf = $request->file('bukti_dp');
+                    $imgTrf = $fileTrf->getClientOriginalName();
+                    $fileTrf->storeAs('public/buktiDP/', $imgTrf);
+                    Storage::delete('public/buktiDP/' . $data->bukti_dp);
+                } else {
+                    $imgTrf = $data->bukti_dp;
+                }
+
+                if ($request['metode_pelunasan'] == 'transfer' && isset($request['bukti_pelunasan'])) {
+                    $file = $request->file('bukti_pelunasan');
+                    $filename = $file->getClientOriginalName();
+                    $file->storeAs('public/buktiPelunasan/', $filename);
+                    Storage::delete('public/buktiPelunasan/' . $data->bukti_pelunasan);
+                } else {
+                    $filename = $data->bukti_pelunasan;
+                }
+
                 $data->update([
+                    'dp' => $request['dp'],
                     'kepulangan' => $request['kepulangan'],
                     'metode_pelunasan' => $request['metode_pelunasan'],
                     'lama_sewa' => $request['lama_sewa'],
-                    // 'status' => 'selesai',
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
-                    'bukti_pelunasan' => $imgTrf,
+                    'bukti_pelunasan' => $filename,
+                    'bukti_dp' => $imgTrf,
+                    'keterangan' => $request['keterangan'],
                 ]);
 
                 foreach ($period as $key => $value) {
@@ -303,14 +321,17 @@ class PenyewaanController extends Controller
 
             DB::beginTransaction();
             try {
-                if ($request['metode_pelunasan'] == 'transfer') {
-                    $imgTrf = $request->file('bukti_pelunasan')->store('buktiPelunasan', 'public');
-                } else {
-                    $imgTrf = '';
-                }
 
                 $kepulangan_time = Carbon::now();
                 $data = Transaksi::find($id);
+
+                if ($request['metode_pelunasan'] == 'transfer' && isset($request['bukti_pelunasan'])) {
+                    $file = $request->file('bukti_pelunasan');
+                    $filename = $file->getClientOriginalName();
+                    $file->storeAs('public/buktiPelunasan/', $filename);
+                } else {
+                    $filename = $data->bukti_pelunasan;
+                }
 
                 $data->update([
                     'kepulangan' => $request['kepulangan'],
@@ -319,7 +340,8 @@ class PenyewaanController extends Controller
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
-                    'bukti_pelunasan' => $imgTrf,
+                    'bukti_pelunasan' => $filename,
+                    'keterangan' => $request['keterangan'] ?? '',
                     'status' => 'selesai',
                 ]);
 

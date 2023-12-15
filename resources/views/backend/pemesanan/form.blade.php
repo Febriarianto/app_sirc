@@ -114,7 +114,7 @@
                             </div>
                             <div id="fileTrf" class="col-sm-6" style="display:none;">
                                 <input type="file" class="form-control" id="bukti_dp" name="bukti_dp" value="{{ $data->bukti_dp ?? '' }}">
-                                <label for="">{{ $data->bukti_dp ?? '' }}</label>
+                                <a href="{{ isset($data->bukti_dp) ? asset ('storage/buktiDP/'.$data->bukti_dp) : '' }}" target="_blank">{{ $data->bukti_dp ?? '' }}</a>
                             </div>
                         </div>
                     </div>

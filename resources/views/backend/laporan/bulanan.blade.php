@@ -128,12 +128,18 @@
                     name: 'nama'
                 },
                 {
-                    data: 'keberangkatan',
-                    name: 'keberangkatan'
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return full.keberangkatan + " " + full.keberangkatan_time;
+                    }
                 },
                 {
-                    data: 'kepulangan',
-                    name: 'kepulangan'
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return full.kepulangan + " " + full.kepulangan_time;
+                    }
                 },
                 {
                     data: 'biaya',

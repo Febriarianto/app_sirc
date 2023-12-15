@@ -81,12 +81,6 @@
                                 <input type="date" class="form-control" id="kepulangan" name="kepulangan" placeholder="Masukan Tanggal Kepulangan" value="{{ $data->kepulangan ?? '' }}">
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="lama_sewa">Lama Sewa :</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '' }}">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -118,7 +112,7 @@
                             </div>
                             <div id="fileTrf" class="col-sm-6" style="display:none;">
                                 <input type="file" class="form-control" id="bukti_dp" name="bukti_dp" value="{{ $data->bukti_dp ?? '' }}">
-                                <label for="">{{ $data->bukti_dp ?? '' }}</label>
+                                <a href="{{ asset ('assets/storage/buktiDP'.$data->bukti_dp)}}" target="_blank">{{ $data->bukti_dp ?? '' }}</a>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -137,11 +131,11 @@
                                 <div class="col-sm-9">
                                     <select id="paket" name="paket" class="form-control">
                                         <option value="">.: Pilih Paket:.</option>
-                                        <option value="harian" {{ $data->paket === 'harian' ? 'selected' : '' }}>Harian</option>
-                                        <option value="jam" {{ $data->paket === 'jam' ? 'selected' : '' }}>Jam</option>
-                                        <option value="tahunan" {{ $data->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
-                                        <option value="bulanan" {{ $data->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
-                                        <option value="mingguan" {{ $data->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                                        <option value="jam">Jam</option>
+                                        <option value="harian">Harian</option>
+                                        <option value="mingguan">Mingguan</option>
+                                        <option value="bulanan">Bulanan</option>
+                                        <option value="tahunan">Tahunan</option>
                                     </select>
                                 </div>
                             </div>
@@ -316,27 +310,6 @@
         let kepulanganInput = document.getElementById('kepulangan');
         let lamaSewaInput = document.getElementById('lama_sewa');
 
-        keberangkatanInput.addEventListener('change', hitungLamaSewa);
-        kepulanganInput.addEventListener('change', hitungLamaSewa);
-
-        hitungLamaSewa();
-
-        function hitungLamaSewa() {
-            let tanggalKeberangkatan = new Date(keberangkatanInput.value);
-            let tanggalKepulangan = new Date(kepulanganInput.value);
-
-            let selisihHari = Math.ceil((tanggalKepulangan - tanggalKeberangkatan) / (1000 * 60 * 60 * 24));
-
-            lamaSewaInput.value = selisihHari;
-
-            if (selisihHari < 0) {
-                lamaSewaInput.value = 0;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', hitungLamaSewa);
-
-
         let statusDropdown = document.getElementById('status');
         let kotaTujuanLabel = document.querySelector('label[for="kota_tujuan"]');
         let kotaTujuanInput = document.getElementById('kota_tujuan');
@@ -358,23 +331,6 @@
                 divProses.style.display = 'block';
             }
         });
-
-
-        document.getElementById('paket').addEventListener('change', function() {
-            let paket = this.value;
-            let hargaSewaInput = document.getElementById('harga_sewa');
-            let hargaSewa = '';
-
-            if (paket === 'harian') {
-                hargaSewa = "{{ $data->kendaraan->jenis->harga_24 }}";
-            } else if (paket === 'jam') {
-                hargaSewa = "{{ $data->kendaraan->jenis->harga_12 }}";
-            }
-
-            hargaSewaInput.value = hargaSewa;
-        });
-
-
 
     });
 </script>

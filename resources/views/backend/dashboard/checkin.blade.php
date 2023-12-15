@@ -101,13 +101,13 @@
                 let api = this.api();
                 $(row).find('.btn-checkin').click(function() {
                     let pk = $(this).data('id');
-                    if (data.kepulangan !== today) {
-                        console.log("Error");
-                        toastr.error("Jadwal Kepulangan Bukan Hari ini", 'Failed !');
-                    } else {
-                        console.log("ok");
-                        location.href = `{{ route("penyewaan.index") }}/` + pk;;
-                    }
+                    // if (data.kepulangan !== today) {
+                    //     console.log("Error");
+                    //     toastr.error("Jadwal Kepulangan Bukan Hari ini", 'Failed !');
+                    // } else {
+                    console.log("ok");
+                    location.href = `{{ route("penyewaan.index") }}/` + pk;;
+                    // }
                 });
             }
         });
