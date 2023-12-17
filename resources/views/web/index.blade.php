@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>ConceptAutorent</title>
+    <title> {{ SettingWeb::get_setting()->title }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -45,9 +45,9 @@
             <div class="container">
                 <div class="row align-items-center position-relative">
 
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="site-logo">
-                            <a href="index.html"><strong>Concept </strong>AutoRent</a>
+                            <a href=""><strong>{{ SettingWeb::get_setting()->title }}</strong></a>
                         </div>
                     </div>
 
@@ -81,7 +81,7 @@
                     <div class="col-lg-5">
 
                         <div class="intro">
-                            <h1><strong>Daftar Mobil</strong></h1>
+                            <h4><strong>Daftar Mobil</strong></h4>
                             <div class="custom-breadcrumbs"><a href="">Daftar</a> <span class="mx-2">-</span>
                                 <strong>Mobil</strong>
                             </div>
@@ -97,7 +97,6 @@
 
                 <div class="row">
                     <div class="col-lg-7">
-                        <h2 class="section-heading"><strong>Daftar Mobil</strong></h2>
                         <p class="mb-5">Daftar Mobil Lepas Kunci</p>
                     </div>
                 </div>
@@ -171,10 +170,7 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <h2 class="footer-heading mb-4">About Us</h2>
-                        <p>Jl. Melati III Linkungan IV No. 023 Rt.06 Rw.04 Pringsewu Timur <br>
-                            Kec. Pringsewu - Lampung 35373 Telp. (0729) 7081967<br>
-                            Contact Person : 0811 70 9009 / 0853 8023 3151
-                        </p>
+                        <p> {{ SettingWeb::get_setting()->alamat }}</p>
                         <ul class="list-unstyled social">
                             <li><a href="http://www.facebook.com/{{ SettingWeb::get_setting()->facebook }}" target="_blank"><span class="icon-facebook"></span></a></li>
                             <li><a href="https://www.instagram.com/{{ SettingWeb::get_setting()->instagram }}" target="_blank"><span class="icon-instagram"></span></a></li>
