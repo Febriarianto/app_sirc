@@ -31,15 +31,15 @@
                                 <div class="col-sm-9">
                                     <select id="select2Penyewa" style="width: 100% !important;" name="id_penyewa">
                                         @if(isset($data->id_penyewa))
-                                        <option value="{{ $data->id_penyewa }}">{{ $data->penyewa->nik }}</option>
+                                        <option value="{{ $data->id_penyewa }}">{{ $data->penyewa->nama }}</option>
                                         @endif
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="nama">Nama :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="nik">Nik :</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama" value="{{ $data->nama ?? '' }}" readonly>
+                                    <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan Nik" value="{{ $data->nik ?? '' }}" readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -129,11 +129,11 @@
                             <div class="col-sm-9">
                                 <select id="paket" name="paket" class="form-control">
                                     <option value="">.: Pilih Paket:.</option>
-                                    <option value="jam" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'jam' ? 'selected' : '' }}>Jam</option>
-                                    <option value="harian" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'harian' ? 'selected' : '' }}>Harian</option>
-                                    <option value="mingguan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
-                                    <option value="bulanan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
-                                    <option value="tahunan" {{ isset ($dataTransaksi->paket) && $dataTransaksi->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
+                                    <option value="jam" {{ isset ($data->paket) && $data->paket === 'jam' ? 'selected' : '' }}>Jam</option>
+                                    <option value="harian" {{ isset ($data->paket) && $data->paket === 'harian' ? 'selected' : '' }}>Harian</option>
+                                    <option value="mingguan" {{ isset ($data->paket) && $data->paket === 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                                    <option value="bulanan" {{ isset ($data->paket) && $data->paket === 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                                    <option value="tahunan" {{ isset ($data->paket) && $data->paket === 'tahunan' ? 'selected' : '' }}>Tahunan</option>
                                 </select>
                             </div>
                         </div>
@@ -219,7 +219,7 @@
         $.ajax({
             url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nik2,
             success: function(response) {
-                $('#nama').val(response.data.nama);
+                $('#nik').val(response.data.nik);
                 $('#alamat').val(response.data.alamat);
                 $('#no_hp').val(response.data.no_hp);
             }
@@ -277,7 +277,7 @@
             $.ajax({
                 url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nik,
                 success: function(response) {
-                    $('#nama').val(response.data.nama);
+                    $('#nik').val(response.data.nik);
                     $('#alamat').val(response.data.alamat);
                     $('#no_hp').val(response.data.no_hp);
                 }

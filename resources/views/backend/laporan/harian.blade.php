@@ -25,7 +25,7 @@
                                     <th rowspan="2">No</th>
                                     <th rowspan="2">No Kendaraan</th>
                                     <th rowspan="2">Nama Pelanggan</th>
-                                    <th rowspan="2">Total Sewa</th>
+                                    <th rowspan="2">Paket</th>
                                     <th rowspan="2">Keberangkatan</th>
                                     <th rowspan="2">Kepulangan</th>
                                     <th colspan="3">Pembayaran</th>
@@ -90,7 +90,6 @@
                     } else {
                         style.appendChild(win.document.createTextNode(css));
                     }
-
                     head.appendChild(style);
                 }
             }],
@@ -119,16 +118,22 @@
                     data: 'lama_sewa',
                     name: 'lama_sewa',
                     render: function(data, type, full, meta) {
-                        return data + " " + full.paket;
+                        return full.paket;
                     }
                 },
                 {
-                    data: 'keberangkatan',
-                    name: 'keberangkatan'
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return full.keberangkatan + " " + full.keberangkatan_time;
+                    }
                 },
                 {
-                    data: 'kepulangan',
-                    name: 'kepulangan',
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return full.kepulangan + " " + full.kepulangan_time;
+                    }
                 },
                 {
                     data: 'dp',

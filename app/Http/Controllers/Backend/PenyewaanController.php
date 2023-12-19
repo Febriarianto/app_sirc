@@ -279,6 +279,7 @@ class PenyewaanController extends Controller
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
+                    'paket' => $request['paket'],
                     'bukti_pelunasan' => $filename,
                     'bukti_dp' => $imgTrf,
                     'keterangan' => $request['keterangan'],

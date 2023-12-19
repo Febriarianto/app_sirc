@@ -27,19 +27,19 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewas :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="select2Penyewa">Penyewa :</label>
                                 <div class="col-sm-9">
                                     <select id="select2Penyewa" style="width: 100% !important;" name="id_penyewa">
                                         @if(isset($data->id_penyewa))
-                                        <option value="{{ $data->id_penyewa }}">{{ $data->penyewa->nik }}</option>
+                                        <option value="{{ $data->id_penyewa }}">{{ $data->penyewa->nama }}</option>
                                         @endif
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="nama">Nama :</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="nik">NIK :</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama" value="{{ $data->nama ?? '' }}" readonly>
+                                    <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan Nik" value="{{ $data->nik ?? '' }}" readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -138,7 +138,7 @@
         $.ajax({
             url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nik2,
             success: function(response) {
-                $('#nama').val(response.data.nama);
+                $('#nik').val(response.data.nik);
                 $('#alamat').val(response.data.alamat);
                 $('#no_hp').val(response.data.no_hp);
             }
@@ -178,11 +178,11 @@
         });
 
         $('#select2Penyewa').on('change', function() {
-            let nik = $('#select2Penyewa option:selected').text().trim();
+            let nama = $('#select2Penyewa option:selected').text().trim();
             $.ajax({
-                url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nik,
+                url: `{{ url ('backend/penyewa/getPenyewa')}}/` + nama,
                 success: function(response) {
-                    $('#nama').val(response.data.nama);
+                    $('#nik').val(response.data.nik);
                     $('#alamat').val(response.data.alamat);
                     $('#no_hp').val(response.data.no_hp);
                 }

@@ -65,8 +65,11 @@
                     name: 'penyewa.no_hp'
                 },
                 {
-                    data: 'keberangkatan',
-                    name: 'keberangkatan'
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        return full.keberangkatan + " " + full.keberangkatan_time;
+                    }
                 },
                 {
                     data: 'kepulangan',

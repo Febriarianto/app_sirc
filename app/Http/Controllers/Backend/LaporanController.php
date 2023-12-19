@@ -74,7 +74,7 @@ class LaporanController extends Controller
             ['url' => '#', 'title' => "Laporan Harian"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::select('transaksi.id', 'transaksi.paket', 'kendaraan.no_kendaraan as kendaraan', 'penyewa.nama as penyewa', 'transaksi.lama_sewa', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.dp', 'transaksi.keterangan', 'transaksi.sisa', 'transaksi.metode_pelunasan', 'transaksi.status')
+            $data = Transaksi::select('transaksi.id', 'transaksi.paket', 'kendaraan.no_kendaraan as kendaraan', 'penyewa.nama as penyewa', 'transaksi.lama_sewa', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.keberangkatan_time', 'transaksi.kepulangan_time', 'transaksi.dp', 'transaksi.keterangan', 'transaksi.sisa', 'transaksi.metode_pelunasan', 'transaksi.status')
                 ->selectRaw('transaksi.dp + transaksi.sisa as total')
                 ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')

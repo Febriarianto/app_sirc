@@ -267,16 +267,16 @@ class PenyewaController extends Controller
         $page = $request->page;
         $resultCount = 10;
         $offset = ($page - 1) * $resultCount;
-        $data = Penyewa::where('nik', 'LIKE', '%' . $request->q . '%')
-            ->where('status','=','aktif')
-            ->orderBy('nik')
+        $data = Penyewa::where('nama', 'LIKE', '%' . $request->q . '%')
+            ->where('status', '=', 'aktif')
+            ->orderBy('nama')
             ->skip($offset)
             ->take($resultCount)
-            ->selectRaw('id, nik as text')
+            ->selectRaw('id, nama as text')
             ->get();
 
-        $count = Penyewa::where('nik', 'LIKE', '%' . $request->q . '%')
-            ->where('status','=','aktif')
+        $count = Penyewa::where('nama', 'LIKE', '%' . $request->q . '%')
+            ->where('status', '=', 'aktif')
             ->get()
             ->count();
 
@@ -293,9 +293,9 @@ class PenyewaController extends Controller
         return response()->json($results);
     }
 
-    public function getPenyewa($nik)
+    public function getPenyewa($nama)
     {
-        $data = Penyewa::select('nama', 'alamat', 'no_hp')->where('nik', $nik)->first();
+        $data = Penyewa::select('nama', 'nik', 'alamat', 'no_hp')->where('nama', $nama)->first();
         // if (count($data) > 0) {
         //     return response()->json(['response' => 'Y', 'data' => $data]);
         // } else {
