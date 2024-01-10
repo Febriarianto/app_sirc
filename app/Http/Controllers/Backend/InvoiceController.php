@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
-use App\Models\Invoice;
+use App\Models\Pembayaran;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -37,7 +37,13 @@ class InvoiceController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
+                    if ($row->keterangan == 'lunas') {
+                        $actionBtn = '<a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
+                    } else {
+                        $actionBtn = '
+                        <a class="btn btn-warning btn-cetak" href="' . route('invoice.show', $row->id) . '">Lihat</a>
+                        <a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
+                    }
                     return $actionBtn;
                 })
                 ->make();
@@ -141,7 +147,18 @@ class InvoiceController extends Controller
 
     public function show($id)
     {
-        //
+        $config['title'] = "Lihat Invoice";
+        $config['breadcrumbs'] = [
+            ['url' => route('invoice.index'), 'title' => "Cetak"],
+            ['url' => '#', 'title' => "Lihat Invoice"],
+        ];
+        $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+        $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
+        $config['form'] = (object)[
+            'method' => 'PUT',
+            'action' => route('penyewaan.proses', $id)
+        ];
+        return view('backend.penyewaan.proses', compact('config', 'data', 'pembayaran'));
     }
 
     /**

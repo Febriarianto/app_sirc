@@ -30,6 +30,7 @@
                                     <th>No Hp</th>
                                     <th>Berangkat</th>
                                     <th>Pulang</th>
+                                    <th>Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -79,6 +80,17 @@
                 {
                     data: 'kepulangan',
                     name: 'kepulangan'
+                },
+                {
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        if (full.keterangan == 'lunas') {
+                            return '<span class="badge badge-success">' + full.keterangan + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + full.keterangan + '</span>';
+                        }
+                    }
                 },
                 {
                     data: 'action',

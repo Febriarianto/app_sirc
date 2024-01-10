@@ -5,13 +5,13 @@
     <div class="col-lg-4 col-6">
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{$data['countCar']}}</h3>
-                <p>Mobil</p>
+                <h3>{{ $data['countNotAvail'] . " / " . $data['countAvail'] }}</h3>
+                <p>Mobil Digunakan / Mobil Tersedia</p>
             </div>
             <div class="icon">
                 <i class="fas fa-car"></i>
             </div>
-            <a href="{{route('kendaraan.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('kendaraan.status') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 

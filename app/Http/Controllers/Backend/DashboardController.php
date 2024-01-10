@@ -9,6 +9,7 @@ use App\Models\Penyewa;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Traits\ResponseStatus;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -23,12 +24,29 @@ class DashboardController extends Controller
             ['url' => '#', 'title' => ""],
         ];
 
-        $countCar = Kendaraan::count();
+        $tanggal = Carbon::now()->format('Y-m-d');
+
+        $kendaraan = DB::table('kendaraan')
+            ->selectRaw("SUM(CASE WHEN `range_transaksi`.`tanggal` IS null THEN 1 ELSE 0 END)
+            as 'ada', COUNT(`range_transaksi`.`tanggal`) as 'tidakAda'")
+            ->where('kendaraan.status', '=', 'aktif')
+            ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
+            ->leftJoin('range_transaksi', function ($join) use ($tanggal) {
+                $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')
+                    ->where('range_transaksi.tanggal', $tanggal,);
+            })
+            ->get();
+
+        $countAvail = $kendaraan[0]->ada;
+        $countNotAvail = $kendaraan[0]->tidakAda;
+        // $countCar = Kendaraan::count();
         $countPenyewa = Penyewa::count();
         $countPemesanan = Transaksi::where('tipe', 'pemesanan')->count();
 
         $data = [
-            'countCar' => $countCar,
+            // 'countCar' => $countCar,
+            'countAvail' => $countAvail,
+            'countNotAvail' => $countNotAvail,
             'countPenyewa' => $countPenyewa,
             'countPemesanan' => $countPemesanan,
         ];

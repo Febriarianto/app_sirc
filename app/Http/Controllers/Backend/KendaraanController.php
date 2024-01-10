@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Picqer\Barcode\BarcodeGeneratorPNG;
+use DateTime;
 
 class KendaraanController extends Controller
 {
@@ -64,38 +65,42 @@ class KendaraanController extends Controller
             ['url' => route('kendaraan.index'), 'title' => "Data Ketersediaan Mobil"],
         ];
 
-        $jenisId = $request->input('jenis');
-        $tanggal = $request->input('tgl') ?? Carbon::now()->format('Y-m-d');
+        if ($request->ajax()) {
+            $tanggal = Carbon::now()->format('Y-m-d');
+            $data = Kendaraan::select(
+                'kendaraan.id',
+                'kendaraan.no_kendaraan',
+                'kendaraan.tahun',
+                'kendaraan.warna',
+                'kendaraan.foto',
+                'jenis.nama',
+                'jenis.harga_12',
+                'jenis.harga_24',
+                'range_transaksi.tanggal',
+                'kendaraan.status',
+            )
+                ->where('kendaraan.status', '=', 'aktif')
+                ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
+                ->leftJoin('range_transaksi', function ($join) use ($tanggal) {
+                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')
+                        ->where('range_transaksi.tanggal', $tanggal,);
+                })
+                ->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    if ($row->tanggal !== null) {
+                        $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.createId', $row->id) . '">Pesan</a>';
+                    } else {
 
-        $kendaraan = Kendaraan::select(
-            'kendaraan.id',
-            'kendaraan.no_kendaraan',
-            'kendaraan.tahun',
-            'kendaraan.warna',
-            'kendaraan.foto',
-            'jenis.nama',
-            'jenis.harga_12',
-            'jenis.harga_24',
-            'range_transaksi.tanggal',
-            'kendaraan.status'
-        )
-            ->where('kendaraan.status', '=', 'aktif')
-            ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-            ->leftJoin('range_transaksi', function ($join) use ($tanggal) {
-                $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')
-                    ->where('range_transaksi.tanggal', $tanggal,);
-            })
-            ->when($jenisId, function ($query) use ($jenisId) {
-                return $query->where('jenis.id', $jenisId);
-            })
-            ->paginate(6);
-        $id_jenis = $request['jenis'];
-
-        // dd($id_jenis);
-
-        $jenis = Jenis::select('id', 'nama')->get();
-
-        return view('backend.pemesanan.list_ketersediaan', compact('kendaraan', 'jenis', 'tanggal', 'id_jenis', 'config'));
+                        $actionBtn = '<a class="btn btn-success" href="' . route('pemesanan.createId', $row->id) . '">Pesan</a>
+                        <a class="btn btn-info" href="' . route('penyewaan.createId', $row->id) . '">Sewa</a>';
+                    }
+                    return $actionBtn;
+                })
+                ->make();
+        }
+        return view('backend.pemesanan.list_ketersediaan', compact('config'));
     }
 
     public function create()

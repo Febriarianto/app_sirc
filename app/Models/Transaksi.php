@@ -17,24 +17,19 @@ class Transaksi extends Model
         'id_kendaraan',
         'kota_tujuan',
         'lama_sewa',
-        'harga_sewa',
+        'durasi',
         'paket',
         'keberangkatan',
         'keberangkatan_time',
         'kepulangan',
         'kepulangan_time',
-        'dp',
-        'metode_dp',
-        'bukti_dp',
         'tipe',
         'status',
+        'harga_sewa',
         'over_time',
         'biaya',
         'sisa',
-        'metode_pelunasan',
         'keterangan',
-        'bukti_pelunasan',
-        'kota_tujuan',
     ];
 
     public function penyewa()
@@ -46,13 +41,8 @@ class Transaksi extends Model
         return $this->belongsTo(Kendaraan::class, 'id_kendaraan', 'id');
     }
 
-    public function invoice()
+    public function pembayar()
     {
-        return $this->hasOne(Invoice::class, 'id_transaksi', 'id');
-    }
-
-    public function range_transaksi()
-    {
-        return $this->belongsToMany(RangeTransaksi::class);
+        return $this->belongsToMany(Pembayaran::class);
     }
 }

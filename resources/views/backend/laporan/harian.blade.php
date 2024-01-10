@@ -25,12 +25,12 @@
                                     <th rowspan="2">No</th>
                                     <th rowspan="2">No Kendaraan</th>
                                     <th rowspan="2">Nama Pelanggan</th>
-                                    <th rowspan="2">Paket</th>
+                                    <th rowspan="2">Lama Sewa</th>
                                     <th rowspan="2">Keberangkatan</th>
                                     <th rowspan="2">Kepulangan</th>
                                     <th colspan="3">Pembayaran</th>
                                     <th rowspan="2">Keterangan</th>
-                                    <th rowspan="2">Total</th>
+                                    <th rowspan="2">Penerima</th>
                                 </tr>
                                 <tr>
                                     <th>DP</th>
@@ -118,33 +118,41 @@
                     data: 'lama_sewa',
                     name: 'lama_sewa',
                     render: function(data, type, full, meta) {
-                        return full.paket;
+                        return full.lama_sewa;
                     }
                 },
                 {
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        return full.keberangkatan + " " + full.keberangkatan_time;
+                        if (full.keberangkatan == null && full.keberangkatan_time == null) {
+                            return "-"
+                        } else if (full.keberangkatan_time == null) {
+                            return full.keberangkatan
+                        } else {
+                            return full.keberangkatan + " " + full.keberangkatan_time;
+                        }
                     }
                 },
                 {
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        return full.kepulangan + " " + full.kepulangan_time;
+                        if (full.kepulangan == null && full.kepulangan_time == null) {
+                            return "-"
+                        } else if (full.kepulangan_time == null) {
+                            return full.kepulangan
+                        } else {
+                            return full.kepulangan + " " + full.kepulangan_time;
+                        }
                     }
-                },
-                {
-                    data: 'dp',
-                    name: 'dp',
                 },
                 {
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        if (full.metode_pelunasan == 'transfer') {
-                            return full.sisa
+                        if (full.tipe == "dp") {
+                            return full.nominal
                         } else {
                             return "-";
                         }
@@ -154,8 +162,19 @@
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        if (full.metode_pelunasan == 'cash') {
-                            return full.sisa
+                        if (full.metode == 'transfer' && full.tipe == "pelunasan") {
+                            return full.nominal
+                        } else {
+                            return "-";
+                        }
+                    }
+                },
+                {
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        if (full.metode == 'cash' && full.tipe == "pelunasan") {
+                            return full.nominal
                         } else {
                             return "-";
                         }
@@ -166,8 +185,8 @@
                     name: 'keterangan',
                 },
                 {
-                    data: 'total',
-                    name: 'total',
+                    data: 'penerima',
+                    name: 'penerima',
                 },
 
             ],

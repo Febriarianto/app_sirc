@@ -27,9 +27,10 @@
                                     <th>Nama Pemesan</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
-                                    <th>Berangkat</th>
-                                    <th>Pulang</th>
                                     <th>No Plat</th>
+                                    <th>Lama Sewa</th>
+                                    <th>Keberangkatan</th>
+                                    <th>Durasi</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -65,19 +66,34 @@
                     name: 'penyewa.no_hp'
                 },
                 {
+                    data: 'kendaraan.no_kendaraan',
+                    name: 'kendaraan.no_kendaraan'
+                },
+                {
+                    data: 'lama_sewa',
+                    name: 'lama_sewa'
+                },
+                {
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        return full.keberangkatan + " " + full.keberangkatan_time;
+                        if (full.tanggal !== null) {
+                            return full.keberangkatan + " " + full.keberangkatan_time
+                        } else {
+                            return '-';
+                        }
                     }
                 },
                 {
-                    data: 'kepulangan',
-                    name: 'kepulangan'
-                },
-                {
-                    data: 'kendaraan.no_kendaraan',
-                    name: 'kendaraan.no_kendaraan'
+                    data: 'id',
+                    name: 'id',
+                    render: function(data, type, full, meta) {
+                        if (full.tanggal !== null) {
+                            return full.durasi;
+                        } else {
+                            return '-';
+                        }
+                    }
                 },
                 {
                     data: 'action',
