@@ -102,140 +102,6 @@
 
         $('#tgl').val(today);
 
-        // var dt = $('#dt').DataTable({
-        //     searching: false,
-        //     paging: false,
-        //     info: false,
-        //     responsive: true,
-        //     serverSide: true,
-        //     processing: true,
-        //     dom: 'Bfrtip',
-        //     buttons: [{
-        //         extend: 'print',
-        //         footer: true,
-        //         text: 'Print',
-        //         title: 'Laporan Harian ',
-        //         customize: function(win) {
-
-        //             var last = null;
-        //             var current = null;
-        //             var bod = [];
-
-        //             var css = '@page { size: landscape; }',
-        //                 head = win.document.head || win.document.getElementsByTagName('head')[0],
-        //                 style = win.document.createElement('style');
-
-        //             style.type = 'text/css';
-        //             style.media = 'print';
-
-        //             if (style.styleSheet) {
-        //                 style.styleSheet.cssText = css;
-        //             } else {
-        //                 style.appendChild(win.document.createTextNode(css));
-        //             }
-        //             head.appendChild(style);
-        //         }
-        //     }],
-        //     ajax: {
-        //         url: `{{ route('laporan.harian') }}`,
-        //         data: function(d) {
-        //             d.tgl = $('#tgl').val();
-        //         }
-        //     },
-        //     columns: [{
-        //             data: 'id',
-        //             name: 'id',
-        //             render: function(data, type, full, meta) {
-        //                 return meta.row + 1;
-        //             }
-        //         },
-        //         {
-        //             data: 'kendaraan',
-        //             name: 'kendaraan'
-        //         },
-        //         {
-        //             data: 'penyewa',
-        //             name: 'penyewa'
-        //         },
-        //         {
-        //             data: 'lama_sewa',
-        //             name: 'lama_sewa',
-        //             render: function(data, type, full, meta) {
-        //                 return full.lama_sewa;
-        //             }
-        //         },
-        //         {
-        //             data: 'id',
-        //             name: 'id',
-        //             render: function(data, type, full, meta) {
-        //                 if (full.keberangkatan == null && full.keberangkatan_time == null) {
-        //                     return "-"
-        //                 } else if (full.keberangkatan_time == null) {
-        //                     return full.keberangkatan
-        //                 } else {
-        //                     return full.keberangkatan + " " + full.keberangkatan_time;
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             data: 'id',
-        //             name: 'id',
-        //             render: function(data, type, full, meta) {
-        //                 if (full.kepulangan == null && full.kepulangan_time == null) {
-        //                     return "-"
-        //                 } else if (full.kepulangan_time == null) {
-        //                     return full.kepulangan
-        //                 } else {
-        //                     return full.kepulangan + " " + full.kepulangan_time;
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             data: 'id',
-        //             name: 'id',
-        //             render: function(data, type, full, meta) {
-        //                 if (full.tipe == "dp") {
-        //                     return full.nominal
-        //                 } else {
-        //                     return "-";
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             data: 'id',
-        //             name: 'id',
-        //             render: function(data, type, full, meta) {
-        //                 if (full.metode == 'transfer' && full.tipe == "pelunasan") {
-        //                     return full.nominal
-        //                 } else {
-        //                     return "-";
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             data: 'id',
-        //             name: 'id',
-        //             render: function(data, type, full, meta) {
-        //                 if (full.metode == 'cash' && full.tipe == "pelunasan") {
-        //                     return full.nominal
-        //                 } else {
-        //                     return "-";
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             data: 'keterangan',
-        //             name: 'keterangan',
-        //         },
-        //         {
-        //             data: 'penerima',
-        //             name: 'penerima',
-        //         },
-
-        //     ],
-        // });
-
-
         function load_table() {
             var tglA = $('#tgl').val();
             $.ajax({
@@ -246,19 +112,27 @@
                 },
                 success: function(response) {
                     $.each(response.data1, function(key, value) {
+                        let lama_sewa = (value.lama_sewa == null) ? ('') : (value.lama_sewa);
+                        let kepulangan = (value.kepulangan == null) ? ('') : (value.kepulangan);
+                        let kepulangan_time = (value.kepulangan_time == null) ? ('') : (value.kepulangan_time);
+                        let keberangkatan = (value.keberangkatan == null) ? ('') : (value.keberangkatan);
+                        let keberangkatan_time = (value.keberangkatan_time == null) ? ('') : (value.keberangkatan_time);
+                        let total = (value.total == null) ? (0) : (value.total);
+                        let kekurangan = (value.kekurangan == null) ? (0) : (value.kekurangan);
+                        let keterangan = (value.keterangan == null) ? ('') : (value.keterangan);
                         $('#isi').append("<tr class='th'>\
                                             <td>" + (key + 1) + "</td>\
                                             <td>" + value.no_kendaraan + "</td>\
                                             <td>" + value.nama + "</td>\
-                                            <td>" + value.lama_sewa + "</td>\
-                                            <td>" + value.keberangkatan + " " + value.keberangkatan_time + "</td>\
-                                            <td>" + value.kepulangan + " " + value.kepulangan_time + "</td>\
+                                            <td>" + lama_sewa + "</td>\
+                                            <td>" + keberangkatan + " " + keberangkatan_time + "</td>\
+                                            <td>" + kepulangan + " " + kepulangan_time + "</td>\
                                             <td>" + value.dp + "</td>\
                                             <td>" + value.transfer + "</td>\
                                             <td>" + value.cash + "</td>\
-                                            <td>" + value.kekurangan + "</td>\
-                                            <td>" + value.total + "</td>\
-                                            <td>" + value.keterangan + "</td>\
+                                            <td>" + kekurangan + "</td>\
+                                            <td>" + total + "</td>\
+                                            <td>" + keterangan + "</td>\
                                             </tr></div>");
                     });
 
