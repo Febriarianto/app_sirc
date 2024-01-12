@@ -16,6 +16,7 @@
                 </div>
             </div>
             <div class="card-body">
+                <div id="alertSuccess"></div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -182,7 +183,7 @@
             </div>
             <div class="card-footer">
                 <div class="btn-group float-right" role="group" aria-label="Basic outlined example">
-                    <a onclick="history.back()" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-rotate-left"></i> Kembali</a>
+                    <a href="{{route('pemesanan.index')}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-rotate-left"></i> Kembali</a>
                     <button type="submit" class="btn btn-sm btn-primary">Simpan <i class="fa-solid fa-floppy-disk"></i></button>
                 </div>
             </div>
@@ -351,12 +352,13 @@
                     errorCreate.find('.alert-text').html('');
                     btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
                     if (response.status === "success") {
-                        toastr.success(response.message, 'Success !');
+                        var alert = '<div class="alert alert-success" role="alert">Data Sudah Di Simpan</div>';
+                        $('#alertSuccess').append(alert);
                         setTimeout(function() {
                             if (response.redirect === "" || response.redirect === "reload") {
                                 location.reload();
                             } else {
-                                location.href = response.redirect;
+                                window.open(response.redirect, '_blank');
                             }
                         }, 1000);
                     } else {

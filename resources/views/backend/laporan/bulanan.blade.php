@@ -89,7 +89,15 @@
                 extend: 'print',
                 footer: true,
                 text: 'Print',
-                title: 'Laporan Bulanan',
+                title: function() {
+                    var nopol = $('#select2Kendaraan').select2('data');
+                    if (nopol[0] == null) {
+                        alert("Harap Pilih Kendaraan")
+                    } else {
+                        var judul = 'Laporan Bulanan <br><h5>Pembuat Laporan : {{ Auth()->user()->name }}</h5> <h5> No Kendaraan : ' + nopol[0].text + '</h5><hr>';
+                        return judul
+                    }
+                },
                 customize: function(win) {
 
                     var last = null;

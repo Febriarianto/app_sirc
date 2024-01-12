@@ -148,6 +148,7 @@ class PenyewaanController extends Controller
                             'nominal' => $request->nominal[$key],
                             'metode' => $request->metode[$key],
                             'file' => $imgTrf,
+                            'detail' => 'Penyewaan',
                             'penerima' => Auth()->user()->name,
                         ]);
                     }
@@ -168,7 +169,9 @@ class PenyewaanController extends Controller
                 }
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
+
+                $dataWa = Transaksi::with(['penyewa', 'kendaraan'])->where('id', $data->id)->first();
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->penyewa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20:%" . $dataWa->keberangkatan . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->penyewa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->kendaraan->no_kendaraan . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aKurang%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a========================="));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -311,6 +314,7 @@ class PenyewaanController extends Controller
                             'nominal' => $request->nominal[$key],
                             'metode' => $request->metode[$key],
                             'file' => $imgTrf,
+                            'detail' => 'Penyewaan',
                             'penerima' => Auth()->user()->name,
                         ]);
                     }
@@ -334,7 +338,8 @@ class PenyewaanController extends Controller
                 }
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
+                $$dataWa = Transaksi::with(['penyewa', 'kendaraan'])->where('id', $data->id)->first();
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->penyewa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20:%" . $dataWa->keberangkatan . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->penyewa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->kendaraan->no_kendaraan . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aKurang%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a========================="));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -375,7 +380,7 @@ class PenyewaanController extends Controller
                 }
 
                 if ($request['sisa'] !== "0") {
-                    $ket = "hutang";
+                    $ket = "belum lunas";
                 } else {
                     $ket = "lunas";
                 }
@@ -428,6 +433,7 @@ class PenyewaanController extends Controller
                             'nominal' => $request->nominal[$key],
                             'metode' => $request->metode[$key],
                             'file' => $imgTrf,
+                            'detail' => 'Penyewaan',
                             'penerima' => Auth()->user()->name,
                         ]);
                     }
@@ -436,7 +442,8 @@ class PenyewaanController extends Controller
                 $dataTgl = RangeTransaksi::where('id_transaksi', $data->id)->delete();
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('penyewaan.index')));
+                $dataWa = Transaksi::with(['penyewa', 'kendaraan'])->where('id', $data->id)->first();
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->penyewa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20:%" . $dataWa->keberangkatan . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->penyewa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->kendaraan->no_kendaraan . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aKurang%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a========================="));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);

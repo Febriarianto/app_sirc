@@ -80,14 +80,10 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::get('penyewa/getPenyewa/{nik}', [Backend\PenyewaController::class, 'getPenyewa'])->name('penyewa.getPenyewa');
     Route::resource('penyewa', Backend\PenyewaController::class);
 
-    /* Transaksi Route */
-    Route::resource('faktur', Backend\FakturController::class);
-
     //booking/pemesanan
     Route::put('pemesanan/proses/{penyewaan}', [Backend\PemesananController::class, 'proses'])->name('pemesanan.proses');
     Route::resource('pemesanan', Backend\PemesananController::class);
     Route::get('pemesanan/create/{id_kendaraan}', [Backend\PemesananController::class, 'create'])->name('pemesanan.createId');
-
 
     // referral
     Route::get('referral/select2', [Backend\ReferralController::class, 'select2'])->name('referral.select2');
