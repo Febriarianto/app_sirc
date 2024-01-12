@@ -43,7 +43,7 @@ class PemesananController extends Controller
             ['url' => '#', 'title' => "Pemesanan"],
         ];
         if ($request->ajax()) {
-            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'pesan', 'status' => 'proses'])->get();
+            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'pesan', 'status' => 'pending'])->get();
 
             return DataTables::of($data)
                 ->addIndexColumn()
