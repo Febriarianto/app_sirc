@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Pembayaran;
+use App\Models\Kendaraan;
 use App\Models\Transaksi;
 use Yajra\DataTables\DataTables;
 use App\Traits\ResponseStatus;
@@ -17,8 +18,22 @@ class LaporanController extends Controller
 
     function __construct()
     {
-        $this->middleware('can:laporan-bulanan-list', ['only' => ['bulanan_index', 'bulanan_show']]);
-        $this->middleware('can:laporan-referral-list', ['only' => ['referral_index', 'referral_show']]);
+        $this->middleware('can:laporan-harian-list', ['only' => ['harian_index', 'judul']]);
+        $this->middleware('can:laporan-bulanan-list', ['only' => ['bulanan_index', 'judul']]);
+        $this->middleware('can:laporan-referral-list', ['only' => ['referral_index', 'judul']]);
+    }
+
+    public function judul(Request $request)
+    {
+        if ($request->ajax()) {
+            $id = $_GET['id'];
+            $data = Kendaraan::select('kendaraan.no_kendaraan', 'jenis.nama as jenis', 'pemilik.nama as pemilik', 'kendaraan.warna')
+                ->join('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
+                ->join('pemilik', 'pemilik.id', '=', 'kendaraan.id_pemilik')
+                ->where('kendaraan.id', $id)
+                ->first();
+            return response($data);
+        }
     }
 
     public function bulanan_index(Request $request)
@@ -44,10 +59,6 @@ class LaporanController extends Controller
         return view('backend.laporan.bulanan', compact('config'));
     }
 
-    public function bulanan_show()
-    {
-    }
-
     public function referral_index(Request $request)
     {
         $config['title'] = "Laporan Referral";
@@ -69,29 +80,12 @@ class LaporanController extends Controller
         return view('backend.laporan.referral', compact('config'));
     }
 
-    public function referral_show()
-    {
-    }
-
     public function harian_index(Request $request)
     {
         $config['title'] = "Laporan Harian";
         $config['breadcrumbs'] = [
             ['url' => '#', 'title' => "Laporan Harian"],
         ];
-        // if ($request->ajax()) {
-        //     $data = Transaksi::select('transaksi.id', 'transaksi.lama_sewa', 'kendaraan.no_kendaraan as kendaraan', 'penyewa.nama as penyewa', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.keberangkatan_time', 'transaksi.kepulangan_time', 'transaksi.keterangan', 'transaksi.sisa', 'transaksi.biaya', 'transaksi.status', 'pembayaran.tipe', 'pembayaran.metode', 'pembayaran.nominal', 'pembayaran.created_at', 'pembayaran.penerima')
-        //         ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
-        //         ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-        //         ->leftJoin('pembayaran', 'transaksi.id', '=', 'pembayaran.id_transaksi')
-        //         ->where('transaksi.kepulangan', '=', $request['tgl'])
-        //         ->where('transaksi.status', '=', 'selesai')
-        //         ->orWhereDate('pembayaran.created_at', $request['tgl'])
-        //         ->get();
-        //     return DataTables::of($data)
-        //         ->addIndexColumn()
-        //         ->make();
-        // }
 
         if ($request->ajax()) {
             $tgl = $_GET['tgl'];
@@ -126,8 +120,10 @@ class LaporanController extends Controller
                 ->orWhere('transaksi.status', '=', 'proses')
                 ->get();
 
-            $data2 = Pembayaran::whereDate('created_at', $tgl)
-                // ->where('tipe', '=', 'dp')
+            $data2 = Pembayaran::select('pembayaran.*', 'penyewa.nama')
+                ->join('transaksi', 'transaksi.id', '=', 'pembayaran.id_transaksi')
+                ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                ->whereDate('pembayaran.created_at', $tgl)
                 ->get();
 
             return response(['data1' => $data, 'data2' => $data2]);

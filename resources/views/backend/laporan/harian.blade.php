@@ -57,6 +57,7 @@
                                 <thead class="text-center">
                                     <tr>
                                         <th>No</th>
+                                        <th>Nama Pelanggan</th>
                                         <th>Tipe</th>
                                         <th>Metode</th>
                                         <th>Ket.</th>
@@ -140,6 +141,7 @@
                     $.each(response.data2, function(key, value) {
                         $('#isi2').append("<tr class='th'>\
                                             <td>" + (key + 1) + "</td>\
+                                            <td>" + value.nama + "</td>\
                                             <td>" + value.tipe + "</td>\
                                             <td>" + value.metode + "</td>\
                                             <td>" + value.detail + "</td>\
@@ -148,7 +150,7 @@
                         total += value.nominal;
                     });
                     $('#foot2').append("<tr>\
-                    <td colspan='4'> Total </td>\
+                    <td colspan='5' class='text-center'><b> Total </b></td>\
                     <td>" + total + "</td>\
                     </tr>")
                 }

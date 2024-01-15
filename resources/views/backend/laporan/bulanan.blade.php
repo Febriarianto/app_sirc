@@ -17,6 +17,9 @@
                 <div class="col-6">
                     <select id="select2Kendaraan" style="width: 100% !important;" name="id_kendaraan">
                     </select>
+                    <input type="hidden" id="jenis">
+                    <input type="hidden" id="pemilik">
+                    <input type="hidden" id="warna">
                 </div>
             </div>
         </div>
@@ -94,31 +97,10 @@
                     if (nopol[0] == null) {
                         alert("Harap Pilih Kendaraan")
                     } else {
-                        var judul = 'Laporan Bulanan <br><h5>Pembuat Laporan : {{ Auth()->user()->name }}</h5> <h5> No Kendaraan : ' + nopol[0].text + '</h5><hr>';
+                        var judul = '<h6> Laporan Bulanan <br> Pemilik : ' + $('#pemilik').val() + ' <br> No Kendaraan : ' + nopol[0].text + ' Jenis : ' + $('#jenis').val() + ' ' + $('#warna').val() + '<br><h6><hr>';
                         return judul
                     }
                 },
-                customize: function(win) {
-
-                    var last = null;
-                    var current = null;
-                    var bod = [];
-
-                    var css = '@page { size: landscape; }',
-                        head = win.document.head || win.document.getElementsByTagName('head')[0],
-                        style = win.document.createElement('style');
-
-                    style.type = 'text/css';
-                    style.media = 'print';
-
-                    if (style.styleSheet) {
-                        style.styleSheet.cssText = css;
-                    } else {
-                        style.appendChild(win.document.createTextNode(css));
-                    }
-
-                    head.appendChild(style);
-                }
             }],
             ajax: {
                 url: `{{ route('laporan.bulanan') }}`,
@@ -193,7 +175,24 @@
             }
         });
 
+        function load_title() {
+            var nopol = $('#select2Kendaraan').select2('data');
+            $.ajax({
+                url: `{{ route('laporan.judul') }}`,
+                type: 'GET',
+                data: {
+                    id: nopol[0].id,
+                },
+                success: function(response) {
+                    $('#jenis').val(response.jenis);
+                    $('#pemilik').val(response.pemilik);
+                    $('#warna').val(response.warna);
+                }
+            })
+        }
+
         $('#select2Kendaraan').on('change', function() {
+            load_title();
             dt.draw();
         });
 

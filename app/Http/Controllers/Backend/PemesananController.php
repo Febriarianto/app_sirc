@@ -126,7 +126,16 @@ class PemesananController extends Controller
                 }
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
+
+                $dataWa = Transaksi::select('transaksi.id', 'transaksi.keberangkatan', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
+                    ->selectRaw('(select SUM(CASE WHEN pembayaran.nominal THEN pembayaran.nominal ELSE 0 END) as uang_masuk from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as uang_masuk')
+                    ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                    ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                    ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
+                    ->where('transaksi.id', $data->id)
+                    ->first();
+                // dd($dataWa->toArray());
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0aNo%20Rekening%20BCA%20A/N%20RIAN%20ADI%20PRASETYO%0a844%20556%207813%0aNo%20Rekening%20Mandiri%20A/N%20RIAN%20ADI%20PRASETYO%0a11400%202484%208940%0a=========================%0aTransfer%20di%20luar%20No%20rekening%20diatas%0abukan%20tanggung%20jawab%20Concept%20AutoRent%0a=========================%0aKeluhan%20Pelanggan%20ke%20nomor%200853%208023%203151%0aUntuk%20Pemesanan%20Ke%20nomor%20%200811%2070%209009"));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -257,7 +266,15 @@ class PemesananController extends Controller
                 }
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('pemesanan.index')));
+                $dataWa = Transaksi::select('transaksi.id', 'transaksi.keberangkatan', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
+                    ->selectRaw('(select SUM(CASE WHEN pembayaran.nominal THEN pembayaran.nominal ELSE 0 END) as uang_masuk from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as uang_masuk')
+                    ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                    ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                    ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
+                    ->where('transaksi.id', $data->id)
+                    ->first();
+                // dd($dataWa->toArray());
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0aNo%20Rekening%20BCA%20A/N%20RIAN%20ADI%20PRASETYO%0a844%20556%207813%0aNo%20Rekening%20Mandiri%20A/N%20RIAN%20ADI%20PRASETYO%0a11400%202484%208940%0a=========================%0aTransfer%20di%20luar%20No%20rekening%20diatas%0abukan%20tanggung%20jawab%20Concept%20AutoRent%0a=========================%0aKeluhan%20Pelanggan%20ke%20nomor%200853%208023%203151%0aUntuk%20Pemesanan%20Ke%20nomor%20%200811%2070%209009"));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -366,8 +383,15 @@ class PemesananController extends Controller
                 }
 
                 DB::commit();
-                $dataWa = Transaksi::with(['penyewa', 'kendaraan'])->where('id', $data->id)->first();
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->penyewa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20:%" . $dataWa->keberangkatan . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->penyewa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->kendaraan->no_kendaraan . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aKurang%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a========================="));
+
+                $dataWa = Transaksi::select('transaksi.id', 'transaksi.keberangkatan', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
+                    ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                    ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                    ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
+                    ->where('transaksi.id', $data->id)
+                    ->first();
+                // dd($dataWa->toArray());
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0aNo%20Rekening%20BCA%20A/N%20RIAN%20ADI%20PRASETYO%0a844%20556%207813%0aNo%20Rekening%20Mandiri%20A/N%20RIAN%20ADI%20PRASETYO%0a11400%202484%208940%0a=========================%0aTransfer%20di%20luar%20No%20rekening%20diatas%0abukan%20tanggung%20jawab%20Concept%20AutoRent%0a=========================%0aKeluhan%20Pelanggan%20ke%20nomor%200853%208023%203151%0aUntuk%20Pemesanan%20Ke%20nomor%20%200811%2070%209009"));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
