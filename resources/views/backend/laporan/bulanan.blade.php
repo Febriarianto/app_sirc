@@ -97,7 +97,7 @@
                     if (nopol[0] == null) {
                         alert("Harap Pilih Kendaraan")
                     } else {
-                        var judul = '<h6> Laporan Bulanan <br> Pemilik : ' + $('#pemilik').val() + ' <br> No Kendaraan : ' + nopol[0].text + ' Jenis : ' + $('#jenis').val() + ' ' + $('#warna').val() + '<br><h6><hr>';
+                        var judul = '<h6> Laporan Bulanan <br> Pemilik : ' + $('#pemilik').val() + ' <br> No Kendaraan : ' + nopol[0].text + ' Jenis : ' + $('#jenis').val() + ' ' + $('#warna').val() + ' ( Periode : ' + $('#tAwal').val() + ' s/d ' + $('#tAhir').val() + ')<br><h6><hr>';
                         return judul
                     }
                 },

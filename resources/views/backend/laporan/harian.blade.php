@@ -24,7 +24,9 @@
                     <div class="card-body">
                         <div class="text-center">
                             <h4>Laporan Harian</h4>
-                            <h6 class="mb-2">Pembuat Laporan : {{ Auth()->user()->name }}</h6>
+                            <h6 class="mb-2 float-left">Pembuat Laporan : {{ Auth()->user()->name }}</h6>
+                            <div class="float-right mb-2" id="shTgl">
+                            </div>
                         </div>
                         <div class="table-responsive">
                             <table id="dt" class="table table-bordered w-100">
@@ -105,6 +107,7 @@
 
         function load_table() {
             var tglA = $('#tgl').val();
+            $('#shTgl').append('Tanggal : ' + tglA);
             $.ajax({
                 url: `{{ route('laporan.harian') }}`,
                 type: 'GET',
@@ -163,6 +166,7 @@
             $('#isi').empty();
             $('#isi2').empty();
             $('#foot2').empty();
+            $('#shTgl').empty();
             load_table();
         })
 
