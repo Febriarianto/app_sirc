@@ -38,10 +38,11 @@ class InvoiceController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     if ($row->keterangan == 'lunas') {
-                        $actionBtn = '<a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
+                        $actionBtn = '<a class="btn btn-secondary" href="' . route('invoice.show', $row->id) . '">Detail</a>
+                        <a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
                     } else {
                         $actionBtn = '
-                        <a class="btn btn-warning btn-cetak" href="' . route('invoice.show', $row->id) . '">Lihat</a>
+                        <a class="btn btn-warning btn-cetak" href="' . route('invoice.edit', $row->id) . '">Lihat</a>
                         <a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
                     }
                     return $actionBtn;
@@ -147,6 +148,28 @@ class InvoiceController extends Controller
 
     public function show($id)
     {
+        $config['title'] = "Detail Invoice";
+        $config['breadcrumbs'] = [
+            ['url' => route('invoice.index'), 'title' => "Cetak"],
+            ['url' => '#', 'title' => "Detail Invoice"],
+        ];
+        $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+        $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
+        $config['form'] = (object)[
+            'method' => 'PUT',
+            'action' => route('penyewaan.proses', $id)
+        ];
+        return view('backend.invoice.detail', compact('config', 'data', 'pembayaran'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
         $config['title'] = "Lihat Invoice";
         $config['breadcrumbs'] = [
             ['url' => route('invoice.index'), 'title' => "Cetak"],
@@ -159,17 +182,6 @@ class InvoiceController extends Controller
             'action' => route('penyewaan.proses', $id)
         ];
         return view('backend.penyewaan.proses', compact('config', 'data', 'pembayaran'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**

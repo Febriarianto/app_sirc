@@ -16,7 +16,6 @@
                 </div>
             </div>
             <div class="card-body">
-                <div id="alertSuccess"></div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -71,9 +70,15 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Keberangkatan :</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Berangkat :</label>
                             <div class="col-sm-9">
                                 <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Estimasi Jam :</label>
+                            <div class="col-sm-9">
+                                <input type="time" class="form-control" id="estimasi_time" name="estimasi_time" placeholder="Masukan Estimasi Jam" value="{{ $data->estimasi_time ?? '' }}">
                             </div>
                         </div>
                         <hr>
@@ -231,8 +236,18 @@
                     errorCreate.find('.alert-text').html('');
                     btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
                     if (response.status === "success") {
-                        var alert = '<div class="alert alert-success" role="alert">Data Sudah Di Simpan</div>';
-                        $('#alertSuccess').append(alert);
+                        Swal.fire({
+                            title: "Success",
+                            text: "Data Sudah Tersimpan!",
+                            icon: "success",
+                            showCancelButton: false,
+                            confirmButtonText: "Ya",
+                            allowOutsideClick: false,
+                        }).then((result) => {
+                            if (result.value) {
+                                location.href = `{{route('pemesanan.index')}}`
+                            }
+                        });
                         setTimeout(function() {
                             if (response.redirect === "" || response.redirect === "reload") {
                                 location.reload();

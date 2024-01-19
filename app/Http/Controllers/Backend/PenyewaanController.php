@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Helpers\SettingWeb;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\RangeTransaksi;
@@ -112,13 +113,23 @@ class PenyewaanController extends Controller
             'kota_tujuan' => 'required',
             'biaya' => 'required',
             'sisa' => 'required',
+            'jaminan' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
+                $today  = date('Y-m-d');
+
+                $get_id = Transaksi::select('id')->whereDate('created_at', $today)->get();
+                $count = $get_id->count();
+
+                $no_inv = 'INV-' . date('Ymd') . '-' . $count + 1;
+
                 $keberangkatan_time = Carbon::now();
+
                 $data = Transaksi::create([
+                    'no_inv' => $no_inv,
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
                     'keberangkatan' => $request['keberangkatan'],
@@ -130,6 +141,7 @@ class PenyewaanController extends Controller
                     'kota_tujuan' => $request['kota_tujuan'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
+                    'jaminan' => $request['jaminan'],
                     'tipe' => 'sewa',
                 ]);
 
@@ -177,7 +189,7 @@ class PenyewaanController extends Controller
                     ->where('transaksi.id', $data->id)
                     ->first();
                 // dd($dataWa->toArray());
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0aNo%20Rekening%20BCA%20A/N%20RIAN%20ADI%20PRASETYO%0a844%20556%207813%0aNo%20Rekening%20Mandiri%20A/N%20RIAN%20ADI%20PRASETYO%0a11400%202484%208940%0a=========================%0aTransfer%20di%20luar%20No%20rekening%20diatas%0abukan%20tanggung%20jawab%20Concept%20AutoRent%0a=========================%0aKeluhan%20Pelanggan%20ke%20nomor%200853%208023%203151%0aUntuk%20Pemesanan%20Ke%20nomor%20%200811%2070%209009"));
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -255,6 +267,7 @@ class PenyewaanController extends Controller
             'kota_tujuan' => 'required',
             'biaya' => 'required',
             'sisa' => 'required',
+            'jaminan' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
@@ -280,6 +293,7 @@ class PenyewaanController extends Controller
                     'kota_tujuan' => $request['kota_tujuan'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
+                    'jaminan' => $request['jaminan'],
                     'tipe' => 'sewa',
                 ]);
 
@@ -351,7 +365,7 @@ class PenyewaanController extends Controller
                     ->where('transaksi.id', $data->id)
                     ->first();
                 // dd($dataWa->toArray());
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0aNo%20Rekening%20BCA%20A/N%20RIAN%20ADI%20PRASETYO%0a844%20556%207813%0aNo%20Rekening%20Mandiri%20A/N%20RIAN%20ADI%20PRASETYO%0a11400%202484%208940%0a=========================%0aTransfer%20di%20luar%20No%20rekening%20diatas%0abukan%20tanggung%20jawab%20Concept%20AutoRent%0a=========================%0aKeluhan%20Pelanggan%20ke%20nomor%200853%208023%203151%0aUntuk%20Pemesanan%20Ke%20nomor%20%200811%2070%209009"));
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -461,7 +475,7 @@ class PenyewaanController extends Controller
                     ->where('transaksi.id', $data->id)
                     ->first();
                 // dd($dataWa->toArray());
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=CV.ANDRA%20PRATAMA%0aConcept%20AutoRent%0a=========================%0aINVOICE%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0aNo%20Rekening%20BCA%20A/N%20RIAN%20ADI%20PRASETYO%0a844%20556%207813%0aNo%20Rekening%20Mandiri%20A/N%20RIAN%20ADI%20PRASETYO%0a11400%202484%208940%0a=========================%0aTransfer%20di%20luar%20No%20rekening%20diatas%0abukan%20tanggung%20jawab%20Concept%20AutoRent%0a=========================%0aKeluhan%20Pelanggan%20ke%20nomor%200853%208023%203151%0aUntuk%20Pemesanan%20Ke%20nomor%20%200811%2070%209009"));
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);

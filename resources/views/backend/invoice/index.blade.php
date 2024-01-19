@@ -47,10 +47,12 @@
 <script>
     $(document).ready(function() {
         $('#dt').DataTable({
-
             responsive: true,
             serverSide: true,
             processing: true,
+            order: [
+                [5, 'desc']
+            ],
             ajax: {
                 url: `{{ route('invoice.index') }}`
             },

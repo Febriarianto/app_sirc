@@ -50,6 +50,9 @@
             responsive: true,
             serverSide: true,
             processing: true,
+            order: [
+                [6, 'desc']
+            ],
             ajax: {
                 url: `{{ route('penyewaan.index') }}`
             },

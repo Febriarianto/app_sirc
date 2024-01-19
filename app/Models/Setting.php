@@ -23,5 +23,7 @@ class Setting extends Model
         'facebook',
         'instagram',
         'youtube',
+        'header_inv',
+        'footer_inv',
     ];
 }

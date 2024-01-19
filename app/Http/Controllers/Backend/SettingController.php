@@ -108,6 +108,8 @@ class SettingController extends Controller
         $logo = NULL;
         $favicon = NULL;
         $dimensions = [array('300', '300', 'setting')];
+        $final_header = str_replace([" ", "\r\n"], ["%20", "%0a"], $request->header_inv);
+        $final_footer = str_replace([" ", "\r\n"], ["%20", "%0a"], $request->footer_inv);
         try {
 
             $data = Setting::findOrFail($id);
@@ -132,6 +134,8 @@ class SettingController extends Controller
                 'facebook' => $request['facebook'],
                 'instagram' => $request['instagram'],
                 'youtube' => $request['youtube'],
+                'header_inv' => $final_header,
+                'footer_inv' => $final_footer,
             ]);
 
             DB::commit();

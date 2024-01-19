@@ -77,6 +77,14 @@
                                     <td>Youtube</td>
                                     <td>{{$data->youtube}}</td>
                                 </tr>
+                                <tr>
+                                    <td>Header Invoice</td>
+                                    <td>{{ str_replace(["%20", "%0a"], [" ", "\r\n"], $data->header_inv) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Footer Invoice</td>
+                                    <td>{{ str_replace(["%20", "%0a"], [" ", "\r\n"], $data->footer_inv) }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

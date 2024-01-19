@@ -125,7 +125,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Over Time:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="over_time" name="over_time" value="{{ $data->over_time ?? '0'}}">
+                                    <input type="text" class="form-control" id="over_time" name="over_time" value="{{ $data->over_time ?? '0'}}" disabled>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -144,17 +144,13 @@
                     </div>
                 </div>
                 <hr>
-                <div class="div">
-                    <button class="btn btn-info" type="button" id="add"> Tambah Pembayaran</button>
-                </div>
-                <hr>
                 @if (isset($pembayaran))
                 @foreach ($pembayaran as $p )
                 <div class="form-group row">
                     <input type="hidden" value="{{$p->id}}" name="idP[]">
                     <div class="col-sm-3">
                         <label class="control-lab" for="harga_sewa">Jenis Pembayaran</label>
-                        <select name='tipeP[]' id='tipe' class='form-control'>
+                        <select name='tipeP[]' id='tipe' class='form-control' disabled>
                             <option value=''>.:Pilih:.</option>
                             <option value='dp' {{$p->tipe == 'dp' ? 'selected' : ''}}>DP</option>
                             <option value='pelunasan' {{$p->tipe == 'pelunasan' ? 'selected' : ''}}>Pelunasan</option>
@@ -166,7 +162,7 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="control-lab" for="metodeP">Metode</label>
-                        <select name='metodeP[]' id='metode' class='form-control'>
+                        <select name='metodeP[]' id='metode' class='form-control' disabled>
                             <option value=''>.:Pilih:.</option>
                             <option value='cash' {{$p->metode == 'cash' ? 'selected' : ''}}>Cash</option>
                             <option value='transfer' {{$p->metode == 'transfer' ? 'selected' : ''}}>Transfer</option>
@@ -184,8 +180,7 @@
             </div>
             <div class="card-footer">
                 <div class="btn-group float-right" role="group" aria-label="Basic outlined example">
-                    <a href="{{route('penyewaan.index')}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-rotate-left"></i> Kembali</a>
-                    <button type="submit" class="btn btn-sm btn-primary">Simpan <i class="fa-solid fa-floppy-disk"></i></button>
+                    <a href="{{route('invoice.index')}}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-rotate-left"></i> Kembali</a>
                 </div>
             </div>
         </div>
@@ -322,65 +317,6 @@
                     }
                 },
             },
-        });
-
-        $("#formStore").submit(function(e) {
-            e.preventDefault();
-            let form = $(this);
-            let btnSubmit = form.find("[type='submit']");
-            let btnSubmitHtml = btnSubmit.html();
-            let url = form.attr("action");
-            let data = new FormData(this);
-            $.ajax({
-                cache: false,
-                processData: false,
-                contentType: false,
-                type: "POST",
-                url: url,
-                data: data,
-                beforeSend: function() {
-                    btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
-                },
-                success: function(response) {
-                    let errorCreate = $('#errorCreate');
-                    errorCreate.css('display', 'none');
-                    errorCreate.find('.alert-text').html('');
-                    btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
-                    if (response.status === "success") {
-                        Swal.fire({
-                            title: "Success",
-                            text: "Data Sudah Tersimpan!",
-                            icon: "success",
-                            showCancelButton: false,
-                            confirmButtonText: "Ya",
-                            allowOutsideClick: false,
-                        }).then((result) => {
-                            if (result.value) {
-                                location.href = `{{route('penyewaan.index')}}`
-                            }
-                        });
-                        setTimeout(function() {
-                            if (response.redirect === "" || response.redirect === "reload") {
-                                location.reload();
-                            } else {
-                                window.open(response.redirect, '_blank');
-                            }
-                        }, 1000);
-                    } else {
-                        toastr.error((response.message ? response.message : "Please complete your form"), 'Failed !');
-                        if (response.error !== undefined) {
-                            errorCreate.removeAttr('style');
-                            $.each(response.error, function(key, value) {
-                                errorCreate.find('.alert-text').append('<span style="display: block">' + value + '</span>');
-                            });
-                        }
-                    }
-                },
-                error: function(response) {
-                    btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
-                    toastr.error(response.responseJSON.message, 'Failed !');
-                }
-            });
         });
     });
 </script>

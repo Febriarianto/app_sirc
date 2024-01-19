@@ -62,6 +62,7 @@
                                         <th>Nama Pelanggan</th>
                                         <th>Tipe</th>
                                         <th>Metode</th>
+                                        <th>Bukti</th>
                                         <th>Ket.</th>
                                         <th>Nominal</th>
                                     </tr>
@@ -142,18 +143,20 @@
 
                     var total = 0;
                     $.each(response.data2, function(key, value) {
+                        let bukti = (value.file == null) ? ('') : (value.file);
                         $('#isi2').append("<tr class='th'>\
                                             <td>" + (key + 1) + "</td>\
                                             <td>" + value.nama + "</td>\
                                             <td>" + value.tipe + "</td>\
                                             <td>" + value.metode + "</td>\
+                                            <td><a href ='{{ asset ('storage/buktiTrf')}}/" + bukti + "' target='_blank'>" + bukti + "</a></td>\
                                             <td>" + value.detail + "</td>\
                                             <td>" + value.nominal + "</td>\
                                             </tr></div>");
                         total += value.nominal;
                     });
                     $('#foot2').append("<tr>\
-                    <td colspan='5' class='text-center'><b> Total </b></td>\
+                    <td colspan='6' class='text-center'><b> Total </b></td>\
                     <td>" + total + "</td>\
                     </tr>")
                 }

@@ -28,6 +28,7 @@
                                     <th>Alamat</th>
                                     <th>No Hp</th>
                                     <th>Tanggal Berangkat</th>
+                                    <th>Estimasi Jam</th>
                                     <th>NO Kendaraan</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -49,6 +50,9 @@
             responsive: true,
             serverSide: true,
             processing: true,
+            order: [
+                [3, 'asc']
+            ],
             ajax: {
                 url: `{{ route('pemesanan.index') }}`
             },
@@ -69,6 +73,10 @@
                 {
                     data: 'keberangkatan',
                     name: 'keberangkatan'
+                },
+                {
+                    data: 'estimasi_time',
+                    name: 'estimasi_time'
                 },
                 {
                     data: 'kendaraan.no_kendaraan',

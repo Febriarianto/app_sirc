@@ -92,6 +92,18 @@
                                     <input type="text" class="form-control" id="youtube" name="youtube" placeholder="Masukkan Nama Youtube" value="{{ $data->youtube ?? '' }}">
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="youtube">Header Invoice </label>
+                                <div class="col-sm-9">
+                                    <textarea name="header_inv" id="" cols="30" rows="5" class="form-control">{{ str_replace(["%20", "%0a"], [" ", "\r\n"], $data->header_inv) ?? ''}}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="youtube">Footer Invoice </label>
+                                <div class="col-sm-9">
+                                    <textarea name="footer_inv" id="" cols="30" rows="10" class="form-control">{{ str_replace(["%20", "%0a"], [" ", "\r\n"], $data->footer_inv) ?? ''}}</textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

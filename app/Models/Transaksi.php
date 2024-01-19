@@ -13,6 +13,7 @@ class Transaksi extends Model
 
     protected $fillable = [
         'id',
+        'no_inv',
         'id_penyewa',
         'id_kendaraan',
         'kota_tujuan',
@@ -20,11 +21,13 @@ class Transaksi extends Model
         'durasi',
         'paket',
         'keberangkatan',
+        'estimasi_time',
         'keberangkatan_time',
         'kepulangan',
         'kepulangan_time',
         'tipe',
         'status',
+        'jaminan',
         'harga_sewa',
         'over_time',
         'biaya',

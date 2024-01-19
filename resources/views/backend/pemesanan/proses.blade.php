@@ -16,7 +16,6 @@
                 </div>
             </div>
             <div class="card-body">
-                <div id="alertSuccess"></div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -137,6 +136,12 @@
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Sisa:</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="sisa" name="sisa" value="{{ $data->sisa ?? ''}}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Jaminan:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="jaminan" name="jaminan" value="{{ $data->jaminan ?? ''}}">
                                 </div>
                             </div>
                         </div>
@@ -352,8 +357,18 @@
                     errorCreate.find('.alert-text').html('');
                     btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
                     if (response.status === "success") {
-                        var alert = '<div class="alert alert-success" role="alert">Data Sudah Di Simpan</div>';
-                        $('#alertSuccess').append(alert);
+                        Swal.fire({
+                            title: "Success",
+                            text: "Data Sudah Tersimpan!",
+                            icon: "success",
+                            showCancelButton: false,
+                            confirmButtonText: "Ya",
+                            allowOutsideClick: false,
+                        }).then((result) => {
+                            if (result.value) {
+                                location.href = `{{route('penyewaan.index')}}`
+                            }
+                        });
                         setTimeout(function() {
                             if (response.redirect === "" || response.redirect === "reload") {
                                 location.reload();
