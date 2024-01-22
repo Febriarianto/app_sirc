@@ -76,6 +76,9 @@
                 },
             },
         });
+
+        var numberRenderer = $.fn.dataTable.render.number('.', ',', 0, '').display;
+
         var dt = $('#dt').DataTable({
             searching: false,
             paging: false,
@@ -118,11 +121,17 @@
                 },
                 {
                     data: 'biaya',
-                    name: 'biaya'
+                    name: 'biaya',
+                    render: function(data, type, full, meta) {
+                        return 'Rp. ' + numberRenderer(full.biaya);
+                    }
                 },
                 {
                     data: 'komisi',
                     name: 'komisi',
+                    render: function(data, type, full, meta) {
+                        return 'Rp. ' + numberRenderer(full.komisi);
+                    }
                 },
             ],
             rowCallback: function(row, data) {
@@ -170,11 +179,11 @@
 
                 // Update footer
                 api.column(4).footer().innerHTML =
-                    'Rp. ' + pageTotal;
+                    'Rp. ' + numberRenderer(pageTotal);
 
                 // Update footer
                 api.column(5).footer().innerHTML =
-                    'Rp. ' + pageTotalKomisi;
+                    'Rp. ' + numberRenderer(pageTotalKomisi);
             }
         });
 

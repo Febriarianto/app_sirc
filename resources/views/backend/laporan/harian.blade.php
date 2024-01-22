@@ -97,6 +97,8 @@
 <script>
     $(document).ready(function() {
 
+        var numberRenderer = $.fn.dataTable.render.number('.', ',', 0, '').display;
+
         var now = new Date();
 
         var day = ("0" + now.getDate()).slice(-2);
@@ -125,6 +127,9 @@
                         let total = (value.total == null) ? (0) : (value.total);
                         let kekurangan = (value.kekurangan == null) ? (0) : (value.kekurangan);
                         let keterangan = (value.keterangan == null) ? ('') : (value.keterangan);
+                        let dp = (value.dp == null) ? (0) : (value.dp);
+                        let transfer = (value.transfer == null) ? (0) : (value.transfer);
+                        let cash = (value.cash == null) ? (0) : (value.cash);
                         $('#isi').append("<tr class='th'>\
                                             <td>" + (key + 1) + "</td>\
                                             <td>" + value.no_kendaraan + "</td>\
@@ -132,11 +137,11 @@
                                             <td>" + lama_sewa + "</td>\
                                             <td>" + keberangkatan + " " + keberangkatan_time + "</td>\
                                             <td>" + kepulangan + " " + kepulangan_time + "</td>\
-                                            <td>" + value.dp + "</td>\
-                                            <td>" + value.transfer + "</td>\
-                                            <td>" + value.cash + "</td>\
-                                            <td>" + kekurangan + "</td>\
-                                            <td>" + total + "</td>\
+                                            <td>" + numberRenderer(dp) + "</td>\
+                                            <td>" + numberRenderer(transfer) + "</td>\
+                                            <td>" + numberRenderer(cash) + "</td>\
+                                            <td>" + numberRenderer(kekurangan) + "</td>\
+                                            <td>" + numberRenderer(total) + "</td>\
                                             <td>" + keterangan + "</td>\
                                             </tr></div>");
                     });
@@ -151,13 +156,13 @@
                                             <td>" + value.metode + "</td>\
                                             <td><a href ='{{ asset ('storage/buktiTrf')}}/" + bukti + "' target='_blank'>" + bukti + "</a></td>\
                                             <td>" + value.detail + "</td>\
-                                            <td>" + value.nominal + "</td>\
+                                            <td>" + numberRenderer(value.nominal) + "</td>\
                                             </tr></div>");
                         total += value.nominal;
                     });
                     $('#foot2').append("<tr>\
                     <td colspan='6' class='text-center'><b> Total </b></td>\
-                    <td>" + total + "</td>\
+                    <td>Rp. " + numberRenderer(total) + "</td>\
                     </tr>")
                 }
             })

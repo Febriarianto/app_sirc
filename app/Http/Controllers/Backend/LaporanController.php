@@ -20,6 +20,7 @@ class LaporanController extends Controller
     {
         $this->middleware('can:laporan-harian-list', ['only' => ['harian_index', 'judul']]);
         $this->middleware('can:laporan-bulanan-list', ['only' => ['bulanan_index', 'judul']]);
+        $this->middleware('can:laporan-omset-list', ['only' => ['omset_index', 'judul']]);
         $this->middleware('can:laporan-referral-list', ['only' => ['referral_index', 'judul']]);
     }
 
@@ -49,8 +50,7 @@ class LaporanController extends Controller
             $data = Transaksi::where('id_kendaraan', $request['kendaraan'])
                 ->select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya', 'transaksi.kepulangan_time', 'transaksi.keberangkatan_time')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
-                // ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%')
-                ->whereBetween('keberangkatan', [$tAwal, $tAhir])
+                ->whereBetween('kepulangan', [$tAwal, $tAhir])
                 ->where('transaksi.status', '=', 'selesai');
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -130,5 +130,27 @@ class LaporanController extends Controller
         }
 
         return view('backend.laporan.harian', compact('config'));
+    }
+
+    public function omset_index(Request $request)
+    {
+        $config['title'] = "Laporan Omset";
+        $config['breadcrumbs'] = [
+            ['url' => '#', 'title' => "Laporan Omset"],
+        ];
+
+        $tAwal = $request['tAwal'];
+        $tAhir = $request['tAhir'];
+        if ($request->ajax()) {
+            $data = Transaksi::select('transaksi.id', 'penyewa.nama', 'kendaraan.no_kendaraan', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya', 'transaksi.kepulangan_time', 'transaksi.keberangkatan_time')
+                ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
+                ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
+                ->whereBetween('kepulangan', [$tAwal, $tAhir])
+                ->where('transaksi.status', '=', 'selesai');
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->make();
+        }
+        return view('backend.laporan.omset', compact('config'));
     }
 }
