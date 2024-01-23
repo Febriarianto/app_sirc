@@ -65,12 +65,14 @@ class LaporanController extends Controller
         $config['breadcrumbs'] = [
             ['url' => '#', 'title' => "Laporan Referral"],
         ];
+        $tAwal = $request['tAwal'];
+        $tAhir = $request['tAhir'];
         if ($request->ajax()) {
             $data = Transaksi::select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
                 ->selectRaw('biaya * 0.1 as komisi')
                 ->where('penyewa.referral_id', '=', $request['referral'])
-                ->where('keberangkatan', 'LIKE', '%' . $request['bulan'] . '%')
+                ->whereBetween('kepulangan', [$tAwal, $tAhir])
                 ->where('transaksi.status', '=', 'selesai');
             return DataTables::of($data)
                 ->addIndexColumn()

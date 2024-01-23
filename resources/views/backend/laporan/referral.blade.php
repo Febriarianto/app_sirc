@@ -8,8 +8,11 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-6">
-                    <input type="month" class="form-control" name="bulan" id="bulan">
+                <div class="col-3">
+                    <input type="date" id="tAwal" class="form-control">
+                </div>
+                <div class="col-3">
+                    <input type="date" id="tAhir" class="form-control">
                 </div>
                 <div class="col-6">
                     <select id="select2Referral" style="width: 100% !important;" name="id_referral">
@@ -96,7 +99,8 @@
             ajax: {
                 url: `{{ route('laporan.referral') }}`,
                 data: function(d) {
-                    d.bulan = $('#bulan').val();
+                    d.tAwal = $('#tAwal').val();
+                    d.tAhir = $('#tAhir').val();
                     d.referral = $('#select2Referral').val();
                 }
             },
@@ -191,7 +195,7 @@
             dt.draw();
         });
 
-        $('#bulan').on('change', function() {
+        $('#tAwal, #tAhir').on('change', function() {
             dt.draw();
         })
 
