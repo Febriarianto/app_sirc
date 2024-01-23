@@ -276,6 +276,16 @@ class PenyewaanController extends Controller
 
                 $data = Transaksi::find($id);
 
+                if ((int)$request['id_kendaraan'] !== $data->id_kendaraan) {
+                    $dtRange = RangeTransaksi::select('id')->where('id_kendaraan', $data->id_kendaraan)->get();
+                    foreach ($dtRange as $dtR) {
+                        $dataOld = RangeTransaksi::find($dtR->id);
+                        $dataOld->update([
+                            'id_kendaraan' => $request['id_kendaraan']
+                        ]);
+                    }
+                }
+
                 if ($data->lama_sewa !== $request['lama_sewa']) {
                     $perpanjang = 'Y';
                 } else {
