@@ -90,19 +90,36 @@
             processing: true,
             dom: 'Bfrtip',
             buttons: [{
-                extend: 'print',
-                footer: true,
-                text: 'Print',
-                title: function() {
-                    var nopol = $('#select2Kendaraan').select2('data');
-                    if (nopol[0] == null) {
-                        alert("Harap Pilih Kendaraan")
-                    } else {
-                        var judul = '<h6> Laporan Bulanan <br> Pemilik : ' + $('#pemilik').val() + ' <br> No Kendaraan : ' + nopol[0].text + ' Jenis : ' + $('#jenis').val() + ' ' + $('#warna').val() + ' ( Periode : ' + $('#tAwal').val() + ' s/d ' + $('#tAhir').val() + ')<br><h6><hr>';
-                        return judul
-                    }
+                    extend: 'print',
+                    footer: true,
+                    text: '<i class="fas fa-print"></i> Print',
+                    title: function() {
+                        var nopol = $('#select2Kendaraan').select2('data');
+                        if (nopol[0] == null) {
+                            alert("Harap Pilih Kendaraan")
+                        } else {
+                            var judul = '<h6> Laporan Bulanan <br> Pemilik : ' + $('#pemilik').val() + ' <br> No Kendaraan : ' + nopol[0].text + ' Jenis : ' + $('#jenis').val() + ' ' + $('#warna').val() + ' ( Periode : ' + $('#tAwal').val() + ' s/d ' + $('#tAhir').val() + ')<br><h6><hr>';
+                            return judul
+                        }
+                    },
                 },
-            }],
+                {
+                    extend: 'excelHtml5',
+                    className: 'btn btn-info',
+                    footer: true,
+                    text: '<i class="fas fa-download"></i> Excel',
+                    title: 'Laporan Bulanan',
+                    messageTop: function() {
+                        var nopol = $('#select2Kendaraan').select2('data');
+                        if (nopol[0] == null) {
+                            alert("Harap Pilih Kendaraan")
+                        } else {
+                            var judul = 'Pemilik : ' + $('#pemilik').val() + ' No Kendaraan : ' + nopol[0].text + ' Jenis : ' + $('#jenis').val() + ' ' + $('#warna').val() + ' ( Periode : ' + $('#tAwal').val() + ' s/d ' + $('#tAhir').val() + ')';
+                            return judul
+                        }
+                    },
+                }
+            ],
             ajax: {
                 url: `{{ route('laporan.bulanan') }}`,
                 data: function(d) {
