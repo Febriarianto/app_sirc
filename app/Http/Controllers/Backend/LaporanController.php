@@ -113,7 +113,7 @@ class LaporanController extends Controller
                 ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
                 ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
                 ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
-                ->whereDate('transaksi.updated_at', $tgl)
+                // ->whereDate('transaksi.updated_at', $tgl)
                 ->where('transaksi.status', '=', 'proses')
                 ->get();
 

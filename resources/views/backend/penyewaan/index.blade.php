@@ -47,11 +47,17 @@
 <script>
     $(document).ready(function() {
         $('#dt').DataTable({
+            "aLengthMenu": [100],
+            "createdRow": function(row, data, dataIndex) {
+                if (parseInt(data.lama_sewa) < data.hari) {
+                    $(row).addClass('bg-danger');
+                }
+            },
             responsive: true,
             serverSide: true,
             processing: true,
             order: [
-                [6, 'desc']
+                [6, 'asc']
             ],
             ajax: {
                 url: `{{ route('penyewaan.index') }}`
@@ -92,7 +98,7 @@
                     name: 'id',
                     render: function(data, type, full, meta) {
                         if (full.tanggal !== null) {
-                            return full.durasi;
+                            return full.hari + ' Hari, ' + full.jam + ' Jam';
                         } else {
                             return '-';
                         }

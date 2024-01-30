@@ -46,19 +46,28 @@ class PenyewaanController extends Controller
             $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'proses'])->get();
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('durasi', function ($row) {
+                ->addColumn('hari', function ($row) {
                     $waktustart = $row->keberangkatan . " " . $row->keberangkatan_time;
                     $waktuend = date("Y-m-d h:i:s");
                     $datetime1 = new \DateTime($waktustart); //start time
                     $datetime2 = new \DateTime($waktuend); //end time
                     $durasi = $datetime1->diff($datetime2);
-                    if ($durasi->format('%y') !== '0') {
-                        return $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
-                    } elseif ($durasi->format('%m') !== '0') {
-                        return $durasi->format('%m bulan, %d hari, %H jam');
-                    } else {
-                        return $durasi->format('%d hari, %H jam');
-                    }
+                    // if ($durasi->format('%y') !== '0') {
+                    //     return $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
+                    // } elseif ($durasi->format('%m') !== '0') {
+                    //     return $durasi->format('%m bulan, %d hari, %H jam');
+                    // } else {
+                    //     return $durasi->format('%d hari, %H jam');
+                    // }
+                    return $durasi->format('%d');
+                })
+                ->addColumn('jam', function ($row) {
+                    $waktustart = $row->keberangkatan . " " . $row->keberangkatan_time;
+                    $waktuend = date("Y-m-d h:i:s");
+                    $datetime1 = new \DateTime($waktustart); //start time
+                    $datetime2 = new \DateTime($waktuend); //end time
+                    $durasi = $datetime1->diff($datetime2);
+                    return $durasi->format('%H');
                 })
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>';
