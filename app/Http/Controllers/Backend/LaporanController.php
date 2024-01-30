@@ -108,18 +108,44 @@ class LaporanController extends Controller
                 'transaksi.sisa as kekurangan',
                 'transaksi.biaya as total'
             )
-                ->selectRaw('(select 
-                SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp
-                from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
-                ->selectRaw('(select 
-                SUM(CASE WHEN pembayaran.tipe = "pelunasan" AND pembayaran.metode = "cash" THEN pembayaran.nominal ELSE 0 END) as cash
-                from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as cash')
-                ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" AND pembayaran.metode = "transfer" THEN pembayaran.nominal ELSE 0 END) as cash
-                from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as transfer')
+                ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
+                ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
+                ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
                 ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
                 ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
                 ->whereDate('transaksi.updated_at', $tgl)
-                ->orWhere('transaksi.status', '=', 'proses')
+                ->where('transaksi.status', '=', 'proses')
+                ->get();
+
+            $data1 = Transaksi::select(
+                'transaksi.id',
+                'transaksi.id_kendaraan',
+                'transaksi.id_penyewa',
+                'penyewa.nama',
+                'transaksi.lama_sewa',
+                'kendaraan.no_kendaraan',
+                'transaksi.keberangkatan',
+                'transaksi.keberangkatan_time',
+                'transaksi.kepulangan',
+                'transaksi.kepulangan_time',
+                'transaksi.status',
+                'transaksi.keterangan',
+                'transaksi.tipe',
+                'transaksi.sisa as kekurangan',
+                'transaksi.biaya as total'
+            )
+                ->selectRaw('(select 
+                    SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp
+                    from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
+                ->selectRaw('(select 
+                    SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip
+                    from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
+                ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan
+                    from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
+                ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                ->whereDate('transaksi.updated_at', $tgl)
+                ->where('transaksi.status', '=', 'selesai')
                 ->get();
 
             $data2 = Pembayaran::select('pembayaran.*', 'penyewa.nama')
@@ -128,7 +154,7 @@ class LaporanController extends Controller
                 ->whereDate('pembayaran.created_at', $tgl)
                 ->get();
 
-            return response(['data1' => $data, 'data2' => $data2]);
+            return response(['data' => $data, 'data1' => $data1, 'data2' => $data2]);
         }
 
         return view('backend.laporan.harian', compact('config'));
@@ -154,5 +180,23 @@ class LaporanController extends Controller
                 ->make();
         }
         return view('backend.laporan.omset', compact('config'));
+    }
+
+    public function detail(Request $request)
+    {
+        $config['title'] = "Laporan Harian";
+        $config['breadcrumbs'] = [
+            ['url' => '#', 'title' => "Laporan Harian"],
+        ];
+
+        if ($request->ajax()) {
+            $id = $_GET['id'];
+            $data = Pembayaran::select('id', 'id_transaksi', 'tipe', 'metode', 'nominal')
+                ->selectRaw('DATE_FORMAT(created_at, "%Y-%m-%d") as date')
+                ->where('id_transaksi', $id)
+                ->get();
+
+            return response(['detail' => $data]);
+        }
     }
 }

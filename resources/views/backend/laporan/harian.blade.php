@@ -28,6 +28,36 @@
                             <div class="float-right mb-2" id="shTgl">
                             </div>
                         </div>
+                        <br>
+                        <hr>
+                        <h6>Laporan Mobil Di Sewa</h6>
+                        <div class="table-responsive">
+                            <table id="tbSewa" class="table table-bordered w-100">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th rowspan="2">No</th>
+                                        <th rowspan="2">No Kendaraan</th>
+                                        <th rowspan="2">Nama Pelanggan</th>
+                                        <th rowspan="2">Lama Sewa</th>
+                                        <th rowspan="2">Berangkat</th>
+                                        <th rowspan="2">Pulang</th>
+                                        <th colspan="3">Pembayaran</th>
+                                        <th rowspan="2">Kurang</th>
+                                        <th rowspan="2">Total</th>
+                                        <th rowspan="2">Ket.</th>
+                                    </tr>
+                                    <tr>
+                                        <th>DP</th>
+                                        <th>Titip</th>
+                                        <th>Pelunasan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="isi">
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr>
+                        <h6>Laporan Mobil Pulang</h6>
                         <div class="table-responsive">
                             <table id="dt" class="table table-bordered w-100">
                                 <thead class="text-center">
@@ -45,26 +75,30 @@
                                     </tr>
                                     <tr>
                                         <th>DP</th>
-                                        <th>Transfer</th>
-                                        <th>Cash</th>
+                                        <th>Titip</th>
+                                        <th>Pelunasan</th>
                                     </tr>
                                 </thead>
-                                <tbody id="isi">
+                                <tbody id="isi1">
                                 </tbody>
                             </table>
                         </div>
                         <hr>
+                        <h6>Laporan Uang Masuk</h6>
                         <div class="table-responsive">
                             <table id="dt2" class="table table-bordered w-100">
                                 <thead class="text-center">
                                     <tr>
-                                        <th>No</th>
-                                        <th>Nama Pelanggan</th>
-                                        <th>Tipe</th>
-                                        <th>Metode</th>
-                                        <th>Bukti</th>
-                                        <th>Ket.</th>
-                                        <th>Nominal</th>
+                                        <th rowspan="2">No</th>
+                                        <th rowspan="2">Nama Pelanggan</th>
+                                        <th rowspan="2">Tipe</th>
+                                        <th rowspan="2">Bukti</th>
+                                        <th rowspan="2">Ket.</th>
+                                        <th colspan="2">Nominal</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Cash</th>
+                                        <th>Transfer</th>
                                     </tr>
                                 </thead>
                                 <tbody id="isi2">
@@ -118,7 +152,8 @@
                     tgl: tglA
                 },
                 success: function(response) {
-                    $.each(response.data1, function(key, value) {
+                    $.each(response.data, function(key, value) {
+                        let idT = value.id;
                         let lama_sewa = (value.lama_sewa == null) ? ('') : (value.lama_sewa);
                         let kepulangan = (value.kepulangan == null) ? ('') : (value.kepulangan);
                         let kepulangan_time = (value.kepulangan_time == null) ? ('') : (value.kepulangan_time);
@@ -128,9 +163,9 @@
                         let kekurangan = (value.kekurangan == null) ? (0) : (value.kekurangan);
                         let keterangan = (value.keterangan == null) ? ('') : (value.keterangan);
                         let dp = (value.dp == null) ? (0) : (value.dp);
-                        let transfer = (value.transfer == null) ? (0) : (value.transfer);
-                        let cash = (value.cash == null) ? (0) : (value.cash);
-                        $('#isi').append("<tr class='th'>\
+                        let titip = (value.titip == null) ? (0) : (value.titip);
+                        let pelunasan = (value.pelunasan == null) ? (0) : (value.pelunasan);
+                        $('#isi').append("<tr id='" + value.id + "' class='th'>\
                                             <td>" + (key + 1) + "</td>\
                                             <td>" + value.no_kendaraan + "</td>\
                                             <td>" + value.nama + "</td>\
@@ -138,31 +173,99 @@
                                             <td>" + keberangkatan + " " + keberangkatan_time + "</td>\
                                             <td>" + kepulangan + " " + kepulangan_time + "</td>\
                                             <td>" + numberRenderer(dp) + "</td>\
-                                            <td>" + numberRenderer(transfer) + "</td>\
-                                            <td>" + numberRenderer(cash) + "</td>\
+                                            <td>" + numberRenderer(titip) + "</td>\
+                                            <td>" + numberRenderer(pelunasan) + "</td>\
                                             <td>" + numberRenderer(kekurangan) + "</td>\
                                             <td>" + numberRenderer(total) + "</td>\
                                             <td>" + keterangan + "</td>\
-                                            </tr></div>");
+                                            </tr>");
+                        $.ajax({
+                            url: `{{ route('laporan.detail') }}`,
+                            type: 'GET',
+                            data: {
+                                id: idT
+                            },
+                            success: function(response) {
+                                $.each(response.detail, function(key, value) {
+                                    $('table#tbSewa tr#' + value.id_transaksi + '').after("<tr class='th'>\
+                                    <td colspan='3'>" + value.tipe + "</td>\
+                                    <td colspan='3'>" + value.metode + "</td>\
+                                    <td colspan='3'>" + numberRenderer(value.nominal) + "</td>\
+                                    <td colspan='3'>" + value.date + "</td>\
+                                   </tr>");
+                                })
+                            }
+                        })
                     });
 
-                    var total = 0;
+                    $.each(response.data1, function(key, value) {
+                        let idT = value.id;
+                        let lama_sewa = (value.lama_sewa == null) ? ('') : (value.lama_sewa);
+                        let kepulangan = (value.kepulangan == null) ? ('') : (value.kepulangan);
+                        let kepulangan_time = (value.kepulangan_time == null) ? ('') : (value.kepulangan_time);
+                        let keberangkatan = (value.keberangkatan == null) ? ('') : (value.keberangkatan);
+                        let keberangkatan_time = (value.keberangkatan_time == null) ? ('') : (value.keberangkatan_time);
+                        let total = (value.total == null) ? (0) : (value.total);
+                        let kekurangan = (value.kekurangan == null) ? (0) : (value.kekurangan);
+                        let keterangan = (value.keterangan == null) ? ('') : (value.keterangan);
+                        let dp = (value.dp == null) ? (0) : (value.dp);
+                        let titip = (value.titip == null) ? (0) : (value.titip);
+                        let pelunasan = (value.pelunasan == null) ? (0) : (value.pelunasan);
+                        $('#isi1').append("<tr id='" + value.id + "' class='th'>\
+                                            <td>" + (key + 1) + "</td>\
+                                            <td>" + value.no_kendaraan + "</td>\
+                                            <td>" + value.nama + "</td>\
+                                            <td>" + lama_sewa + "</td>\
+                                            <td>" + keberangkatan + " " + keberangkatan_time + "</td>\
+                                            <td>" + kepulangan + " " + kepulangan_time + "</td>\
+                                            <td>" + numberRenderer(dp) + "</td>\
+                                            <td>" + numberRenderer(titip) + "</td>\
+                                            <td>" + numberRenderer(pelunasan) + "</td>\
+                                            <td>" + numberRenderer(kekurangan) + "</td>\
+                                            <td>" + numberRenderer(total) + "</td>\
+                                            <td>" + keterangan + "</td>\
+                                            </tr>");
+                        $.ajax({
+                            url: `{{ route('laporan.detail') }}`,
+                            type: 'GET',
+                            data: {
+                                id: idT
+                            },
+                            success: function(response) {
+                                $.each(response.detail, function(key, value) {
+                                    $('table#dt tr#' + value.id_transaksi + '').after("<tr class='th'>\
+                                    <td colspan='3'>" + value.tipe + "</td>\
+                                    <td colspan='3'>" + value.metode + "</td>\
+                                    <td colspan='3'>" + numberRenderer(value.nominal) + "</td>\
+                                    <td colspan='3'>" + value.date + "</td>\
+                                   </tr>");
+                                })
+                            }
+                        });
+                    });
+
+                    var totalDP = 0;
+                    var totalTrf = 0;
                     $.each(response.data2, function(key, value) {
                         let bukti = (value.file == null) ? ('') : (value.file);
+                        let dp = (value.metode == 'cash') ? (value.nominal) : (0);
+                        let trf = (value.metode == 'transfer') ? (value.nominal) : (0);
                         $('#isi2').append("<tr class='th'>\
                                             <td>" + (key + 1) + "</td>\
                                             <td>" + value.nama + "</td>\
                                             <td>" + value.tipe + "</td>\
-                                            <td>" + value.metode + "</td>\
                                             <td><a href ='{{ asset ('storage/buktiTrf')}}/" + bukti + "' target='_blank'>" + bukti + "</a></td>\
                                             <td>" + value.detail + "</td>\
-                                            <td>" + numberRenderer(value.nominal) + "</td>\
+                                            <td>" + numberRenderer(dp) + "</td>\
+                                            <td>" + numberRenderer(trf) + "</td>\
                                             </tr></div>");
-                        total += value.nominal;
+                        totalDP += dp;
+                        totalTrf += trf;
                     });
                     $('#foot2').append("<tr>\
-                    <td colspan='6' class='text-center'><b> Total </b></td>\
-                    <td>Rp. " + numberRenderer(total) + "</td>\
+                    <td colspan='5' class='text-center'><b> Total </b></td>\
+                    <td>Rp. " + numberRenderer(totalDP) + "</td>\
+                    <td>Rp. " + numberRenderer(totalTrf) + "</td>\
                     </tr>")
                 }
             })

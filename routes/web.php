@@ -96,6 +96,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
 
     //laporan
     Route::get('judul', [Backend\LaporanController::class, 'judul'])->name('laporan.judul');
+    Route::get('laporan-detail', [Backend\LaporanController::class, 'detail'])->name('laporan.detail');
     Route::get('laporan-harian', [Backend\LaporanController::class, 'harian_index'])->name('laporan.harian');
     Route::get('laporan-bulanan', [Backend\LaporanController::class, 'bulanan_index'])->name('laporan.bulanan');
     Route::get('laporan-omset', [Backend\LaporanController::class, 'omset_index'])->name('laporan.omset');

@@ -84,8 +84,8 @@
                     name: 'kepulangan'
                 },
                 {
-                    data: 'id',
-                    name: 'id',
+                    data: 'keterangan',
+                    name: 'keterangan',
                     render: function(data, type, full, meta) {
                         if (full.keterangan == 'lunas') {
                             return '<span class="badge badge-success">' + full.keterangan + '</span>';
