@@ -41,7 +41,7 @@ class DashboardController extends Controller
         $countNotAvail = $kendaraan[0]->tidakAda;
         // $countCar = Kendaraan::count();
         $countPenyewa = Penyewa::count();
-        $countPemesanan = Transaksi::where('tipe', 'pemesanan')->count();
+        $countPemesanan = Transaksi::where('tipe', 'pesan')->count();
 
         $data = [
             // 'countCar' => $countCar,
@@ -56,12 +56,22 @@ class DashboardController extends Controller
 
     public function graph()
     {
+        $nopol = $_GET['nopol'];
         $year = date('Y');
-        $data = Transaksi::selectRaw('count(*) as nilai, MONTH(keberangkatan) as bulan')
-            ->whereYear('keberangkatan', $year)
-            ->where('tipe', '=', 'sewa')
-            ->groupByRaw('MONTH(keberangkatan)')
-            ->get();
+        if ($nopol !== "") {
+            $data = Transaksi::selectRaw('count(*) as nilai, MONTH(keberangkatan) as bulan')
+                ->whereYear('keberangkatan', $year)
+                ->where('tipe', '=', 'sewa')
+                ->where('id_kendaraan', $nopol)
+                ->groupByRaw('MONTH(keberangkatan)')
+                ->get();
+        } else {
+            $data = Transaksi::selectRaw('count(*) as nilai, MONTH(keberangkatan) as bulan')
+                ->whereYear('keberangkatan', $year)
+                ->where('tipe', '=', 'sewa')
+                ->groupByRaw('MONTH(keberangkatan)')
+                ->get();
+        }
 
         $bulan = [];
         $countBulan = [];

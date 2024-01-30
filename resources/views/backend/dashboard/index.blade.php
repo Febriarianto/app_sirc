@@ -107,10 +107,14 @@
             },
         });
 
-        $('#select2Kendaraan').on('change', function() {
+        function load_graph() {
+            var nopol = $('#select2Kendaraan').select2('data');
             $.ajax({
                 url: "{{ route('dashboard.graph') }}",
                 dataType: "json",
+                data: {
+                    nopol: (nopol.length !== 1) ? null : nopol[0].id
+                },
                 type: "GET",
                 success: function(response) {
                     const xValues = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -142,14 +146,20 @@
                                 yAxes: [{
                                     ticks: {
                                         min: 0,
-                                        max: 20
+                                        max: 200
                                     }
                                 }],
                             }
                         }
                     });
                 }
-            })
+            });
+        };
+
+        load_graph();
+
+        $('#select2Kendaraan').on('change', function() {
+            load_graph();
         });
     })
 </script>
