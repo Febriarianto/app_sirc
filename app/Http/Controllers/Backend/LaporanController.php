@@ -174,7 +174,8 @@ class LaporanController extends Controller
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
                 ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
                 ->whereBetween('kepulangan', [$tAwal, $tAhir])
-                ->where('transaksi.status', '=', 'selesai');
+                ->where('transaksi.status', '=', 'selesai')
+                ->orderBy('kendaraan.no_kendaraan', 'ASC');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->make();
