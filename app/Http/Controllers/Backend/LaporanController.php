@@ -170,12 +170,15 @@ class LaporanController extends Controller
         $tAwal = $request['tAwal'];
         $tAhir = $request['tAhir'];
         if ($request->ajax()) {
-            $data = Transaksi::select('transaksi.id', 'penyewa.nama', 'kendaraan.no_kendaraan', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya', 'transaksi.kepulangan_time', 'transaksi.keberangkatan_time')
+            $data = Transaksi::select('kendaraan.no_kendaraan',)
+                ->selectRaw('sum(transaksi.biaya) as biaya')
+                // ->select('transaksi.id', 'penyewa.nama', 'kendaraan.no_kendaraan', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya', 'transaksi.kepulangan_time', 'transaksi.keberangkatan_time')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
                 ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
                 ->whereBetween('kepulangan', [$tAwal, $tAhir])
                 ->where('transaksi.status', '=', 'selesai')
-                ->orderBy('kendaraan.no_kendaraan', 'ASC');
+                // ->orderBy('kendaraan.no_kendaraan', 'ASC');
+                ->groupBy('kendaraan.no_kendaraan');
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->make();
