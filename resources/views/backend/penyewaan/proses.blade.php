@@ -70,9 +70,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Keberangkatan :</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Keberangkatan :</label>
                             <div class="col-sm-9">
-                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}" disabled>
+                                <input type="datetime" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan . ' ' . $data->keberangkatan_time ?? '' }}" disabled>
                             </div>
                         </div>
                         <hr>
