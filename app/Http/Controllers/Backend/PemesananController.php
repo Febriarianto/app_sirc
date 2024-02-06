@@ -319,13 +319,14 @@ class PemesananController extends Controller
             try {
 
                 $keberangkatan_time = Carbon::now();
+                $keberangkatan = Carbon::today();
 
                 $data = Transaksi::find($id);
 
                 $data->update([
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
-                    'keberangkatan' => $request['keberangkatan'],
+                    'keberangkatan' => $request['status'] == 'proses' ? $keberangkatan : $request['keberangkatan'],
                     'keberangkatan_time' => $keberangkatan_time,
                     'status' => $request['status'],
                     'lama_sewa' => $request['lama_sewa'],
