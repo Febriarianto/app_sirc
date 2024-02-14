@@ -32,8 +32,13 @@ class InvoiceController extends Controller
         ];
 
         if ($request->ajax()) {
-            $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'selesai'])->get();;
-
+            if ($request->tAwal && $request->tAhir) {
+                $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'selesai'])
+                    ->whereBetween('kepulangan', [$request->tAwal, $request->tAhir])
+                    ->get();
+            } else {
+                $data = Transaksi::with('penyewa', 'kendaraan')->where(['tipe' => 'sewa', 'status' => 'selesai'])->get();;
+            }
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {

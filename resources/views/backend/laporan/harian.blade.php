@@ -275,6 +275,7 @@
 
         $('#tgl').on('change', function() {
             $('#isi').empty();
+            $('#isi1').empty();
             $('#isi2').empty();
             $('#foot2').empty();
             $('#shTgl').empty();

@@ -71,8 +71,20 @@
                         </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Keberangkatan :</label>
-                            <div class="col-sm-9">
-                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}" disabled>
+                            <div class="col-sm-6">
+                                <input type="date" class="form-control" value="{{ $data->keberangkatan ?? date('Y-m-d') }}" readonly>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="time" class="form-control" value="{{ $data->keberangkatan_time ?? '' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Kepulangan :</label>
+                            <div class="col-sm-6">
+                                <input type="date" class="form-control" value="{{ $data->kepulangan ?? date('Y-m-d') }}" readonly>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="time" class="form-control" value="{{ $data->kepulangan_time ?? '' }}" readonly>
                             </div>
                         </div>
                         <hr>

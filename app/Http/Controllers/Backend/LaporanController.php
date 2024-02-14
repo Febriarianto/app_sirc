@@ -144,7 +144,7 @@ class LaporanController extends Controller
                     from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
                 ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
                 ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
-                ->whereDate('transaksi.updated_at', $tgl)
+                ->where('transaksi.kepulangan', $tgl)
                 ->where('transaksi.status', '=', 'selesai')
                 ->get();
 
