@@ -50,6 +50,21 @@
             responsive: true,
             serverSide: true,
             processing: true,
+            dom: "<'row'<'col-sm-2'l><'col-sm-2'B><'col-sm-8'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            buttons: [{
+                extend: 'print',
+                footer: true,
+                text: 'Print',
+                title: function() {
+                    var judul = 'Daftar Pemesanan Mobil';
+                    return judul;
+                },
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
+            }],
             order: [
                 [3, 'asc']
             ],
