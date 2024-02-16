@@ -120,6 +120,9 @@
                     },
                 }
             ],
+            order: [
+                [3, 'ASC']
+            ],
             ajax: {
                 url: `{{ route('laporan.bulanan') }}`,
                 data: function(d) {

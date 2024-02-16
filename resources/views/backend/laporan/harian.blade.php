@@ -165,11 +165,12 @@
                         let dp = (value.dp == null) ? (0) : (value.dp);
                         let titip = (value.titip == null) ? (0) : (value.titip);
                         let pelunasan = (value.pelunasan == null) ? (0) : (value.pelunasan);
+                        let paket = (value.paket == 'jam') ? ('Jam') : ('Hari');
                         $('#isi').append("<tr id='" + value.id + "' class='th'>\
                                             <td>" + (key + 1) + "</td>\
                                             <td>" + value.no_kendaraan + "</td>\
                                             <td>" + value.nama + "</td>\
-                                            <td>" + lama_sewa + "</td>\
+                                            <td>" + lama_sewa + ' ' + paket + "</td>\
                                             <td>" + keberangkatan + " " + keberangkatan_time + "</td>\
                                             <td>" + kepulangan + " " + kepulangan_time + "</td>\
                                             <td>" + numberRenderer(dp) + "</td>\
@@ -211,11 +212,12 @@
                         let dp = (value.dp == null) ? (0) : (value.dp);
                         let titip = (value.titip == null) ? (0) : (value.titip);
                         let pelunasan = (value.pelunasan == null) ? (0) : (value.pelunasan);
+                        let paket = (value.paket == 'jam') ? ('Jam') : ('Hari');
                         $('#isi1').append("<tr id='" + value.id + "' class='th'>\
                                             <td>" + (key + 1) + "</td>\
                                             <td>" + value.no_kendaraan + "</td>\
                                             <td>" + value.nama + "</td>\
-                                            <td>" + lama_sewa + "</td>\
+                                            <td>" + lama_sewa + ' ' + paket + "</td>\
                                             <td>" + keberangkatan + " " + keberangkatan_time + "</td>\
                                             <td>" + kepulangan + " " + kepulangan_time + "</td>\
                                             <td>" + numberRenderer(dp) + "</td>\

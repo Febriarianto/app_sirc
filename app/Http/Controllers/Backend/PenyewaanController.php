@@ -223,7 +223,39 @@ class PenyewaanController extends Controller
             ['url' => route('invoice.index'), 'title' => "Cetak"],
             ['url' => '#', 'title' => "Proses Pemyewaan"],
         ];
+
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+
+        $kepulangan = Carbon::now();
+        $kepulangan_time = Carbon::now();
+
+        $waktustart = $data->keberangkatan . " " . $data->keberangkatan_time;
+        $waktuend = date("Y-m-d h:i:s");
+        $datetime1 = new \DateTime($waktustart); //start time
+        $datetime2 = new \DateTime($waktuend); //end time
+        $durasi = $datetime1->diff($datetime2);
+        if ($durasi->format('%y') !== '0') {
+            $d = $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
+        } elseif ($durasi->format('%m') !== '0') {
+            $d = $durasi->format('%m bulan, %d hari, %H jam');
+        } else {
+            $d = $durasi->format('%d hari, %H jam');
+        }
+
+        if ($data->sisa !== "0") {
+            $ket = "belum lunas";
+        } else {
+            $ket = "lunas";
+        }
+
+        $data->update([
+            'durasi' => $d,
+            'kepulangan' => $kepulangan,
+            'kepulangan_time' => $kepulangan_time,
+            'keterangan' => $ket,
+            'status' => 'selesai',
+        ]);
+
         $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
         $config['form'] = (object)[
             'method' => 'PUT',
@@ -407,22 +439,24 @@ class PenyewaanController extends Controller
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
-                $kepulangan = Carbon::now();
-                $kepulangan_time = Carbon::now();
+
+                // $kepulangan = Carbon::now();
+                // $kepulangan_time = Carbon::now();
+
                 $data = Transaksi::find($id);
 
-                $waktustart = $data->keberangkatan . " " . $data->keberangkatan_time;
-                $waktuend = date("Y-m-d h:i:s");
-                $datetime1 = new \DateTime($waktustart); //start time
-                $datetime2 = new \DateTime($waktuend); //end time
-                $durasi = $datetime1->diff($datetime2);
-                if ($durasi->format('%y') !== '0') {
-                    $d = $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
-                } elseif ($durasi->format('%m') !== '0') {
-                    $d = $durasi->format('%m bulan, %d hari, %H jam');
-                } else {
-                    $d = $durasi->format('%d hari, %H jam');
-                }
+                // $waktustart = $data->keberangkatan . " " . $data->keberangkatan_time;
+                // $waktuend = date("Y-m-d h:i:s");
+                // $datetime1 = new \DateTime($waktustart); //start time
+                // $datetime2 = new \DateTime($waktuend); //end time
+                // $durasi = $datetime1->diff($datetime2);
+                // if ($durasi->format('%y') !== '0') {
+                //     $d = $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
+                // } elseif ($durasi->format('%m') !== '0') {
+                //     $d = $durasi->format('%m bulan, %d hari, %H jam');
+                // } else {
+                //     $d = $durasi->format('%d hari, %H jam');
+                // }
 
                 if ($request['sisa'] !== "0") {
                     $ket = "belum lunas";
@@ -434,11 +468,11 @@ class PenyewaanController extends Controller
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
-                    'durasi' => $d,
-                    'kepulangan' => $kepulangan,
-                    'kepulangan_time' => $kepulangan_time,
+                    // 'durasi' => $d,
+                    // 'kepulangan' => $kepulangan,
+                    // 'kepulangan_time' => $kepulangan_time,
                     'keterangan' => $ket,
-                    'status' => 'selesai',
+                    // 'status' => 'selesai',
                 ]);
 
                 if (isset($request->idP)) {

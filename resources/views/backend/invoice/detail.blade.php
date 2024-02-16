@@ -124,7 +124,7 @@
                                 <div class="col-sm-6">
                                     <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '0'}}" disabled>
                                 </div>
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Hari</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa" id="setLabel">{{isset($data->paket) && $data->paket == 'jam' ? 'Jam' : 'Hari'}}</label>
                             </div>
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Kota Tujuan:</label>
@@ -204,6 +204,14 @@
 @section('script')
 <script>
     $(document).ready(function() {
+
+        $('#paket').on('change', function() {
+            if ($(this).val() == 'jam') {
+                $('#setLabel').html('Jam')
+            } else {
+                $('#setLabel').html('Hari')
+            }
+        });
 
         let hargaPaket = $('#harga_sewa'),
             lamaSewa = $('#lama_sewa'),

@@ -4,7 +4,7 @@
 <div>
     <div class="row">
         <div class="col-sm-12 col-lg-12">
-            <!-- <div class="card">
+            <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Filter Tanggal</h4>
                 </div>
@@ -18,7 +18,7 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
             <div class="card">
                 <div class="card-header justify-content-between">
                     <div class="header-title">
@@ -68,21 +68,21 @@
             responsive: true,
             serverSide: true,
             processing: true,
-            // dom: "<'row'<'col-sm-2'l><'col-sm-2'B><'col-sm-8'f>>" +
-            //     "<'row'<'col-sm-12'tr>>" +
-            //     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
-            // buttons: [{
-            //     extend: 'print',
-            //     footer: true,
-            //     text: 'Print',
-            //     title: function() {
-            //         var judul = '<h6> Cetak Invoice <br> Pembuat Laporan : {{ Auth()->user()->name }} ( Periode : ' + $('#tAwal').val() + ' s/d ' + $('#tAhir').val() + ')<h6>';
-            //         return judul;
-            //     },
-            //     exportOptions: {
-            //         columns: [0, 1, 2, 3, 4, 5, 6]
-            //     }
-            // }],
+            dom: "<'row'<'col-sm-2'l><'col-sm-2'B><'col-sm-8'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            buttons: [{
+                extend: 'print',
+                footer: true,
+                text: 'Print',
+                title: function() {
+                    var judul = '<h6> Cetak Invoice <br> Pembuat Laporan : {{ Auth()->user()->name }} ( Periode : ' + $('#tAwal').val() + ' s/d ' + $('#tAhir').val() + ')<h6>';
+                    return judul;
+                },
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6]
+                }
+            }],
             order: [
                 [5, 'ASC']
             ],
@@ -113,8 +113,8 @@
                     name: 'penyewa.no_hp'
                 },
                 {
-                    data: 'id',
-                    name: 'id',
+                    data: 'keberangkatan',
+                    name: 'keberangkatan',
                     render: function(data, type, full, meta) {
                         if (full.tanggal !== null) {
                             return full.keberangkatan + " " + full.keberangkatan_time
@@ -124,8 +124,8 @@
                     }
                 },
                 {
-                    data: 'id',
-                    name: 'id',
+                    data: 'kepulangan',
+                    name: 'kepulangan',
                     render: function(data, type, full, meta) {
                         if (full.tanggal !== null) {
                             return full.kepulangan + " " + full.kepulangan_time

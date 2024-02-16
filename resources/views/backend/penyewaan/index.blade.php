@@ -83,8 +83,8 @@
                     name: 'lama_sewa'
                 },
                 {
-                    data: 'id',
-                    name: 'id',
+                    data: 'keberangkatan',
+                    name: 'keberangkatan',
                     render: function(data, type, full, meta) {
                         if (full.tanggal !== null) {
                             return full.keberangkatan + " " + full.keberangkatan_time
