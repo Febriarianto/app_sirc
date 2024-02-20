@@ -256,6 +256,8 @@ class PenyewaanController extends Controller
             'status' => 'selesai',
         ]);
 
+        $dataTgl = RangeTransaksi::where('id_transaksi', $data->id)->delete();
+
         $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
         $config['form'] = (object)[
             'method' => 'PUT',
