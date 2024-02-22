@@ -89,24 +89,36 @@
                 },
             ],
             rowCallback: function(row, data) {
-                var d = new Date();
+                // var d = new Date();
 
-                var month = d.getMonth() + 1;
-                var day = d.getDate();
+                // var month = d.getMonth() + 1;
+                // var day = d.getDate();
 
-                var today = d.getFullYear() + '-' +
-                    (month < 10 ? '0' : '') + month + '-' +
-                    (day < 10 ? '0' : '') + day;
+                // var today = d.getFullYear() + '-' +
+                //     (month < 10 ? '0' : '') + month + '-' +
+                //     (day < 10 ? '0' : '') + day;
 
-                let api = this.api();
+                // let api = this.api();
+
                 $(row).find('.btn-checkin').click(function() {
                     let pk = $(this).data('id');
                     // if (data.kepulangan !== today) {
                     //     console.log("Error");
-                    //     toastr.error("Jadwal Kepulangan Bukan Hari ini", 'Failed !');
                     // } else {
+
+                    $.ajax({
+                        url: "{{ route('dashboard.prosesCheckin') }}",
+                        dataType: "json",
+                        data: {
+                            id: pk
+                        },
+                        type: "GET",
+                        success: function(response) {
+                            toastr.success("Mobil Berhasil Checkin", 'Success !');
+                            location.href = `{{ route("penyewaan.index") }}/` + pk;;
+                        }
+                    })
                     console.log("ok");
-                    location.href = `{{ route("penyewaan.index") }}/` + pk;;
                     // }
                 });
             }
@@ -115,10 +127,6 @@
         $('#kode').on('keyup', function() {
             dt.draw();
         })
-
-        //     $('#kode').on('keyup', function() {
-        //     dt.ajax.reload();
-        // })
     });
 </script>
 @endsection

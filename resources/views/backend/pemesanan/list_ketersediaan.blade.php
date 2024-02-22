@@ -64,7 +64,7 @@
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        if (full.tanggal != null) {
+                        if (full.s != 0) {
                             return '<span class="badge badge-danger">Tidak Tersedia</span>';
                         } else {
                             return '<span class="badge badge-success">Tersedia</span>';

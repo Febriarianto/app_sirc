@@ -40,6 +40,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     /* Dashboard */
     Route::get('graph', [Backend\DashboardController::class, 'graph'])->name('dashboard.graph');
     Route::get('checkin', [Backend\DashboardController::class, 'checkin'])->name('dashboard.checkin');
+    Route::get('prosesCheckin', [Backend\DashboardController::class, 'prosesCheckin'])->name('dashboard.prosesCheckin');
 
     /* Role Route */
     Route::get('roles/select2', [Backend\RoleController::class, 'select2'])->name('roles.select2');

@@ -110,6 +110,7 @@ class PemesananController extends Controller
                     'keberangkatan' => $request['keberangkatan'],
                     'estimasi_time' => $request['estimasi_time'],
                     'harga_sewa' => $request['harga_sewa'],
+                    'paket' => 'harian',
                     'tipe' => 'pesan',
                     'status' => 'pending',
                 ]);

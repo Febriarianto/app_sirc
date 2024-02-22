@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Kendaraan;
 use App\Models\Penyewa;
 use App\Models\Transaksi;
+use App\Models\RangeTransaksi;
 use Illuminate\Http\Request;
 use App\Traits\ResponseStatus;
 use Carbon\Carbon;
@@ -125,5 +126,47 @@ class DashboardController extends Controller
         }
 
         return view('backend.dashboard.checkin', compact('config'));
+    }
+
+    public function prosesCheckin()
+    {
+        $id = $_GET['id'];
+
+        $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+
+        $kepulangan = Carbon::now();
+        $kepulangan_time = Carbon::now();
+
+        $waktustart = $data->keberangkatan . " " . $data->keberangkatan_time;
+        $waktuend = date("Y-m-d h:i:s");
+        $datetime1 = new \DateTime($waktustart); //start time
+        $datetime2 = new \DateTime($waktuend); //end time
+        $durasi = $datetime1->diff($datetime2);
+        if ($durasi->format('%y') !== '0') {
+            $d = $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
+        } elseif ($durasi->format('%m') !== '0') {
+            $d = $durasi->format('%m bulan, %d hari, %H jam');
+        } else {
+            $d = $durasi->format('%d hari, %H jam');
+        }
+
+        if ($data->sisa !== "0") {
+            $ket = "belum lunas";
+        } else {
+            $ket = "lunas";
+        }
+
+        $dataTgl = RangeTransaksi::where('id_transaksi', $id)->delete();
+
+        $data->update([
+            'durasi' => $d,
+            'kepulangan' => $kepulangan,
+            'kepulangan_time' => $kepulangan_time,
+            'keterangan' => $ket,
+            'status' => 'selesai',
+        ]);
+
+        $response = response()->json(['message' => 'success']);
+        return $response;
     }
 }

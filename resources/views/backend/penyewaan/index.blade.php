@@ -80,7 +80,14 @@
                 },
                 {
                     data: 'lama_sewa',
-                    name: 'lama_sewa'
+                    name: 'lama_sewa',
+                    render: function(data, type, full, meta) {
+                        if (full.paket == 'jam') {
+                            return full.lama_sewa + " Jam"
+                        } else {
+                            return full.lama_sewa + " Hari"
+                        }
+                    }
                 },
                 {
                     data: 'keberangkatan',
