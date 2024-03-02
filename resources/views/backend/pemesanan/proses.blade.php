@@ -114,7 +114,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? ''}}">
+                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? ''}}">
                                 </div>
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa" id="setLabel">{{isset($data->paket) && $data->paket == 'jam' ? 'Jam' : 'Hari'}}</label>
                             </div>
@@ -158,7 +158,7 @@
                     <input type="hidden" value="{{$p->id}}" name="idP[]">
                     <div class="col-sm-3">
                         <label class="control-lab" for="harga_sewa">Jenis Pembayaran</label>
-                        <select name='tipeP[]' id='tipe' class='form-control'>
+                        <select name='tipeP[]' id='tipe' class='form-control' disabled>
                             <option value=''>.:Pilih:.</option>
                             <option value='dp' {{$p->tipe == 'dp' ? 'selected' : ''}}>DP</option>
                             <option value='titip' {{$p->tipe == 'titip' ? 'selected' : ''}}>Titip</option>
@@ -168,11 +168,11 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="control-lab" for="harga_sewa">Nominal</label>
-                        <input type="text" class="form-control" id="nominal" name="nominalP[]" value="{{ $p->nominal ?? '0'}}">
+                        <input type="text" class="form-control" id="nominal" name="nominalP[]" value="{{ $p->nominal ?? '0'}}" disabled>
                     </div>
                     <div class="col-sm-3">
                         <label class="control-lab" for="harga_sewa">Metode</label>
-                        <select name='metodeP[]' id='metode' class='form-control'>
+                        <select name='metodeP[]' id='metode' class='form-control' disabled>
                             <option value=''>.:Pilih:.</option>
                             <option value='cash' {{$p->metode == 'cash' ? 'selected' : ''}}>Cash</option>
                             <option value='transfer' {{$p->metode == 'transfer' ? 'selected' : ''}}>Transfer</option>
@@ -180,7 +180,7 @@
                     </div>
                     <div class="col-sm-2">
                         <label class="control-lab" for="harga_sewa">File</label>
-                        <input type="file" class="form-control" id="" name="fileP[]">
+                        <input type="file" class="form-control" id="" name="fileP[]" disabled>
                         <a href="{{ asset ('storage/buktiTrf/'.$p->file)}}" target="_blank">{{$p->file}}</a>
                     </div>
                 </div>

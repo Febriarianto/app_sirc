@@ -166,7 +166,7 @@
                     <input type="hidden" value="{{$p->id}}" name="idP[]">
                     <div class="col-sm-3">
                         <label class="control-lab" for="harga_sewa">Jenis Pembayaran</label>
-                        <select name='tipeP[]' id='tipe' class='form-control'>
+                        <select name='tipeP[]' id='tipe' class='form-control' disabled>
                             <option value=''>.:Pilih:.</option>
                             <option value='dp' {{$p->tipe == 'dp' ? 'selected' : ''}}>DP</option>
                             <option value='titip' {{$p->tipe == 'titip' ? 'selected' : ''}}>Titip</option>
@@ -176,11 +176,11 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="control-lab" for="nominal">Nominal</label>
-                        <input type="text" class="form-control" id="nominal" name="nominalP[]" value="{{ $p->nominal ?? '0'}}" readonly>
+                        <input type="text" class="form-control" id="nominal" name="nominalP[]" value="{{ $p->nominal ?? '0'}}" disabled>
                     </div>
                     <div class="col-sm-3">
                         <label class="control-lab" for="metodeP">Metode</label>
-                        <select name='metodeP[]' id='metode' class='form-control'>
+                        <select name='metodeP[]' id='metode' class='form-control' disabled>
                             <option value=''>.:Pilih:.</option>
                             <option value='cash' {{$p->metode == 'cash' ? 'selected' : ''}}>Cash</option>
                             <option value='transfer' {{$p->metode == 'transfer' ? 'selected' : ''}}>Transfer</option>
@@ -188,7 +188,7 @@
                     </div>
                     <div class="col-sm-2">
                         <label class="control-lab" for="fileP">File</label>
-                        <input type="file" class="form-control" id="" name="fileP[]" readonly>
+                        <input type="file" class="form-control" id="" name="fileP[]" disabled>
                         <a href="{{ asset ('storage/buktiTrf/'.$p->file)}}" target="_blank">{{$p->file}}</a>
                     </div>
                 </div>

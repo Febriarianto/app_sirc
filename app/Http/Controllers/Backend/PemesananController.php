@@ -235,27 +235,27 @@ class PemesananController extends Controller
                     'status' => 'pending',
                 ]);
 
-                if (isset($request->idP)) {
-                    foreach ($request->idP as $key => $p) {
-                        $dataP = Pembayaran::find($p);
+                // if (isset($request->idP)) {
+                //     foreach ($request->idP as $key => $p) {
+                //         $dataP = Pembayaran::find($p);
 
-                        if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                            $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                            $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                        } else {
-                            $imgTrfP = $dataP->file;
-                        }
+                //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
+                //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
+                //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
+                //         } else {
+                //             $imgTrfP = $dataP->file;
+                //         }
 
-                        $dataP->update([
-                            'id_transaksi' => $data->id,
-                            'tipe' => $request->tipeP[$key],
-                            'nominal' => $request->nominalP[$key],
-                            'metode' => $request->metodeP[$key],
-                            'file' => $imgTrfP,
-                            'penerima' => Auth()->user()->name,
-                        ]);
-                    }
-                }
+                //         $dataP->update([
+                //             'id_transaksi' => $data->id,
+                //             'tipe' => $request->tipeP[$key],
+                //             'nominal' => $request->nominalP[$key],
+                //             'metode' => $request->metodeP[$key],
+                //             'file' => $imgTrfP,
+                //             'penerima' => Auth()->user()->name,
+                //         ]);
+                //     }
+                // }
 
                 if (isset($request->tipe)) {
                     foreach ($request->tipe as $key => $t) {
@@ -316,104 +316,112 @@ class PemesananController extends Controller
             'sisa' => $request['status'] == 'proses' ? 'required' : '',
         ]);
         if ($validator->passes()) {
-            DB::beginTransaction();
-            try {
+            $cekMobil = Transaksi::select('id')->where('id_kendaraan', $request['id_kendaraan'])->where('status', '=', 'proses')->first();
+            if ($cekMobil == null) {
+                DB::beginTransaction();
+                try {
 
-                $keberangkatan_time = Carbon::now();
-                $keberangkatan = Carbon::today();
+                    $keberangkatan_time = Carbon::now();
+                    $keberangkatan = Carbon::today();
 
-                $data = Transaksi::find($id);
+                    $data = Transaksi::find($id);
 
-                $data->update([
-                    'id_penyewa' => $request['id_penyewa'],
-                    'id_kendaraan' => $request['id_kendaraan'],
-                    'keberangkatan' => $request['status'] == 'proses' ? $keberangkatan : $request['keberangkatan'],
-                    'keberangkatan_time' => $keberangkatan_time,
-                    'status' => $request['status'],
-                    'lama_sewa' => $request['lama_sewa'],
-                    'harga_sewa' => $request['harga_sewa'],
-                    'paket' => $request['status'] == 'proses' ? $request['paket'] : 'harian',
-                    'kota_tujuan' => $request['status'] == 'proses' ?  $request['kota_tujuan'] : null,
-                    'biaya' => $request['status'] == 'proses' ? $request['biaya'] : null,
-                    'sisa' => $request['status'] == 'proses' ? $request['sisa'] : null,
-                    'tipe' => $request['status'] == 'proses' ? 'sewa' : 'pesan',
-                    'status' => $request['status'],
-                    'jaminan' => $request['status'] == 'proses' ? $request['jaminan'] : null,
+                    $data->update([
+                        'id_penyewa' => $request['id_penyewa'],
+                        'id_kendaraan' => $request['id_kendaraan'],
+                        'keberangkatan' => $request['status'] == 'proses' ? $keberangkatan : $request['keberangkatan'],
+                        'keberangkatan_time' => $keberangkatan_time,
+                        'status' => $request['status'],
+                        'lama_sewa' => $request['lama_sewa'],
+                        'harga_sewa' => $request['harga_sewa'],
+                        'paket' => $request['status'] == 'proses' ? $request['paket'] : 'harian',
+                        'kota_tujuan' => $request['status'] == 'proses' ?  $request['kota_tujuan'] : null,
+                        'biaya' => $request['status'] == 'proses' ? $request['biaya'] : null,
+                        'sisa' => $request['status'] == 'proses' ? $request['sisa'] : null,
+                        'tipe' => $request['status'] == 'proses' ? 'sewa' : 'pesan',
+                        'status' => $request['status'],
+                        'jaminan' => $request['status'] == 'proses' ? $request['jaminan'] : null,
+                    ]);
+
+                    // if (isset($request->idP)) {
+                    //     foreach ($request->idP as $key => $p) {
+                    //         $dataP = Pembayaran::find($p);
+
+                    //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
+                    //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
+                    //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
+                    //         } else {
+                    //             $imgTrfP = $dataP->file;
+                    //         }
+
+                    //         $dataP->update([
+                    //             'id_transaksi' => $data->id,
+                    //             'tipe' => $request->tipeP[$key],
+                    //             'nominal' => $request->nominalP[$key],
+                    //             'metode' => $request->metodeP[$key],
+                    //             'file' => $imgTrfP,
+                    //             'penerima' => Auth()->user()->name,
+                    //         ]);
+                    //     }
+                    // }
+
+                    if (isset($request->tipe)) {
+                        foreach ($request->tipe as $key => $t) {
+                            if ($request->metode[$key] == 'transfer') {
+                                $imgTrf = date("Y-m-d") . '_' . $request->file[$key]->getClientOriginalName();
+                                $request->file[$key]->storeAs('public/buktiTrf/', $imgTrf);
+                            } else {
+                                $imgTrf = '';
+                            }
+
+                            Pembayaran::create([
+                                'id_transaksi' => $data->id,
+                                'tipe' => $t,
+                                'nominal' => $request->nominal[$key],
+                                'metode' => $request->metode[$key],
+                                'file' => $imgTrf,
+                                'detail' => 'Penyewaan',
+                                'penerima' => Auth()->user()->name,
+                            ]);
+                        }
+                    }
+
+                    if ($request['status'] == 'proses') {
+                        $period = new DatePeriod(
+                            new DateTime($request['keberangkatan']),
+                            new DateInterval('P1D'),
+                            new DateTime($request['keberangkatan'] . '+' . ($request['lama_sewa'] + 1) . ' day')
+                        );
+
+                        foreach ($period as $key => $value) {
+                            RangeTransaksi::create([
+                                'id_transaksi' => $data->id,
+                                'id_kendaraan' => $request['id_kendaraan'],
+                                'tanggal' => $value->format('Y-m-d'),
+                            ]);
+                        }
+                    }
+
+                    DB::commit();
+
+                    $dataWa = Transaksi::select('transaksi.id', 'transaksi.keberangkatan', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
+                        ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                        ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                        ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
+                        ->where('transaksi.id', $data->id)
+                        ->first();
+                    // dd($dataWa->toArray());
+                    $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
+                } catch (\Throwable $throw) {
+                    DB::rollBack();
+                    Log::error($throw);
+                    $response = response()->json(['error' => $throw->getMessage()]);
+                }
+            } else {
+                $response = response()->json([
+                    'status' => 'error',
+                    'message' => 'Mobil Sedang Di Sewa'
                 ]);
-
-                if (isset($request->idP)) {
-                    foreach ($request->idP as $key => $p) {
-                        $dataP = Pembayaran::find($p);
-
-                        if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                            $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                            $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                        } else {
-                            $imgTrfP = $dataP->file;
-                        }
-
-                        $dataP->update([
-                            'id_transaksi' => $data->id,
-                            'tipe' => $request->tipeP[$key],
-                            'nominal' => $request->nominalP[$key],
-                            'metode' => $request->metodeP[$key],
-                            'file' => $imgTrfP,
-                            'penerima' => Auth()->user()->name,
-                        ]);
-                    }
-                }
-
-                if (isset($request->tipe)) {
-                    foreach ($request->tipe as $key => $t) {
-                        if ($request->metode[$key] == 'transfer') {
-                            $imgTrf = date("Y-m-d") . '_' . $request->file[$key]->getClientOriginalName();
-                            $request->file[$key]->storeAs('public/buktiTrf/', $imgTrf);
-                        } else {
-                            $imgTrf = '';
-                        }
-
-                        Pembayaran::create([
-                            'id_transaksi' => $data->id,
-                            'tipe' => $t,
-                            'nominal' => $request->nominal[$key],
-                            'metode' => $request->metode[$key],
-                            'file' => $imgTrf,
-                            'detail' => 'Penyewaan',
-                            'penerima' => Auth()->user()->name,
-                        ]);
-                    }
-                }
-
-                if ($request['status'] == 'proses') {
-                    $period = new DatePeriod(
-                        new DateTime($request['keberangkatan']),
-                        new DateInterval('P1D'),
-                        new DateTime($request['keberangkatan'] . '+' . ($request['lama_sewa'] + 1) . ' day')
-                    );
-
-                    foreach ($period as $key => $value) {
-                        RangeTransaksi::create([
-                            'id_transaksi' => $data->id,
-                            'id_kendaraan' => $request['id_kendaraan'],
-                            'tanggal' => $value->format('Y-m-d'),
-                        ]);
-                    }
-                }
-
-                DB::commit();
-
-                $dataWa = Transaksi::select('transaksi.id', 'transaksi.keberangkatan', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
-                    ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
-                    ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
-                    ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
-                    ->where('transaksi.id', $data->id)
-                    ->first();
-                // dd($dataWa->toArray());
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
-            } catch (\Throwable $throw) {
-                DB::rollBack();
-                Log::error($throw);
-                $response = response()->json(['error' => $throw->getMessage()]);
             }
         } else {
             $response = response()->json(['error' => $validator->errors()->all()]);

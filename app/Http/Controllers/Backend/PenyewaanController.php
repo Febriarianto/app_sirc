@@ -330,27 +330,27 @@ class PenyewaanController extends Controller
                     'tipe' => 'sewa',
                 ]);
 
-                if (isset($request->idP)) {
-                    foreach ($request->idP as $key => $p) {
-                        $dataP = Pembayaran::find($p);
+                // if (isset($request->idP)) {
+                //     foreach ($request->idP as $key => $p) {
+                //         $dataP = Pembayaran::find($p);
 
-                        if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                            $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                            $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                        } else {
-                            $imgTrfP = $dataP->file;
-                        }
+                //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
+                //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
+                //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
+                //         } else {
+                //             $imgTrfP = $dataP->file;
+                //         }
 
-                        $dataP->update([
-                            'id_transaksi' => $data->id,
-                            'tipe' => $request->tipeP[$key],
-                            'nominal' => $request->nominalP[$key],
-                            'metode' => $request->metodeP[$key],
-                            'file' => $imgTrfP,
-                            'penerima' => Auth()->user()->name,
-                        ]);
-                    }
-                }
+                //         $dataP->update([
+                //             'id_transaksi' => $data->id,
+                //             'tipe' => $request->tipeP[$key],
+                //             'nominal' => $request->nominalP[$key],
+                //             'metode' => $request->metodeP[$key],
+                //             'file' => $imgTrfP,
+                //             'penerima' => Auth()->user()->name,
+                //         ]);
+                //     }
+                // }
 
                 if (isset($request->tipe)) {
                     foreach ($request->tipe as $key => $t) {
@@ -468,27 +468,27 @@ class PenyewaanController extends Controller
                     // 'status' => 'selesai',
                 ]);
 
-                if (isset($request->idP)) {
-                    foreach ($request->idP as $key => $p) {
-                        $dataP = Pembayaran::find($p);
+                // if (isset($request->idP)) {
+                //     foreach ($request->idP as $key => $p) {
+                //         $dataP = Pembayaran::find($p);
 
-                        if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                            $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                            $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                        } else {
-                            $imgTrfP = $dataP->file;
-                        }
+                //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
+                //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
+                //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
+                //         } else {
+                //             $imgTrfP = $dataP->file;
+                //         }
 
-                        $dataP->update([
-                            'id_transaksi' => $data->id,
-                            'tipe' => $request->tipeP[$key],
-                            'nominal' => $request->nominalP[$key],
-                            'metode' => $request->metodeP[$key],
-                            'file' => $imgTrfP,
-                            'penerima' => Auth()->user()->name,
-                        ]);
-                    }
-                }
+                //         $dataP->update([
+                //             'id_transaksi' => $data->id,
+                //             'tipe' => $request->tipeP[$key],
+                //             'nominal' => $request->nominalP[$key],
+                //             'metode' => $request->metodeP[$key],
+                //             'file' => $imgTrfP,
+                //             'penerima' => Auth()->user()->name,
+                //         ]);
+                //     }
+                // }
 
                 if (isset($request->tipe)) {
                     foreach ($request->tipe as $key => $t) {
