@@ -270,10 +270,9 @@
                     <td>Rp. " + numberRenderer(totalDP) + "</td>\
                     <td>Rp. " + numberRenderer(totalTrf) + "</td>\
                     </tr>")
-                },
-                complete: function() {
-                    $('#tgl').prop('disabled', false);
                 }
+            }).done(function() {
+                $('#tgl').prop('disabled', false);
             })
         }
 
