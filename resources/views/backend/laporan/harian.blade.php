@@ -144,6 +144,7 @@
 
         function load_table() {
             var tglA = $('#tgl').val();
+            $('#tgl').prop('disabled', true);
             $('#shTgl').append('Tanggal : ' + tglA);
             $.ajax({
                 url: `{{ route('laporan.harian') }}`,
@@ -269,6 +270,9 @@
                     <td>Rp. " + numberRenderer(totalDP) + "</td>\
                     <td>Rp. " + numberRenderer(totalTrf) + "</td>\
                     </tr>")
+                },
+                complete: function() {
+                    $('#tgl').prop('disabled', false);
                 }
             })
         }
