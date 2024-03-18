@@ -75,7 +75,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="file"></label>
                                 <div class="col-sm-9">
-                                    <a href="{{ asset ('storage/buktiTrf/'.$data->file)}}" target="_blank">{{$data->file}}</a>
+                                    <a href="{{ isset($data) ? asset('storage/buktiTrf/'.$data->file) : '' }} " target="_blank">{{ isset($data) ? $data->file : '' }}</a>
                                 </div>
                             </div>
                             <hr>

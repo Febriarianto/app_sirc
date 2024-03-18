@@ -115,6 +115,7 @@
         var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var today = now.getFullYear() + "-" + (month) + "-" + (day);
         $('#tgl').val(today);
+        $('#shTgl').html('Tanggal : ' + today);
 
         var numberRenderer = $.fn.dataTable.render.number('.', ',', 0, '').display;
 
@@ -306,6 +307,7 @@
 
 
         $('#tgl').on('change', function() {
+            $('#shTgl').html('Tanggal : ' + $(this).val());
             dt.draw();
             dtp.draw();
         })
