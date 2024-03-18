@@ -85,7 +85,21 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}">
+                                <select id="select2Harga" style="width: 100% !important;" name="">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa"></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="diskon">Diskon</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}">
                             </div>
                         </div>
                     </div>
@@ -214,6 +228,30 @@
                 },
             },
         });
+
+        $('#select2Harga').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#select2Harga').parent(),
+            placeholder: "Cari Harga",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('harga.select2') }}",
+                dataType: "json",
+                cache: true,
+                data: function(e) {
+                    return {
+                        q: e.term || '',
+                        page: e.page || 1
+                    }
+                },
+            },
+        });
+
+        $('#select2Harga').on('change', function() {
+            var data = $('#select2Harga').select2('data');
+            $('#harga_sewa').val(data[0].nominal);
+            CalResult();
+        })
 
         $("#formStore").submit(function(e) {
             e.preventDefault();

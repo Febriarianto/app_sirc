@@ -31,6 +31,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'proses', 'selesai', 'batal']);
             $table->string('jaminan')->nullable();
             $table->unsignedBigInteger('harga_sewa')->nullable();
+            $table->unsignedBigInteger('diskon')->nullable();
             $table->unsignedBigInteger('over_time')->nullable();
             $table->unsignedBigInteger('biaya')->nullable();
             $table->unsignedBigInteger('sisa')->nullable();

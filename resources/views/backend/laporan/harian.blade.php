@@ -84,29 +84,6 @@
                             </table>
                         </div>
                         <hr>
-                        <h6>Laporan Uang Masuk</h6>
-                        <div class="table-responsive">
-                            <table id="dt2" class="table table-bordered w-100">
-                                <thead class="text-center">
-                                    <tr>
-                                        <th rowspan="2">No</th>
-                                        <th rowspan="2">Nama Pelanggan</th>
-                                        <th rowspan="2">Tipe</th>
-                                        <th rowspan="2">Bukti</th>
-                                        <th rowspan="2">Ket.</th>
-                                        <th colspan="2">Nominal</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Cash</th>
-                                        <th>Transfer</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="isi2">
-                                </tbody>
-                                <tfoot id="foot2">
-                                </tfoot>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -247,29 +224,6 @@
                         });
                     });
 
-                    var totalDP = 0;
-                    var totalTrf = 0;
-                    $.each(response.data2, function(key, value) {
-                        let bukti = (value.file == null) ? ('') : (value.file);
-                        let dp = (value.metode == 'cash') ? (value.nominal) : (0);
-                        let trf = (value.metode == 'transfer') ? (value.nominal) : (0);
-                        $('#isi2').append("<tr class='th'>\
-                                            <td>" + (key + 1) + "</td>\
-                                            <td>" + value.nama + "</td>\
-                                            <td>" + value.tipe + "</td>\
-                                            <td><a href ='{{ asset ('storage/buktiTrf')}}/" + bukti + "' target='_blank'>" + bukti + "</a></td>\
-                                            <td>" + value.detail + "</td>\
-                                            <td>" + numberRenderer(dp) + "</td>\
-                                            <td>" + numberRenderer(trf) + "</td>\
-                                            </tr></div>");
-                        totalDP += dp;
-                        totalTrf += trf;
-                    });
-                    $('#foot2').append("<tr>\
-                    <td colspan='5' class='text-center'><b> Total </b></td>\
-                    <td>Rp. " + numberRenderer(totalDP) + "</td>\
-                    <td>Rp. " + numberRenderer(totalTrf) + "</td>\
-                    </tr>")
                 }
             }).done(function() {
                 $('#tgl').prop('disabled', false);
@@ -281,8 +235,6 @@
         $('#tgl').on('change', function() {
             $('#isi').empty();
             $('#isi1').empty();
-            $('#isi2').empty();
-            $('#foot2').empty();
             $('#shTgl').empty();
             load_table();
         })

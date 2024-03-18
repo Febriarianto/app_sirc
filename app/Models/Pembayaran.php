@@ -20,6 +20,7 @@ class Pembayaran extends Model
         'file',
         'detail',
         'penerima',
+        'status',
     ];
 
     public function transaksi()

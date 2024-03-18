@@ -121,6 +121,7 @@ class PenyewaanController extends Controller
             'paket' => 'required',
             'kota_tujuan' => 'required',
             'biaya' => 'required',
+            'diskon' => 'required',
             'sisa' => 'required',
             'jaminan' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -146,6 +147,7 @@ class PenyewaanController extends Controller
                     'status' => 'proses',
                     'lama_sewa' => $request['lama_sewa'],
                     'harga_sewa' => $request['harga_sewa'],
+                    'diskon' => $request['diskon'],
                     'paket' => $request['paket'],
                     'kota_tujuan' => $request['kota_tujuan'],
                     'biaya' => $request['biaya'],
@@ -207,7 +209,6 @@ class PenyewaanController extends Controller
                     ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
                     ->where('transaksi.id', $data->id)
                     ->first();
-                // dd($dataWa->toArray());
                 $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
@@ -283,6 +284,7 @@ class PenyewaanController extends Controller
             'id_kendaraan' => 'required',
             'keberangkatan' => 'required',
             'harga_sewa' => 'required',
+            'diskon' => 'required',
             'lama_sewa' => 'required',
             'paket' => 'required',
             'kota_tujuan' => 'required',
@@ -322,6 +324,7 @@ class PenyewaanController extends Controller
                     'status' => 'proses',
                     'lama_sewa' => $request['lama_sewa'],
                     'harga_sewa' => $request['harga_sewa'],
+                    'diskon' => $request['diskon'],
                     'paket' => $request['paket'],
                     'kota_tujuan' => $request['kota_tujuan'],
                     'biaya' => $request['biaya'],
@@ -329,28 +332,6 @@ class PenyewaanController extends Controller
                     'jaminan' => $request['jaminan'],
                     'tipe' => 'sewa',
                 ]);
-
-                // if (isset($request->idP)) {
-                //     foreach ($request->idP as $key => $p) {
-                //         $dataP = Pembayaran::find($p);
-
-                //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                //         } else {
-                //             $imgTrfP = $dataP->file;
-                //         }
-
-                //         $dataP->update([
-                //             'id_transaksi' => $data->id,
-                //             'tipe' => $request->tipeP[$key],
-                //             'nominal' => $request->nominalP[$key],
-                //             'metode' => $request->metodeP[$key],
-                //             'file' => $imgTrfP,
-                //             'penerima' => Auth()->user()->name,
-                //         ]);
-                //     }
-                // }
 
                 if (isset($request->tipe)) {
                     foreach ($request->tipe as $key => $t) {
@@ -433,23 +414,7 @@ class PenyewaanController extends Controller
             DB::beginTransaction();
             try {
 
-                // $kepulangan = Carbon::now();
-                // $kepulangan_time = Carbon::now();
-
                 $data = Transaksi::find($id);
-
-                // $waktustart = $data->keberangkatan . " " . $data->keberangkatan_time;
-                // $waktuend = date("Y-m-d h:i:s");
-                // $datetime1 = new \DateTime($waktustart); //start time
-                // $datetime2 = new \DateTime($waktuend); //end time
-                // $durasi = $datetime1->diff($datetime2);
-                // if ($durasi->format('%y') !== '0') {
-                //     $d = $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
-                // } elseif ($durasi->format('%m') !== '0') {
-                //     $d = $durasi->format('%m bulan, %d hari, %H jam');
-                // } else {
-                //     $d = $durasi->format('%d hari, %H jam');
-                // }
 
                 if ($request['sisa'] !== "0") {
                     $ket = "belum lunas";
@@ -461,34 +426,9 @@ class PenyewaanController extends Controller
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
-                    // 'durasi' => $d,
-                    // 'kepulangan' => $kepulangan,
-                    // 'kepulangan_time' => $kepulangan_time,
                     'keterangan' => $ket,
-                    // 'status' => 'selesai',
+                    'status' => 'selesai',
                 ]);
-
-                // if (isset($request->idP)) {
-                //     foreach ($request->idP as $key => $p) {
-                //         $dataP = Pembayaran::find($p);
-
-                //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                //         } else {
-                //             $imgTrfP = $dataP->file;
-                //         }
-
-                //         $dataP->update([
-                //             'id_transaksi' => $data->id,
-                //             'tipe' => $request->tipeP[$key],
-                //             'nominal' => $request->nominalP[$key],
-                //             'metode' => $request->metodeP[$key],
-                //             'file' => $imgTrfP,
-                //             'penerima' => Auth()->user()->name,
-                //         ]);
-                //     }
-                // }
 
                 if (isset($request->tipe)) {
                     foreach ($request->tipe as $key => $t) {
@@ -520,7 +460,7 @@ class PenyewaanController extends Controller
                     ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
                     ->where('transaksi.id', $data->id)
                     ->first();
-                // dd($dataWa->toArray());
+
                 $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();

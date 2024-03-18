@@ -97,6 +97,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
 
     //laporan
     Route::get('judul', [Backend\LaporanController::class, 'judul'])->name('laporan.judul');
+    Route::get('laporan-keuangan', [Backend\LaporanController::class, 'keuangan'])->name('laporan.keuangan');
     Route::get('laporan-detail', [Backend\LaporanController::class, 'detail'])->name('laporan.detail');
     Route::get('laporan-harian', [Backend\LaporanController::class, 'harian_index'])->name('laporan.harian');
     Route::get('laporan-bulanan', [Backend\LaporanController::class, 'bulanan_index'])->name('laporan.bulanan');
@@ -108,4 +109,11 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::resource('penyewaan', Backend\PenyewaanController::class);
     Route::get('penyewaan/create/{id_kendaraan}', [Backend\PenyewaanController::class, 'create'])->name('penyewaan.createId');
     Route::get('/penyewaan/edit/{id}/{id_kendaraan}', [Backend\PenyewaanController::class, 'edit'])->name('penyewaan.edit_sewa');
+
+    /* Kas*/
+    Route::resource('pengeluaran', Backend\PengeluaranController::class);
+
+    /* Kas*/
+    Route::get('harga/select2', [Backend\HargaController::class, 'select2'])->name('harga.select2');
+    Route::resource('harga', Backend\HargaController::class);
 });

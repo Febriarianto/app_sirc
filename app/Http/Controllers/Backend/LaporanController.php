@@ -39,9 +39,9 @@ class LaporanController extends Controller
 
     public function bulanan_index(Request $request)
     {
-        $config['title'] = "Laporan Bulanan";
+        $config['title'] = "Laporan Kendaraan";
         $config['breadcrumbs'] = [
-            ['url' => '#', 'title' => "Laporan Bulanan"],
+            ['url' => '#', 'title' => "Laporan Kendaraan"],
         ];
 
         $tAwal = $request['tAwal'] ?? Carbon::now()->format('Y-m-d');
@@ -150,13 +150,7 @@ class LaporanController extends Controller
                 ->where('transaksi.status', '=', 'selesai')
                 ->get();
 
-            $data2 = Pembayaran::select('pembayaran.*', 'penyewa.nama')
-                ->join('transaksi', 'transaksi.id', '=', 'pembayaran.id_transaksi')
-                ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
-                ->whereDate('pembayaran.created_at', $tgl)
-                ->get();
-
-            return response(['data' => $data, 'data1' => $data1, 'data2' => $data2]);
+            return response(['data' => $data, 'data1' => $data1,]);
         }
 
         return view('backend.laporan.harian', compact('config'));
@@ -204,5 +198,40 @@ class LaporanController extends Controller
 
             return response(['detail' => $data]);
         }
+    }
+
+    public function keuangan(Request $request)
+    {
+        $config['title'] = "Laporan Keuangan";
+        $config['breadcrumbs'] = [
+            ['url' => '#', 'title' => "Laporan Keuangan"],
+        ];
+        $tgl = $request['tgl'];
+        $param = $request['param'];
+        if ($request->ajax()) {
+            if ($param == 'dt') {
+                $data = Pembayaran::select('*')
+                    ->selectRaw("(SELECT penyewa.nama FROM penyewa JOIN transaksi ON transaksi.id_penyewa = penyewa.id WHERE transaksi.id = id_transaksi ) as nama,
+                    CASE WHEN status = 'pemasukan' AND metode = 'cash' THEN nominal END AS 'pc', CASE WHEN status = 'pemasukan' AND metode = 'transfer' THEN nominal END AS 'pf' ")
+                    ->whereDate('pembayaran.created_at', $tgl)
+                    ->where('status', '=', 'pemasukan')
+                    ->get();
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->make();
+            } else {
+                $data = Pembayaran::select('*')
+                    ->selectRaw("(SELECT penyewa.nama FROM penyewa JOIN transaksi ON transaksi.id_penyewa = penyewa.id WHERE transaksi.id = id_transaksi ) as nama,
+                CASE WHEN status = 'pengeluaran' AND metode = 'cash' THEN nominal END AS 'pc', CASE WHEN status = 'pengeluaran' AND metode = 'transfer' THEN nominal END AS 'pf' ")
+                    ->whereDate('pembayaran.created_at', $tgl)
+                    ->where('status', '=', 'pengeluaran')
+                    ->get();
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->make();
+            }
+        }
+
+        return view('backend.laporan.keuangan', compact('config'));
     }
 }

@@ -121,10 +121,8 @@
                     const yValues = [];
 
                     for (let i = 1; i < 13; i++) {
-                        yValues.push(response[i])
+                        yValues.push(response[i]);
                     }
-
-                    console.log(yValues, xValues);
 
                     new Chart("revenue-chart-canvas", {
                         type: "line",
@@ -146,7 +144,7 @@
                                 yAxes: [{
                                     ticks: {
                                         min: 0,
-                                        max: 200
+                                        max: Math.max.apply(Math, yValues)
                                     }
                                 }],
                             }

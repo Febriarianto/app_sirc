@@ -79,7 +79,21 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}">
+                                <select id="select2Harga" style="width: 100% !important;" name="">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa"></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="diskon">Diskon</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -114,7 +128,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
                                 <div class="col-sm-6">
-                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? ''}}">
+                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '0'}}">
                                 </div>
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa" id="setLabel">{{isset($data->paket) && $data->paket == 'jam' ? 'Jam' : 'Hari'}}</label>
                             </div>
@@ -222,6 +236,7 @@
         let hargaPaket = $('#harga_sewa'),
             lamaSewa = $('#lama_sewa'),
             totalBiaya = $('#biaya'),
+            diskon = $('#diskon'),
             dp = $('#dp');
 
         var CalResult = function() {
@@ -235,7 +250,7 @@
                 sum += parseInt(num);
             })
 
-            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()),
+            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) - parseInt(diskon.val()),
                 sisa = calTotal - sum;
 
             totalBiaya.val(calTotal);
@@ -249,7 +264,7 @@
             CalResult();
         });
 
-        $("#harga_sewa, #lama_sewa").on("keyup", function() {
+        $("#harga_sewa, #lama_sewa, #diskon").on("keyup", function() {
             CalResult();
         });
 
@@ -343,6 +358,31 @@
                 },
             },
         });
+
+        $('#select2Harga').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#select2Harga').parent(),
+            placeholder: "Cari Harga",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('harga.select2') }}",
+                dataType: "json",
+                cache: true,
+                data: function(e) {
+                    return {
+                        q: e.term || '',
+                        page: e.page || 1
+                    }
+                },
+            },
+        });
+
+        $('#select2Harga').on('change', function() {
+            var data = $('#select2Harga').select2('data');
+            $('#harga_sewa').val(data[0].nominal);
+            CalResult();
+        })
+
 
         $("#formStore").submit(function(e) {
             e.preventDefault();

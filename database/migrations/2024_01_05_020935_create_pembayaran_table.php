@@ -15,13 +15,14 @@ return new class extends Migration
     {
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_transaksi')->references('id')->on('transaksi')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_transaksi')->references('id')->on('transaksi')->onUpdate('cascade')->onDelete('cascade')->nullable();
             $table->enum('tipe', ['dp', 'pelunasan', 'titip', 'lainnya']);
             $table->unsignedBigInteger('nominal');
             $table->enum('metode', ['cash', 'transfer']);
             $table->string('file')->nullable();
             $table->string('detail')->nullable();
             $table->string('penerima');
+            $table->enum('status', ['pemasukan', 'pengeluaran']);
             $table->timestamps();
         });
     }

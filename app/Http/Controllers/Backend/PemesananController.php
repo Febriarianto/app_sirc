@@ -110,6 +110,7 @@ class PemesananController extends Controller
                     'keberangkatan' => $request['keberangkatan'],
                     'estimasi_time' => $request['estimasi_time'],
                     'harga_sewa' => $request['harga_sewa'],
+                    'diskon' => $request['diskon'],
                     'paket' => 'harian',
                     'tipe' => 'pesan',
                     'status' => 'pending',
@@ -231,31 +232,10 @@ class PemesananController extends Controller
                     'keberangkatan' => $request['keberangkatan'],
                     'estimasi_time' => $request['estimasi_time'],
                     'harga_sewa' => $request['harga_sewa'],
+                    'diskon' => $request['diskon'],
                     'tipe' => 'pesan',
                     'status' => 'pending',
                 ]);
-
-                // if (isset($request->idP)) {
-                //     foreach ($request->idP as $key => $p) {
-                //         $dataP = Pembayaran::find($p);
-
-                //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                //         } else {
-                //             $imgTrfP = $dataP->file;
-                //         }
-
-                //         $dataP->update([
-                //             'id_transaksi' => $data->id,
-                //             'tipe' => $request->tipeP[$key],
-                //             'nominal' => $request->nominalP[$key],
-                //             'metode' => $request->metodeP[$key],
-                //             'file' => $imgTrfP,
-                //             'penerima' => Auth()->user()->name,
-                //         ]);
-                //     }
-                // }
 
                 if (isset($request->tipe)) {
                     foreach ($request->tipe as $key => $t) {
@@ -334,6 +314,7 @@ class PemesananController extends Controller
                         'status' => $request['status'],
                         'lama_sewa' => $request['lama_sewa'],
                         'harga_sewa' => $request['harga_sewa'],
+                        'diskon' => $request['diskon'],
                         'paket' => $request['status'] == 'proses' ? $request['paket'] : 'harian',
                         'kota_tujuan' => $request['status'] == 'proses' ?  $request['kota_tujuan'] : null,
                         'biaya' => $request['status'] == 'proses' ? $request['biaya'] : null,
@@ -342,28 +323,6 @@ class PemesananController extends Controller
                         'status' => $request['status'],
                         'jaminan' => $request['status'] == 'proses' ? $request['jaminan'] : null,
                     ]);
-
-                    // if (isset($request->idP)) {
-                    //     foreach ($request->idP as $key => $p) {
-                    //         $dataP = Pembayaran::find($p);
-
-                    //         if ($request->metodeP[$key] == 'transfer' && $request->fileP !== NULL) {
-                    //             $imgTrfP = date("Y-m-d") . '_' . $request->fileP[$key]->getClientOriginalName();
-                    //             $request->fileP[$key]->storeAs('public/buktiTrf/', $imgTrfP);
-                    //         } else {
-                    //             $imgTrfP = $dataP->file;
-                    //         }
-
-                    //         $dataP->update([
-                    //             'id_transaksi' => $data->id,
-                    //             'tipe' => $request->tipeP[$key],
-                    //             'nominal' => $request->nominalP[$key],
-                    //             'metode' => $request->metodeP[$key],
-                    //             'file' => $imgTrfP,
-                    //             'penerima' => Auth()->user()->name,
-                    //         ]);
-                    //     }
-                    // }
 
                     if (isset($request->tipe)) {
                         foreach ($request->tipe as $key => $t) {

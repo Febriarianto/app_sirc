@@ -153,7 +153,7 @@ class DashboardController extends Controller
             $d = $durasi->format('%d hari, %H jam');
         }
 
-        if ($data->sisa !== "0") {
+        if ($data->sisa !== 0) {
             $ket = "belum lunas";
         } else {
             $ket = "lunas";

@@ -2,7 +2,7 @@
 
 @section('content')
 <div>
-    <form id="formStore" action="{{ $config['form']->action }}" method="POST">
+    <form id="formStore" action="" method="POST">
         @method($config['form']->method)
         @csrf
         <div class="card">
@@ -98,6 +98,12 @@
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Diskon:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}" disabled>
                             </div>
                         </div>
                     </div>
@@ -204,77 +210,6 @@
 @section('script')
 <script>
     $(document).ready(function() {
-
-        $('#paket').on('change', function() {
-            if ($(this).val() == 'jam') {
-                $('#setLabel').html('Jam')
-            } else {
-                $('#setLabel').html('Hari')
-            }
-        });
-
-        let hargaPaket = $('#harga_sewa'),
-            lamaSewa = $('#lama_sewa'),
-            totalBiaya = $('#biaya'),
-            overTime = $('#over_time'),
-            dp = $('#dp');
-
-        var CalResult = function() {
-            var arr = $('input[id=nominal]').map(function() {
-                return this.value;
-            }).get();
-
-            let sum = 0;
-
-            arr.forEach(num => {
-                sum += parseInt(num);
-            })
-
-            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) + parseInt(overTime.val()),
-                sisa = calTotal - sum;
-
-            totalBiaya.val(calTotal);
-
-            $('#sisa').val(sisa);
-        }
-
-        CalResult();
-
-        $("#lama_sewa").on("change", function() {
-            CalResult();
-        });
-
-        $("#harga_sewa, #lama_sewa, #over_time").on("keyup", function() {
-            CalResult();
-        });
-
-        $('input[id=nominal]').on("keyup", function() {
-            CalResult();
-        });
-
-        $('#add').on('click', add);
-
-        function add() {
-            var new_input = "<div class='form-group row'><div class='col-sm-3'><label class='control-lab' for='harga_sewa'>Jenis Pembayaran</label><select name='tipe[]' id='tipe' class='form-control'><option value=''>.:Pilih:.</option><option value='dp'>DP</option><option value='titip'>Titip</option><option value='pelunasan'>Pelunasan</option><option value='lainnya'>Lainnya</option></select></div><div class='col-sm-3'><label class='control-lab' for='nominal'>Nominal</label><input type='text' class='form-control' id='nominal' name='nominal[]' value='0'></div><div class='col-sm-3'><label class='control-lab' for='metode'>Metode</label><select name='metode[]' id='metode' class='form-control'><option value=''>.:Pilih:.</option><option value='cash'>Cash</option><option value='transfer'>Transfer</option></select></div><div class='col-sm-2'><label class='control-lab' for='file'>File</label><input type='file' class='form-control' id='file' name='file[]'></div><div class='col-sm-1'><label class='control-lab' for='harga_sewa'></label><br><button class='btn btn-danger btn-remove' type='button'><i class='fas fa-trash'></i></button></div></div>";
-            $('#divPay').append(new_input);
-
-            reload_function();
-
-        }
-
-        function reload_function() {
-            $('input[id=nominal]').on("keyup", function() {
-                CalResult();
-            });
-
-            $('.btn-remove').click(function() {
-                console.log(this);
-                let parent = this.parentNode.parentNode
-                parent.remove()
-
-                CalResult();
-            })
-        }
 
         let nik2 = $('#select2Penyewa option:selected').text().trim();
         $.ajax({

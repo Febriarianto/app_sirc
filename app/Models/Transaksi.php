@@ -29,6 +29,7 @@ class Transaksi extends Model
         'status',
         'jaminan',
         'harga_sewa',
+        'diskon',
         'over_time',
         'biaya',
         'sisa',

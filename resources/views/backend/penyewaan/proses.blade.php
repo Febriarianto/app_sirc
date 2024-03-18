@@ -100,6 +100,12 @@
                                 <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" disabled>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Diskon:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}" disabled>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="divProses">
@@ -221,6 +227,7 @@
         let hargaPaket = $('#harga_sewa'),
             lamaSewa = $('#lama_sewa'),
             totalBiaya = $('#biaya'),
+            diskon = $('#diskon'),
             overTime = $('#over_time'),
             dp = $('#dp');
 
@@ -235,7 +242,7 @@
                 sum += parseInt(num);
             })
 
-            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) + parseInt(overTime.val()),
+            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) + parseInt(overTime.val()) - parseInt(diskon.val()),
                 sisa = calTotal - sum;
 
             totalBiaya.val(calTotal);
