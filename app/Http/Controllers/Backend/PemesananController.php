@@ -110,7 +110,7 @@ class PemesananController extends Controller
                     'keberangkatan' => $request['keberangkatan'],
                     'estimasi_time' => $request['estimasi_time'],
                     'harga_sewa' => $request['harga_sewa'],
-                    'diskon' => $request['diskon'],
+                    'diskon' => 0,
                     'paket' => 'harian',
                     'tipe' => 'pesan',
                     'status' => 'pending',
@@ -232,7 +232,7 @@ class PemesananController extends Controller
                     'keberangkatan' => $request['keberangkatan'],
                     'estimasi_time' => $request['estimasi_time'],
                     'harga_sewa' => $request['harga_sewa'],
-                    'diskon' => $request['diskon'],
+                    'diskon' => 0,
                     'tipe' => 'pesan',
                     'status' => 'pending',
                 ]);

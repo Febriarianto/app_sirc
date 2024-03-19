@@ -103,7 +103,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Diskon:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}" disabled>
+                                <input type="text" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}">
                             </div>
                         </div>
                     </div>
@@ -256,7 +256,7 @@
             CalResult();
         });
 
-        $("#harga_sewa, #lama_sewa, #over_time").on("keyup", function() {
+        $("#harga_sewa, #lama_sewa, #over_time, #diskon").on("keyup", function() {
             CalResult();
         });
 

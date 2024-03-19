@@ -147,7 +147,7 @@ class PenyewaanController extends Controller
                     'status' => 'proses',
                     'lama_sewa' => $request['lama_sewa'],
                     'harga_sewa' => $request['harga_sewa'],
-                    'diskon' => $request['diskon'],
+                    'diskon' => 0,
                     'paket' => $request['paket'],
                     'kota_tujuan' => $request['kota_tujuan'],
                     'biaya' => $request['biaya'],
@@ -317,6 +317,12 @@ class PenyewaanController extends Controller
                     $perpanjang = 'N';
                 }
 
+                if ($request['sisa'] !== 0) {
+                    $ket = "belum lunas";
+                } else {
+                    $ket = "lunas";
+                }
+
                 $data->update([
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
@@ -329,6 +335,7 @@ class PenyewaanController extends Controller
                     'kota_tujuan' => $request['kota_tujuan'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
+                    'keterangan' => $ket,
                     'jaminan' => $request['jaminan'],
                     'tipe' => 'sewa',
                 ]);
@@ -408,6 +415,7 @@ class PenyewaanController extends Controller
             'over_time' => 'required',
             'biaya' => 'required',
             'sisa' => 'required',
+            'diskon' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
@@ -426,6 +434,7 @@ class PenyewaanController extends Controller
                     'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
+                    'diskon' => $request['diskon'],
                     'keterangan' => $ket,
                     'status' => 'selesai',
                 ]);
