@@ -107,8 +107,8 @@ class LaporanController extends Controller
                     'transaksi.sisa as kekurangan',
                     'transaksi.biaya as total'
                 )
-                    ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
-                    ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
+                    ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
+                    ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
                     ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
                     ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
                     ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
@@ -116,6 +116,27 @@ class LaporanController extends Controller
                     ->get();
                 return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('dp', function ($row) {
+                        if ($row->dp == null) {
+                            return 0;
+                        } else {
+                            return $row->dp;
+                        }
+                    })
+                    ->addColumn('titip', function ($row) {
+                        if ($row->titip == null) {
+                            return 0;
+                        } else {
+                            return $row->titip;
+                        }
+                    })
+                    ->addColumn('pelunasan', function ($row) {
+                        if ($row->pelunasan == null) {
+                            return 0;
+                        } else {
+                            return $row->pelunasan;
+                        }
+                    })
                     ->addColumn('durasi', function ($row) {
                         $start = Carbon::parse($row->keberangkatan . $row->keberangkatan_time);
                         $end =  Carbon::parse();

@@ -324,7 +324,7 @@
                     data: 'total',
                     name: 'total',
                     render: function(data, type, full, meta) {
-                        return 'Rp. ' + numberRenderer(full.keterangan);
+                        return 'Rp. ' + numberRenderer(full.total);
                     }
                 },
                 {
