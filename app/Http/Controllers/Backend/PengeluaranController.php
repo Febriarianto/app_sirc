@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Picqer\Barcode\BarcodeGeneratorPNG;
 use DateTime;
 
 class PengeluaranController extends Controller

@@ -34,7 +34,7 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead>
                                 <tr>
-                                    <th>No</th>
+                                    <th>No Inv.</th>
                                     <th>Nama Penyewa</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
@@ -84,7 +84,7 @@
                 }
             }],
             order: [
-                [5, 'ASC']
+                [5, 'desc']
             ],
             ajax: {
                 url: `{{ route('invoice.index') }}`,
@@ -94,11 +94,8 @@
                 }
             },
             columns: [{
-                    data: 'id',
-                    name: 'id',
-                    render: function(data, type, full, meta) {
-                        return meta.row + 1;
-                    }
+                    data: 'no_inv',
+                    name: 'no_inv',
                 },
                 {
                     data: 'penyewa.nama',

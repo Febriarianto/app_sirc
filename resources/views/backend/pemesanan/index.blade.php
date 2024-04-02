@@ -86,8 +86,15 @@
                     name: 'penyewa.no_hp'
                 },
                 {
-                    data: 'keberangkatan',
-                    name: 'keberangkatan'
+                    data: 'estimasi_tgl',
+                    name: 'estimasi_tgl',
+                    render: function(data, type, full, meta) {
+                        if (full.estimasi_tgl == null) {
+                            return full.keberangkatan;
+                        } else {
+                            return full.estimasi_tgl;
+                        }
+                    }
                 },
                 {
                     data: 'estimasi_time',

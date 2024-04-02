@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
-use App\Models\Harga;
 use App\Traits\ResponseStatus;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\DataTables;
+use DateTime;
 
-class HargaController extends Controller
+class PemasukanController extends Controller
 {
     use ResponseStatus;
 
     function __construct()
     {
-        $this->middleware('can:harga-list', ['only' => ['index', 'show']]);
-        $this->middleware('can:harga-create', ['only' => ['create', 'store']]);
-        $this->middleware('can:harga-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('can:harga-delete', ['only' => ['destroy']]);
+        $this->middleware('can:pemasukan-list', ['only' => ['index', 'show']]);
+        $this->middleware('can:pemasukan-create', ['only' => ['create', 'store']]);
+        $this->middleware('can:pemasukan-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('can:pemasukan-delete', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -29,21 +32,25 @@ class HargaController extends Controller
      */
     public function index(Request $request)
     {
-        $config['title'] = "Harga";
+        $config['title'] = "Pemasukan";
         $config['breadcrumbs'] = [
-            ['url' => '#', 'title' => "Harga"],
+            ['url' => '#', 'title' => "Pemasukan"],
         ];
         if ($request->ajax()) {
-            $data = Harga::query();
+            $data = Pembayaran::where('status', 'pemasukan')->where('tipe', 'lainnya')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-success" href="' . route('harga.edit', $row->id) . '">Edit</a>
-                        <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>';
+                    if ($row->created_at->format("Y-m-d") !== Carbon::today()->format("Y-m-d")) {
+                        $actionBtn = "";
+                    } else {
+                        $actionBtn = '<a class="btn btn-success" href="' . route('pemasukan.edit', $row->id) . '">Edit</a>
+                            <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>';
+                    }
                     return $actionBtn;
                 })->make();
         }
-        return view('backend.harga.index', compact('config'));
+        return view('backend.pemasukan.index', compact('config'));
     }
 
     /**
@@ -53,16 +60,16 @@ class HargaController extends Controller
      */
     public function create()
     {
-        $config['title'] = "Tambah Harga";
+        $config['title'] = "Tambah Pemasukan";
         $config['breadcrumbs'] = [
-            ['url' => route('harga.index'), 'title' => "Harga"],
-            ['url' => '#', 'title' => "Tambah Harga"],
+            ['url' => route('pemasukan.index'), 'title' => "Pemasukan"],
+            ['url' => '#', 'title' => "Tambah Pemasukan"],
         ];
         $config['form'] = (object)[
             'method' => 'POST',
-            'action' => route('harga.store')
+            'action' => route('pemasukan.store')
         ];
-        return view('backend.harga.form', compact('config'));
+        return view('backend.pemasukan.form', compact('config'));
     }
 
     /**
@@ -74,23 +81,35 @@ class HargaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama' => 'required',
             'nominal' => 'required',
-            'satuan' => 'required',
-            'nilai' => 'required',
+            'detail' => 'required',
+            'metode' => 'required',
+            'file' => isset($request['file']) ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
         ]);
+
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
-                $data = Harga::create([
-                    'nama' => ucwords($request['nama']),
+
+                if (isset($request['file'])) {
+                    $imgTrf = date("Y-m-d") . '_' . $request->file->getClientOriginalName();
+                    $request->file->storeAs('public/buktiTrf/', $imgTrf);
+                } else {
+                    $imgTrf = '';
+                }
+
+                $data = Pembayaran::create([
+                    'status' => 'pemasukan',
                     'nominal' => $request['nominal'],
-                    'satuan' => $request['satuan'],
-                    'nilai' => $request['nilai'],
+                    'detail' => $request['detail'],
+                    'metode' => $request['metode'],
+                    'file' => $imgTrf,
+                    'penerima' => Auth()->user()->name,
+                    'tipe' => 'lainnya',
                 ]);
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('harga.index')));
+                $response = response()->json($this->responseStore(true, NULL, route('pemasukan.index')));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -121,17 +140,17 @@ class HargaController extends Controller
      */
     public function edit($id)
     {
-        $config['title'] = "Edit Harga";
+        $config['title'] = "Edit Pemasukan";
         $config['breadcrumbs'] = [
-            ['url' => route('harga.index'), 'title' => "Harga"],
-            ['url' => '#', 'title' => "Edit Harga"],
+            ['url' => route('pemasukan.index'), 'title' => "Pemasukan"],
+            ['url' => '#', 'title' => "Edit Pemasukan"],
         ];
-        $data = Harga::where('id', $id)->first();
+        $data = Pembayaran::where('id', $id)->first();
         $config['form'] = (object)[
             'method' => 'PUT',
-            'action' => route('harga.update', $id)
+            'action' => route('pemasukan.update', $id)
         ];
-        return view('backend.harga.form', compact('config', 'data'));
+        return view('backend.pemasukan.form', compact('config', 'data'));
     }
 
     /**
@@ -144,25 +163,34 @@ class HargaController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama' => 'required',
+            // 'status' => 'required',
             'nominal' => 'required',
-            'satuan' => 'required',
-            'nilai' => 'required',
+            'detail' => 'required',
+            'metode' => 'required',
+            'file' => isset($request['file']) ? 'required|mimes:jpg,png,jpeg,gif,svg|max:2048' : '',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
-                $data = Harga::findOrFail($id);
+
+                $data = Pembayaran::findOrFail($id);
+
+                if ($request->file('file') == null) {
+                    $imgTrf = $data->foto;
+                } else {
+                    $imgTrf = date("Y-m-d") . '_' . $request->file->getClientOriginalName();
+                    $request->file->storeAs('public/buktiTrf/', $imgTrf);
+                }
 
                 $data->update([
-                    'nama' => ucwords($request['nama']),
                     'nominal' => $request['nominal'],
-                    'satuan' => $request['satuan'],
-                    'nilai' => $request['nilai'],
+                    'detail' => $request['detail'],
+                    'metode' => $request['metode'],
+                    'file' => $imgTrf,
                 ]);
 
                 DB::commit();
-                $response = response()->json($this->responseStore(true, NULL, route('harga.index')));
+                $response = response()->json($this->responseStore(true, NULL, route('pemasukan.index')));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -186,7 +214,7 @@ class HargaController extends Controller
             'status' => 'error',
             'message' => 'Data gagal dihapus'
         ]);
-        $data = Harga::find($id);
+        $data = Pembayaran::find($id);
         DB::beginTransaction();
         try {
             $data->delete();
@@ -200,40 +228,5 @@ class HargaController extends Controller
             $response = response()->json(['error' => $throw->getMessage()]);
         }
         return $response;
-    }
-
-    public function select2(Request $request)
-    {
-        $page = $request->page;
-        $resultCount = 10;
-        $offset = ($page - 1) * $resultCount;
-        $data = Harga::select('*')
-            ->where('nama', 'LIKE', '%' . $request->q . '%')
-            ->orderBy('nama')
-            ->skip($offset)
-            ->take($resultCount)
-            ->selectRaw('id, nama as text')
-            ->get();
-
-        $count = Harga::select('*')
-            ->where('nama', 'LIKE', '%' . $request->q . '%')
-            ->get()
-            ->count();
-
-        $endCount = $offset + $resultCount;
-        $morePages = $count > $endCount;
-
-        $results = array(
-            "results" => $data,
-            "pagination" => array(
-                "more" => $morePages
-            )
-        );
-
-        return response()->json($results);
-    }
-
-    public function get_harga($id)
-    {
     }
 }

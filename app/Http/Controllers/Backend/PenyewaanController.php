@@ -47,33 +47,20 @@ class PenyewaanController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('hari', function ($row) {
-                    $waktustart = $row->keberangkatan . " " . $row->keberangkatan_time;
-                    $waktuend = date("Y-m-d h:i:s");
-                    $datetime1 = new \DateTime($waktustart); //start time
-                    $datetime2 = new \DateTime($waktuend); //end time
-                    $durasi = $datetime1->diff($datetime2);
-                    // if ($durasi->format('%y') !== '0') {
-                    //     return $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
-                    // } elseif ($durasi->format('%m') !== '0') {
-                    //     return $durasi->format('%m bulan, %d hari, %H jam');
-                    // } else {
-                    //     return $durasi->format('%d hari, %H jam');
-                    // }
-                    return $durasi->format('%d');
+                    $start = Carbon::parse($row->keberangkatan . $row->keberangkatan_time);
+                    $end =  Carbon::parse();
+                    $duration = $end->diffInDays($start);
+                    return $duration;
                 })
                 ->addColumn('jam', function ($row) {
-                    $waktustart = $row->keberangkatan . " " . $row->keberangkatan_time;
-                    $waktuend = date("Y-m-d h:i:s");
-                    $datetime1 = new \DateTime($waktustart); //start time
-                    $datetime2 = new \DateTime($waktuend); //end time
-                    $durasi = $datetime1->diff($datetime2);
-                    return $durasi->format('%H');
+                    $start = Carbon::parse($row->keberangkatan . $row->keberangkatan_time);
+                    $end =  Carbon::parse();
+                    $duration = $end->diff($start);
+                    return $duration->format('%H');
                 })
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>';
                     $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit_sewa', [$row->id, $row->id_kendaraan]) . '">Edit</a>';
-
-
                     return $actionBtn;
                 })->make();
         }
@@ -116,13 +103,7 @@ class PenyewaanController extends Controller
             'id_penyewa' => 'required',
             'id_kendaraan' => 'required',
             'keberangkatan' => 'required',
-            'harga_sewa' => 'required',
-            'lama_sewa' => 'required',
-            'paket' => 'required',
             'kota_tujuan' => 'required',
-            'biaya' => 'required',
-            'diskon' => 'required',
-            'sisa' => 'required',
             'jaminan' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -144,15 +125,9 @@ class PenyewaanController extends Controller
                     'id_kendaraan' => $request['id_kendaraan'],
                     'keberangkatan' => $request['keberangkatan'],
                     'keberangkatan_time' => $keberangkatan_time,
-                    'status' => 'proses',
-                    'lama_sewa' => $request['lama_sewa'],
-                    'harga_sewa' => $request['harga_sewa'],
-                    'diskon' => 0,
-                    'paket' => $request['paket'],
                     'kota_tujuan' => $request['kota_tujuan'],
-                    'biaya' => $request['biaya'],
-                    'sisa' => $request['sisa'],
                     'jaminan' => $request['jaminan'],
+                    'status' => 'proses',
                     'tipe' => 'sewa',
                 ]);
 
@@ -229,20 +204,26 @@ class PenyewaanController extends Controller
      */
     public function show($id)
     {
-        $config['title'] = "Cetak Invoice";
+        $config['title'] = "Tutup Penyewaan";
         $config['breadcrumbs'] = [
             ['url' => route('invoice.index'), 'title' => "Cetak"],
-            ['url' => '#', 'title' => "Proses Pemyewaan"],
+            ['url' => '#', 'title' => "Tutup Pemyewaan"],
         ];
 
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
-
         $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
+
+        $start = Carbon::parse($data->keberangkatan . $data->keberangkatan_time);
+        $end =  Carbon::parse();
+        $duration = $end->diff($start);
+        $hari = $end->diffInDays($start);;
+        $jam = $duration->format('%H');;
+
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('penyewaan.proses', $id)
         ];
-        return view('backend.penyewaan.proses', compact('config', 'data', 'pembayaran'));
+        return view('backend.penyewaan.proses', compact('config', 'data', 'pembayaran', 'hari', 'jam'));
     }
 
     /**
@@ -283,13 +264,7 @@ class PenyewaanController extends Controller
             'id_penyewa' => 'required',
             'id_kendaraan' => 'required',
             'keberangkatan' => 'required',
-            'harga_sewa' => 'required',
-            'diskon' => 'required',
-            'lama_sewa' => 'required',
-            'paket' => 'required',
             'kota_tujuan' => 'required',
-            'biaya' => 'required',
-            'sisa' => 'required',
             'jaminan' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -327,16 +302,10 @@ class PenyewaanController extends Controller
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
                     'keberangkatan' => $request['keberangkatan'],
-                    'status' => 'proses',
-                    'lama_sewa' => $request['lama_sewa'],
-                    'harga_sewa' => $request['harga_sewa'],
-                    'diskon' => $request['diskon'],
-                    'paket' => $request['paket'],
                     'kota_tujuan' => $request['kota_tujuan'],
-                    'biaya' => $request['biaya'],
-                    'sisa' => $request['sisa'],
                     'keterangan' => $ket,
                     'jaminan' => $request['jaminan'],
+                    'status' => 'proses',
                     'tipe' => 'sewa',
                 ]);
 
@@ -412,7 +381,6 @@ class PenyewaanController extends Controller
     public function proses(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'over_time' => 'required',
             'biaya' => 'required',
             'sisa' => 'required',
             'diskon' => 'required',
@@ -431,7 +399,6 @@ class PenyewaanController extends Controller
                 }
 
                 $data->update([
-                    'over_time' => $request['over_time'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
                     'diskon' => $request['diskon'],

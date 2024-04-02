@@ -97,6 +97,46 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-8 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Harga</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="select2Jenis">Harga:</label>
+                            <div class="col-sm-6">
+                                <select id="select2Harga" style="width: 100% !important;" name="id_harga">
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-success" type="button" id="addHarga"><i class="fas fa-plus"></i> Add</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div id="divHarga">
+                            @if (isset($hargaBarang))
+                            @foreach ($hargaBarang as $hb)
+                            <div class="row mb-2">
+                                <div class="col-sm-5">
+                                    <input type="hidden" name="harga[]" value="{{$hb->id}}" id="idHrg">
+                                    <input type="text" class="form-control" id="name" value="{{$hb->nama}}" readonly>
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" id="harga" value="{{$hb->nominal}}" readonly>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="button" id="removeHarga" class="btn btn-danger" onclick="parentNode.parentNode.remove()"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            @endforeach
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 @endsection
@@ -106,6 +146,50 @@
         $('#select2Active').select2({
             theme: 'bootstrap4',
             width: '100%'
+        });
+
+        $('#addHarga').on('click', function() {
+
+            var data = $('#select2Harga').select2('data');
+
+            var new_harga = '<div class="row mb-2"><div class="col-sm-5"><input type="hidden" name="harga[]" value="' + data[0].id + '" id="idHrg"><input type="text" class="form-control" id="name" value="' + data[0].nama + '" readonly></div><div class="col-sm-5"><input type="text" class="form-control" id="harga"  value="' + data[0].nominal + '"  readonly></div><div class="col-sm-2"><button type="button" id="removeHarga" class="btn btn-danger" onclick="parentNode.parentNode.remove()"><i class="fas fa-trash"></i></button></div></div>';
+
+            var hasil = CallId(data[0].id);
+            if (hasil == 'ada') {
+                toastr.error('Harga Sudah Ada', 'Error !');
+            } else {
+                $('#divHarga').append(new_harga);
+            }
+        })
+
+        function CallId(id) {
+            var arr = $('input[id=idHrg]').map(function() {
+                return this.value;
+            }).get();
+
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] == id) {
+                    return 'ada';
+                }
+            }
+        }
+
+        $('#select2Harga').select2({
+            theme: 'bootstrap4',
+            dropdownParent: $('#select2Harga').parent(),
+            placeholder: "Cari Harga",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('harga.select2') }}",
+                dataType: "json",
+                cache: true,
+                data: function(e) {
+                    return {
+                        q: e.term || '',
+                        page: e.page || 1
+                    }
+                },
+            },
         });
 
         $('#select2Pemilik').select2({

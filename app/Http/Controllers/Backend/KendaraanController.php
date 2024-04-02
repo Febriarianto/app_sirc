@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use Carbon\Carbon;
 use App\Models\Jenis;
 use App\Models\Kendaraan;
+use App\Models\HargaKendaraan;
 use Illuminate\Http\Request;
 use App\Traits\ResponseStatus;
 use Yajra\DataTables\DataTables;
@@ -134,6 +135,7 @@ class KendaraanController extends Controller
             'warna' => 'required',
             'status' => 'required',
             'foto' => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            'harga' => 'required',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
@@ -157,6 +159,13 @@ class KendaraanController extends Controller
                     'foto' => $filename,
                     'barcode' => $randomString,
                 ]);
+
+                foreach ($request->harga as $idh) {
+                    HargaKendaraan::create([
+                        'id_kendaraan' => $data->id,
+                        'id_harga' => $idh,
+                    ]);
+                }
 
                 DB::commit();
                 $response = response()->json($this->responseStore(true, NULL, route('kendaraan.index')));
@@ -210,11 +219,14 @@ class KendaraanController extends Controller
             ['url' => '#', 'title' => "Edit Kendaraan"],
         ];
         $data = Kendaraan::where('id', $id)->first();
+        $hargaBarang = HargaKendaraan::where('id_kendaraan', $id)
+            ->join('harga', 'id_harga', '=', 'harga.id')
+            ->get();
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('kendaraan.update', $id)
         ];
-        return view('backend.kendaraan.form', compact('config', 'data'));
+        return view('backend.kendaraan.form', compact('config', 'data', 'hargaBarang'));
     }
 
     /**
@@ -233,6 +245,7 @@ class KendaraanController extends Controller
             'tahun' => 'required',
             'warna' => 'required',
             'status' => 'required',
+            'harga' => 'required',
         ]);
         if ($validator->passes()) {
             DB::beginTransaction();
@@ -254,6 +267,15 @@ class KendaraanController extends Controller
                     'status' => $request['status'],
                     'foto' => $filename,
                 ]);
+
+                $dataHarga = HargaKendaraan::where('id_kendaraan', $id)->delete();
+
+                foreach ($request->harga as $idh) {
+                    HargaKendaraan::create([
+                        'id_kendaraan' => $data->id,
+                        'id_harga' => $idh,
+                    ]);
+                }
 
                 DB::commit();
                 $response = response()->json($this->responseStore(true, NULL, route('kendaraan.index')));
@@ -296,6 +318,7 @@ class KendaraanController extends Controller
         }
         return $response;
     }
+
     public function select2(Request $request)
     {
         $page = $request->page;

@@ -26,6 +26,8 @@
                                 <tr>
                                     <th>Nama</th>
                                     <th>Nominal</th>
+                                    <th>Satuan</th>
+                                    <th>Nilai</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -56,6 +58,14 @@
                 {
                     name: 'nominal',
                     data: 'nominal'
+                },
+                {
+                    name: 'satuan',
+                    data: 'satuan'
+                },
+                {
+                    name: 'nilai',
+                    data: 'nilai'
                 },
                 {
                     data: 'action',

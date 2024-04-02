@@ -22,6 +22,7 @@ class Transaksi extends Model
         'paket',
         'keberangkatan',
         'estimasi_time',
+        'estimasi_tgl',
         'keberangkatan_time',
         'kepulangan',
         'kepulangan_time',

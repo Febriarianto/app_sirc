@@ -89,7 +89,7 @@ class PemesananController extends Controller
         $validator = Validator::make($request->all(), [
             'id_penyewa' => 'required',
             'id_kendaraan' => 'required',
-            'keberangkatan' => 'required',
+            'estimasi_tgl' => 'required',
             'estimasi_time' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -107,9 +107,8 @@ class PemesananController extends Controller
                     'no_inv' => $no_inv,
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
-                    'keberangkatan' => $request['keberangkatan'],
+                    'estimasi_tgl' => $request['estimasi_tgl'],
                     'estimasi_time' => $request['estimasi_time'],
-                    'harga_sewa' => $request['harga_sewa'],
                     'diskon' => 0,
                     'paket' => 'harian',
                     'tipe' => 'pesan',
@@ -139,7 +138,7 @@ class PemesananController extends Controller
 
                 DB::commit();
 
-                $dataWa = Transaksi::select('transaksi.id', 'transaksi.keberangkatan', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
+                $dataWa = Transaksi::select('transaksi.id', 'transaksi.estimasi_tgl', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
                     ->selectRaw('(select SUM(CASE WHEN pembayaran.nominal THEN pembayaran.nominal ELSE 0 END) as uang_masuk from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as uang_masuk')
                     ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
                     ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
@@ -147,7 +146,7 @@ class PemesananController extends Controller
                     ->where('transaksi.id', $data->id)
                     ->first();
                 // dd($dataWa->toArray());
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->estimasi_tgl . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -216,7 +215,7 @@ class PemesananController extends Controller
         $validator = Validator::make($request->all(), [
             'id_penyewa' => 'required',
             'id_kendaraan' => 'required',
-            'keberangkatan' => 'required',
+            'estimasi_tgl' => 'required',
             'estimasi_time' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
@@ -229,9 +228,8 @@ class PemesananController extends Controller
                 $data->update([
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
-                    'keberangkatan' => $request['keberangkatan'],
+                    'estimasi_tgl' => $request['estimasi_tgl'],
                     'estimasi_time' => $request['estimasi_time'],
-                    'harga_sewa' => $request['harga_sewa'],
                     'diskon' => 0,
                     'tipe' => 'pesan',
                     'status' => 'pending',
@@ -284,16 +282,10 @@ class PemesananController extends Controller
         $validator = Validator::make($request->all(), [
             'id_penyewa' => 'required',
             'id_kendaraan' => 'required',
-            'keberangkatan' => 'required',
             'status' => 'required',
-            'harga_sewa' => 'required',
             'jaminan' =>  $request['status'] == 'proses' ? 'required' : '',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'lama_sewa' => $request['status'] == 'proses' ? 'required' : '',
-            'paket' => $request['status'] == 'proses' ? 'required' : '',
             'kota_tujuan' => $request['status'] == 'proses' ? 'required' : '',
-            'biaya' => $request['status'] == 'proses' ? 'required' : '',
-            'sisa' => $request['status'] == 'proses' ? 'required' : '',
         ]);
         if ($validator->passes()) {
             $cekMobil = Transaksi::select('id')->where('id_kendaraan', $request['id_kendaraan'])->where('status', '=', 'proses')->first();
@@ -309,16 +301,10 @@ class PemesananController extends Controller
                     $data->update([
                         'id_penyewa' => $request['id_penyewa'],
                         'id_kendaraan' => $request['id_kendaraan'],
-                        'keberangkatan' => $request['status'] == 'proses' ? $keberangkatan : $request['keberangkatan'],
+                        'keberangkatan' => $keberangkatan,
                         'keberangkatan_time' => $keberangkatan_time,
                         'status' => $request['status'],
-                        'lama_sewa' => $request['lama_sewa'],
-                        'harga_sewa' => $request['harga_sewa'],
-                        'diskon' => $request['diskon'],
-                        'paket' => $request['status'] == 'proses' ? $request['paket'] : 'harian',
                         'kota_tujuan' => $request['status'] == 'proses' ?  $request['kota_tujuan'] : null,
-                        'biaya' => $request['status'] == 'proses' ? $request['biaya'] : null,
-                        'sisa' => $request['status'] == 'proses' ? $request['sisa'] : null,
                         'tipe' => $request['status'] == 'proses' ? 'sewa' : 'pesan',
                         'status' => $request['status'],
                         'jaminan' => $request['status'] == 'proses' ? $request['jaminan'] : null,

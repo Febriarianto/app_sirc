@@ -103,6 +103,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::get('laporan-bulanan', [Backend\LaporanController::class, 'bulanan_index'])->name('laporan.bulanan');
     Route::get('laporan-omset', [Backend\LaporanController::class, 'omset_index'])->name('laporan.omset');
     Route::get('laporan-referral', [Backend\LaporanController::class, 'referral_index'])->name('laporan.referral');
+    Route::get('laporan-belum-lunas', [Backend\LaporanController::class, 'belum_lunas'])->name('laporan.belumLunas');
 
     //booking/pemesanan
     Route::put('penyewaan/proses/{penyewaan}', [Backend\PenyewaanController::class, 'proses'])->name('penyewaan.proses');
@@ -112,6 +113,8 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
 
     /* Kas*/
     Route::resource('pengeluaran', Backend\PengeluaranController::class);
+
+    Route::resource('pemasukan', Backend\PemasukanController::class);
 
     /* Kas*/
     Route::get('harga/select2', [Backend\HargaController::class, 'select2'])->name('harga.select2');

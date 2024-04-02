@@ -70,29 +70,16 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tgl Keberangkatan :</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="keberangkatan">Tanggal Keberangkatan :</label>
                             <div class="col-sm-9">
-                                <input type="date" class="form-control" id="keberangkatan" name="keberangkatan" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->keberangkatan ?? '' }}">
+                                <input type="date" class="form-control" id="estimasi_tgl" name="estimasi_tgl" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->estimasi_tgl ?? '' }}">
                             </div>
                         </div>
                         <hr>
                         <!-- <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
-                            <div class="col-sm-9">
-                                <select id="select2Harga" style="width: 100% !important;" name="">
-
-                                </select>
-                            </div>
-                        </div> -->
-                        <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}">
-                            </div>
-                        </div>
-                        <!-- <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="diskon">Diskon</label>
-                            <div class="col-sm-9">
                             </div>
                         </div> -->
                         <input type="hidden" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}">
@@ -112,7 +99,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-6">
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
                                 <div class="col-sm-9">
                                     <select id="paket" name="paket" class="form-control">
@@ -131,7 +118,7 @@
                                     <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '1'}}">
                                 </div>
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa" id="setLabel">{{isset($data->paket) && $data->paket == 'jam' ? 'Jam' : 'Hari'}}</label>
-                            </div>
+                            </div> -->
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Kota Tujuan:</label>
                                 <div class="col-sm-9">
@@ -140,7 +127,7 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="biaya">Total Biaya:</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="biaya" name="biaya" value="{{ $data->biaya ?? '' }}" readonly>
@@ -151,7 +138,7 @@
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="sisa" name="sisa" value="{{ $data->sisa ?? ''}}" readonly>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Jaminan:</label>
                                 <div class="col-sm-9">

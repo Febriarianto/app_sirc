@@ -44,6 +44,18 @@
                                     <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Masukan Nominal" value="{{ $data->nominal ?? '' }}">
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="satuan">Satuan :</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="satuan" name="satuan" value="jam" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="nilai">Nilai :</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="nilai" name="nilai" placeholder="Masukan Nilai" value="{{ $data->nilai ?? '' }}">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

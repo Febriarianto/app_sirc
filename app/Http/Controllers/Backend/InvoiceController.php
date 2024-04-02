@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Carbon\Carbon;
 use PDF;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
@@ -43,11 +44,11 @@ class InvoiceController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     if ($row->keterangan == 'lunas') {
-                        $actionBtn = '<a class="btn btn-secondary" href="' . route('invoice.show', $row->id) . '">Detail</a>
+                        $actionBtn = '<a class="btn btn-secondary" target="_blank" href="' . route('invoice.show', $row->id) . '">Detail</a>
                         <a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
                     } else {
                         $actionBtn = '
-                        <a class="btn btn-warning btn-cetak" href="' . route('invoice.edit', $row->id) . '">Lihat</a>
+                        <a class="btn btn-warning btn-cetak" target="_blank" href="' . route('invoice.edit', $row->id) . '">Lihat</a>
                         <a class="btn btn-primary btn-cetak" target="_blank" href="' . route('invoice.cetak', $row->id) . '">Cetak</a>';
                     }
                     return $actionBtn;
@@ -160,11 +161,18 @@ class InvoiceController extends Controller
         ];
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
         $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
+
+        $start = Carbon::parse($data->keberangkatan . $data->keberangkatan_time);
+        $end = Carbon::parse($data->kepulangan . $data->kepulangan_time);
+        $duration = $end->diff($start);
+        $hari = $duration->format('%d');
+        $jam = $duration->format('%H');
+
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('penyewaan.proses', $id)
         ];
-        return view('backend.invoice.detail', compact('config', 'data', 'pembayaran'));
+        return view('backend.invoice.detail', compact('config', 'data', 'pembayaran', 'hari', 'jam'));
     }
 
     /**
@@ -182,11 +190,18 @@ class InvoiceController extends Controller
         ];
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
         $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
+
+        $start = Carbon::parse($data->keberangkatan . $data->keberangkatan_time);
+        $end = Carbon::parse($data->kepulangan . $data->kepulangan_time);
+        $duration = $end->diff($start);
+        $hari = $duration->format('%d');
+        $jam = $duration->format('%H');
+
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('penyewaan.proses', $id)
         ];
-        return view('backend.penyewaan.proses', compact('config', 'data', 'pembayaran'));
+        return view('backend.penyewaan.proses', compact('config', 'data', 'pembayaran', 'hari', 'jam'));
     }
 
     /**

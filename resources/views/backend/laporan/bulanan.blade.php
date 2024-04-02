@@ -159,9 +159,9 @@
                 {
                     data: 'biaya',
                     name: 'biaya',
-                    render: function(data, type, full, meta) {
-                        return 'Rp. ' + numberRenderer(full.biaya);
-                    }
+                    // render: function(data, type, full, meta) {
+                    //     return 'Rp. ' + numberRenderer(full.biaya);
+                    // }
                 },
             ],
             rowCallback: function(row, data) {

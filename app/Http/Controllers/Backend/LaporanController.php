@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Pembayaran;
 use App\Models\Kendaraan;
+use App\Models\HargaKendaraan;
 use App\Models\Transaksi;
 use Yajra\DataTables\DataTables;
 use App\Traits\ResponseStatus;
@@ -88,69 +89,116 @@ class LaporanController extends Controller
         $config['breadcrumbs'] = [
             ['url' => '#', 'title' => "Laporan Harian"],
         ];
-
+        $tgl = $request['tgl'];
+        $param = $request['param'];
         if ($request->ajax()) {
-            $tgl = $_GET['tgl'];
-            $data = Transaksi::select(
-                'transaksi.id',
-                'transaksi.id_kendaraan',
-                'transaksi.id_penyewa',
-                'penyewa.nama',
-                'transaksi.lama_sewa',
-                'transaksi.paket',
-                'kendaraan.no_kendaraan',
-                'transaksi.keberangkatan',
-                'transaksi.keberangkatan_time',
-                'transaksi.kepulangan',
-                'transaksi.kepulangan_time',
-                'transaksi.status',
-                'transaksi.keterangan',
-                'transaksi.tipe',
-                'transaksi.sisa as kekurangan',
-                'transaksi.biaya as total'
-            )
-                ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
-                ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
-                ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
-                ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
-                ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
-                // ->whereDate('transaksi.updated_at', $tgl)
-                ->where('transaksi.status', '=', 'proses')
-                ->get();
+            if ($param == 'dt') {
+                $data = Transaksi::select(
+                    'transaksi.id',
+                    'transaksi.id_kendaraan',
+                    'transaksi.id_penyewa',
+                    'penyewa.nama',
+                    'kendaraan.no_kendaraan',
+                    'transaksi.keberangkatan',
+                    'transaksi.keberangkatan_time',
+                    'transaksi.status',
+                    'transaksi.keterangan',
+                    'transaksi.tipe',
+                    'transaksi.sisa as kekurangan',
+                    'transaksi.biaya as total'
+                )
+                    ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
+                    ->selectRaw('(select SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
+                    ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
+                    ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                    ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                    ->where('transaksi.status', '=', 'proses')
+                    ->get();
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('durasi', function ($row) {
+                        $start = Carbon::parse($row->keberangkatan . $row->keberangkatan_time);
+                        $end =  Carbon::parse();
+                        $duration = $end->diff($start);
+                        return  $end->diffInDays($start) . ' Hari ' . $duration->format('%H') . ' Jam';
+                    })
+                    ->addColumn('harga_sewa', function ($row) {
+                        $start = Carbon::parse($row->keberangkatan . $row->keberangkatan_time);
+                        $end =  Carbon::parse();
+                        $duration = $end->diff($start);
+                        $hari = $end->diffInDays($start);
+                        $jam = $duration->format('%H');
+                        $toleransi = 1;
 
-            $data1 = Transaksi::select(
-                'transaksi.id',
-                'transaksi.id_kendaraan',
-                'transaksi.id_penyewa',
-                'penyewa.nama',
-                'transaksi.lama_sewa',
-                'transaksi.paket',
-                'kendaraan.no_kendaraan',
-                'transaksi.keberangkatan',
-                'transaksi.keberangkatan_time',
-                'transaksi.kepulangan',
-                'transaksi.kepulangan_time',
-                'transaksi.status',
-                'transaksi.keterangan',
-                'transaksi.tipe',
-                'transaksi.sisa as kekurangan',
-                'transaksi.biaya as total'
-            )
-                ->selectRaw('(select 
-                    SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp
-                    from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
-                ->selectRaw('(select 
-                    SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip
-                    from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
-                ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan
-                    from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
-                ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
-                ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
-                ->where('transaksi.kepulangan', $tgl)
-                ->where('transaksi.status', '=', 'selesai')
-                ->get();
+                        $get_harga_harian = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')
+                            ->JOIN('harga', 'harga.id', '=', 'harga_kendaraan.id_harga')
+                            ->WHERE('harga_kendaraan.id_kendaraan', $row->id_kendaraan)
+                            ->WHERE('harga.nilai', '=', 24)
+                            ->first();
 
-            return response(['data' => $data, 'data1' => $data1,]);
+                        if ($hari == 0 && $jam == 0 | $hari == 0 && $jam - $toleransi == 0) {
+                            $get_harga_sql = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')
+                                ->JOIN('harga', 'harga.id', '=', 'harga_kendaraan.id_harga')
+                                ->WHERE('harga_kendaraan.id_kendaraan', $row->id_kendaraan)
+                                ->WHERE('harga.nilai', '>=', $jam)
+                                ->ORDERBY('harga.nilai', 'ASC')
+                                ->first();
+                            $get_harga_jam = $get_harga_sql->nominal;
+                        } elseif ($jam - $toleransi == 0) {
+                            $get_harga_jam = 0;
+                        } elseif ($jam == 0) {
+                            $get_harga_jam = 0;
+                        } else {
+                            $get_harga_sql = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')
+                                ->JOIN('harga', 'harga.id', '=', 'harga_kendaraan.id_harga')
+                                ->WHERE('harga_kendaraan.id_kendaraan', $row->id_kendaraan)
+                                ->WHERE('harga.nilai', '>=', $jam - $toleransi)
+                                ->ORDERBY('harga.nilai', 'ASC')
+                                ->first();
+                            $get_harga_jam = $get_harga_sql->nominal;
+                        }
+
+                        $harga = $hari * $get_harga_harian->nominal + $get_harga_jam * 1;
+                        return  $harga;
+                    })
+                    ->make();
+            } else {
+                $data = Transaksi::select(
+                    'transaksi.id',
+                    'transaksi.id_kendaraan',
+                    'transaksi.id_penyewa',
+                    'penyewa.nama',
+                    'transaksi.durasi',
+                    'kendaraan.no_kendaraan',
+                    'transaksi.keberangkatan',
+                    'transaksi.keberangkatan_time',
+                    'transaksi.kepulangan',
+                    'transaksi.kepulangan_time',
+                    'transaksi.harga_sewa',
+                    'transaksi.status',
+                    'transaksi.keterangan',
+                    'transaksi.tipe',
+                    'transaksi.diskon',
+                    'transaksi.sisa as kekurangan',
+                    'transaksi.biaya as total'
+                )
+                    ->selectRaw('(select 
+                        SUM(CASE WHEN pembayaran.tipe = "dp" THEN pembayaran.nominal ELSE 0 END) as dp
+                        from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as dp')
+                    ->selectRaw('(select 
+                        SUM(CASE WHEN pembayaran.tipe = "titip" THEN pembayaran.nominal ELSE 0 END) as titip
+                        from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as titip')
+                    ->selectRaw('(SELECT SUM(CASE WHEN pembayaran.tipe = "pelunasan" THEN pembayaran.nominal ELSE 0 END) as pelunasan
+                        from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as pelunasan')
+                    ->leftJoin('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                    ->leftJoin('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                    ->where('transaksi.kepulangan', $tgl)
+                    ->where('transaksi.status', '=', 'selesai')
+                    ->get();
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->make();
+            }
         }
 
         return view('backend.laporan.harian', compact('config'));
@@ -233,5 +281,37 @@ class LaporanController extends Controller
         }
 
         return view('backend.laporan.keuangan', compact('config'));
+    }
+
+    public function belum_lunas(Request $request)
+    {
+        $config['title'] = "Laporan Inv. Belum Lunas";
+        $config['breadcrumbs'] = [
+            ['url' => '#', 'title' => "Laporan Inv. Belum Lunas"],
+        ];
+        $tAwal = $request['tAwal'];
+        $tAhir = $request['tAhir'];
+        if ($request->ajax()) {
+            $data = Transaksi::select(
+                'transaksi.id',
+                'penyewa.nama',
+                'kendaraan.no_kendaraan',
+                'transaksi.durasi',
+                'transaksi.keberangkatan',
+                'transaksi.kepulangan',
+                'transaksi.sisa',
+                'transaksi.biaya'
+            )
+                ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
+                ->leftJoin('kendaraan', 'transaksi.id_kendaraan', '=', 'kendaraan.id')
+                ->where('transaksi.status', '=', 'selesai')
+                ->where('transaksi.keterangan', '=', 'belum lunas')
+                ->whereBetween('transaksi.kepulangan', [$tAwal, $tAhir]);
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->make();
+        }
+
+        return view('backend.laporan.belum_lunas', compact('config'));
     }
 }

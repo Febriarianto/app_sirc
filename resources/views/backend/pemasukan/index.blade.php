@@ -9,10 +9,10 @@
                     <div class="header-title">
                         <div class="row">
                             <div class="col-sm-6 col-lg-6">
-                                <h4 class="card-title">List Data Pemesanan</h4>
+                                <h4 class="card-title">Data Pemasukan</h4>
                             </div>
                             <div class="col-sm-6 col-lg-6">
-                                <a href="{{ route('kendaraan.status') }}" class="btn btn-primary float-right">
+                                <a href="{{ route('pemasukan.create') }}" class="btn btn-primary float-right">
                                     <i class="fas fa-plus"></i> Tambah
                                 </a>
                             </div>
@@ -24,14 +24,10 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead>
                                 <tr>
-                                    <th>No Inv.</th>
-                                    <th>Nama Pemesan</th>
-                                    <th>Alamat</th>
-                                    <th>No Hp</th>
-                                    <th>No Plat</th>
-                                    <!-- <th>Lama Sewa</th> -->
-                                    <th>Keberangkatan</th>
-                                    <th>Lama Sewa</th>
+                                    <th>No</th>
+                                    <th>Keterangan</th>
+                                    <th>Nominal</th>
+                                    <th>File</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -48,58 +44,37 @@
 <script>
     $(document).ready(function() {
         $('#dt').DataTable({
-            "aLengthMenu": [100],
-            // "createdRow": function(row, data, dataIndex) {
-            //     if (parseInt(data.lama_sewa) < data.hari) {
-            //         $(row).addClass('bg-danger');
-            //     }
-            // },
+
             responsive: true,
             serverSide: true,
             processing: true,
             order: [
-                [6, 'asc']
+                [0, 'desc']
             ],
             ajax: {
-                url: `{{ route('penyewaan.index') }}`
+                url: `{{ route('pemasukan.index') }}`
             },
             columns: [{
-                    data: 'no_inv',
-                    name: 'no_inv'
-                },
-                {
-                    data: 'penyewa.nama',
-                    name: 'penyewa.nama'
-                },
-                {
-                    data: 'penyewa.alamat',
-                    name: 'penyewa.alamat'
-                },
-                {
-                    data: 'penyewa.no_hp',
-                    name: 'penyewa.no_hp'
-                },
-                {
-                    data: 'kendaraan.no_kendaraan',
-                    name: 'kendaraan.no_kendaraan'
-                },
-                {
-                    data: 'keberangkatan',
-                    name: 'keberangkatan',
-                    render: function(data, type, full, meta) {
-                        if (full.tanggal !== null) {
-                            return full.keberangkatan + " " + full.keberangkatan_time
-                        } else {
-                            return '-';
-                        }
-                    }
-                },
-                {
                     data: 'id',
                     name: 'id',
                     render: function(data, type, full, meta) {
-                        if (full.tanggal !== null) {
-                            return full.hari + ' Hari, ' + full.jam + ' Jam';
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    data: 'detail',
+                    name: 'detail'
+                },
+                {
+                    data: 'nominal',
+                    name: 'nominal'
+                },
+                {
+                    data: 'file',
+                    name: 'file',
+                    render: function(data, type, full, meta) {
+                        if (full.file !== null) {
+                            return "<a href='{{ asset ('storage/buktiTrf')}}/" + full.file + "' target='_blank'>" + full.file + "</a>";
                         } else {
                             return '-';
                         }
@@ -117,7 +92,7 @@
                 let api = this.api();
                 $(row).find('.btn-delete').click(function() {
                     let pk = $(this).data('id'),
-                        url = `{{ route("penyewaan.index") }}/` + pk;
+                        url = `{{ route("pemasukan.index") }}/` + pk;
                     Swal.fire({
                         title: "Anda Yakin ?",
                         text: "Data tidak dapat dikembalikan setelah di hapus!",

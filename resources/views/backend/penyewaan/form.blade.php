@@ -85,6 +85,12 @@
                                 <input type="text" class="form-control" id="jaminan" name="jaminan" value="{{ $data->jaminan ?? ''}}" placeholder="Input Detail Jaminan">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Kota Tujuan:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}" placeholder="Input Kota Tujuan">
+                            </div>
+                        </div>
                         <!-- <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                             <div class="col-sm-9">
@@ -92,22 +98,22 @@
 
                                 </select>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" readonly>
                             </div>
                         </div>
-                        <!-- <div class="form-group row">
+                        <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="diskon">Diskon</label>
                             <div class="col-sm-9">
                             </div>
-                        </div> -->
-                        <input type="hidden" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}">
+                        </div>
+                        <input type="hidden" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}"> -->
                     </div>
                 </div>
-                <div id="divProses">
+                <!-- <div id="divProses">
                     <hr>
                     <div class="row">
                         <div class="col-sm-6">
@@ -126,16 +132,14 @@
                             </div>
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
-                                <div class="col-sm-6">
-                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '1'}}">
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '0'}}" readonly>
                                 </div>
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa" id="setLabel">{{isset($data->paket) && $data->paket == 'jam' ? 'Jam' : 'Hari'}}</label>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Kota Tujuan:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}">
+                                <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Hari</label>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '0'}}" readonly>
                                 </div>
+                                <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Jam</label>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -153,7 +157,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <hr>
                 <div class="div">
                     <button class="btn btn-info" type="button" id="add"> Tambah Pembayaran</button>
@@ -170,7 +174,6 @@
                             <option value='dp' {{$p->tipe == 'dp' ? 'selected' : ''}}>DP</option>
                             <option value='titip' {{$p->tipe == 'titip' ? 'selected' : ''}}>Titip</option>
                             <option value='pelunasan' {{$p->tipe == 'pelunasan' ? 'selected' : ''}}>Pelunasan</option>
-                            <option value='lainnya' {{$p->tipe == 'lainnya' ? 'selected' : ''}}>Lainnya</option>
                         </select>
                     </div>
                     <div class="col-sm-3">
@@ -259,7 +262,7 @@
         $('#add').on('click', add);
 
         function add() {
-            var new_input = "<div class='form-group row'><div class='col-sm-3'><label class='control-lab' for='harga_sewa'>Jenis Pembayaran</label><select name='tipe[]' id='tipe' class='form-control'><option value=''>.:Pilih:.</option><option value='dp'>DP</option><option value='titip'>Titip</option><option value='pelunasan'>Pelunasan</option><option value='lainnya'>Lainnya</option></select></div><div class='col-sm-3'><label class='control-lab' for='nominal'>Nominal</label><input type='text' class='form-control' id='nominal' name='nominal[]' value='0'></div><div class='col-sm-3'><label class='control-lab' for='metode'>Metode</label><select name='metode[]' id='metode' class='form-control'><option value=''>.:Pilih:.</option><option value='cash'>Cash</option><option value='transfer'>Transfer</option></select></div><div class='col-sm-2'><label class='control-lab' for='file'>File</label><input type='file' class='form-control' id='file' name='file[]'></div><div class='col-sm-1'><label class='control-lab' for='harga_sewa'></label><br><button class='btn btn-danger btn-remove' type='button'><i class='fas fa-trash'></i></button></div></div>";
+            var new_input = "<div class='form-group row'><div class='col-sm-3'><label class='control-lab' for='harga_sewa'>Jenis Pembayaran</label><select name='tipe[]' id='tipe' class='form-control'><option value=''>.:Pilih:.</option><option value='dp'>DP</option><option value='titip'>Titip</option><option value='pelunasan'>Pelunasan</option></select></div><div class='col-sm-3'><label class='control-lab' for='nominal'>Nominal</label><input type='text' class='form-control' id='nominal' name='nominal[]' value='0'></div><div class='col-sm-3'><label class='control-lab' for='metode'>Metode</label><select name='metode[]' id='metode' class='form-control'><option value=''>.:Pilih:.</option><option value='cash'>Cash</option><option value='transfer'>Transfer</option></select></div><div class='col-sm-2'><label class='control-lab' for='file'>File</label><input type='file' class='form-control' id='file' name='file[]'></div><div class='col-sm-1'><label class='control-lab' for='harga_sewa'></label><br><button class='btn btn-danger btn-remove' type='button'><i class='fas fa-trash'></i></button></div></div>";
             $('#divPay').append(new_input);
 
             reload_function();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\Kendaraan;
+use App\Models\HargaKendaraan;
 use App\Models\Penyewa;
 use App\Models\Transaksi;
 use App\Models\RangeTransaksi;
@@ -140,24 +141,53 @@ class DashboardController extends Controller
         $kepulangan = Carbon::now();
         $kepulangan_time = Carbon::now();
 
-        $waktustart = $data->keberangkatan . " " . $data->keberangkatan_time;
-        $waktuend = date("Y-m-d h:i:s");
-        $datetime1 = new \DateTime($waktustart); //start time
-        $datetime2 = new \DateTime($waktuend); //end time
-        $durasi = $datetime1->diff($datetime2);
-        if ($durasi->format('%y') !== '0') {
-            $d = $durasi->format('%y tahun, %m bulan, %d hari, %H jam');
-        } elseif ($durasi->format('%m') !== '0') {
-            $d = $durasi->format('%m bulan, %d hari, %H jam');
+        // if ($data->sisa !== 0) {
+        //     $ket = "belum lunas";
+        // } else {
+        //     $ket = "lunas";
+        // }
+
+        $start = Carbon::parse($data->keberangkatan . $data->keberangkatan_time);
+        $end =  Carbon::parse();
+        $duration = $end->diff($start);
+        $hari = $end->diffInDays($start);
+        $jam = $duration->format('%H');
+
+        $d = $hari . " Hari " . $jam . " Jam";
+
+        $toleransi = 1;
+
+        $get_harga_harian = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')
+            ->JOIN('harga', 'harga.id', '=', 'harga_kendaraan.id_harga')
+            ->WHERE('harga_kendaraan.id_kendaraan', $data->id_kendaraan)
+            ->WHERE('harga.nilai', '=', 24)
+            ->first();
+
+        if ($hari == 0 && $jam == 0 | $hari == 0 && $jam - $toleransi == 0) {
+            $get_harga_sql = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')
+                ->JOIN('harga', 'harga.id', '=', 'harga_kendaraan.id_harga')
+                ->WHERE('harga_kendaraan.id_kendaraan', $data->id_kendaraan)
+                ->WHERE('harga.nilai', '>=', $jam)
+                ->ORDERBY('harga.nilai', 'ASC')
+                ->first();
+            $get_harga_jam = $get_harga_sql->nominal;
+        } elseif ($jam - $toleransi == 0) {
+            $get_harga_jam = 0;
+        } elseif ($jam == 0) {
+            $get_harga_jam = 0;
         } else {
-            $d = $durasi->format('%d hari, %H jam');
+            $get_harga_sql = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')
+                ->JOIN('harga', 'harga.id', '=', 'harga_kendaraan.id_harga')
+                ->WHERE('harga_kendaraan.id_kendaraan', $data->id_kendaraan)
+                ->WHERE('harga.nilai', '>=', $jam - $toleransi)
+                ->ORDERBY('harga.nilai', 'ASC')
+                ->first();
+            $get_harga_jam = $get_harga_sql->nominal;
         }
 
-        if ($data->sisa !== 0) {
-            $ket = "belum lunas";
-        } else {
-            $ket = "lunas";
-        }
+        $harga = $hari * $get_harga_harian->nominal + $get_harga_jam * 1;
+
+        // dd($harga, $d);
 
         $dataTgl = RangeTransaksi::where('id_transaksi', $id)->delete();
 
@@ -165,7 +195,8 @@ class DashboardController extends Controller
             'durasi' => $d,
             'kepulangan' => $kepulangan,
             'kepulangan_time' => $kepulangan_time,
-            'keterangan' => $ket,
+            // 'keterangan' => $ket,
+            'harga_sewa' => $harga,
             'status' => 'selesai',
         ]);
 

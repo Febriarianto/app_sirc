@@ -95,15 +95,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="kota_tujuan">Kota Tujuan:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" disabled>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Diskon:</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}">
+                                <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}" disabled>
                             </div>
                         </div>
                     </div>
@@ -112,7 +106,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-6">
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
                                 <div class="col-sm-9">
                                     <select id="paket" name="paket" class="form-control" disabled>
@@ -124,26 +118,36 @@
                                         <option value="tahunan" {{ isset($data->paket) && $data->paket == 'tahunan' ? 'selected' : ''}}>Tahunan</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
-                                <div class="col-sm-6">
-                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '0'}}" disabled>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $hari ?? ''}}" readonly>
                                 </div>
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa" id="setLabel">{{isset($data->paket) && $data->paket == 'jam' ? 'Jam' : 'Hari'}}</label>
+                                <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Hari</label>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $jam ?? ''}}" readonly>
+                                </div>
+                                <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Jam</label>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Kota Tujuan:</label>
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}" disabled>
+                                    <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" disabled>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Over Time:</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="over_time" name="over_time" value="{{ $data->over_time ?? '0'}}">
+                                </div>
+                            </div> -->
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Diskon:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}" {{ $config["title"] == "Lihat Invoice" ? 'readonly' : '' }}>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -225,11 +229,11 @@
         });
 
         let hargaPaket = $('#harga_sewa'),
-            lamaSewa = $('#lama_sewa'),
+            // lamaSewa = $('#lama_sewa'),
             totalBiaya = $('#biaya'),
-            diskon = $('#diskon'),
-            overTime = $('#over_time'),
-            dp = $('#dp');
+            diskon = $('#diskon');
+        // overTime = $('#over_time'),
+        // dp = $('#dp');
 
         var CalResult = function() {
             var arr = $('input[id=nominal]').map(function() {
@@ -242,7 +246,8 @@
                 sum += parseInt(num);
             })
 
-            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) + parseInt(overTime.val()) - parseInt(diskon.val()),
+            // let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) + parseInt(overTime.val()) - parseInt(diskon.val()),
+            let calTotal = parseInt(hargaPaket.val()) - parseInt(diskon.val()),
                 sisa = calTotal - sum;
 
             totalBiaya.val(calTotal);

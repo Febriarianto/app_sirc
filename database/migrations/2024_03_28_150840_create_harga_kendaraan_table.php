@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('harga', function (Blueprint $table) {
+        Schema::create('harga_kendaraan', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->decimal('nominal', 9, 0);
-            $table->enum('satuan', ['hari', 'jam']);
-            $table->integer('nilai');
+            $table->foreignId('id_kendaraan')->references('id')->on('kendaraan')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('id_harga')->references('id')->on('harga')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('harga');
+        Schema::dropIfExists('harga_kendaraan');
     }
 };
