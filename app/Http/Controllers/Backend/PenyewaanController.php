@@ -81,9 +81,7 @@ class PenyewaanController extends Controller
                             ->ORDERBY('harga.nilai', 'ASC')
                             ->first();
                         $get_harga_jam = $get_harga_sql->nominal;
-                    } elseif ($jam - $toleransi == 0) {
-                        $get_harga_jam = 0;
-                    } elseif ($jam == 0) {
+                    } elseif ($hari !== 0 && $jam == 0 | $hari !== 0 && $jam - $toleransi == 0) {
                         $get_harga_jam = 0;
                     } else {
                         $get_harga_sql = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')

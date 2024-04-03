@@ -85,20 +85,12 @@ class KendaraanController extends Controller
                 'kendaraan.no_kendaraan',
                 'kendaraan.tahun',
                 'kendaraan.warna',
-                // 'kendaraan.foto',
                 'jenis.nama',
-                // 'jenis.harga_12',
-                // 'jenis.harga_24',
-                // 'range_transaksi.tanggal',
                 'kendaraan.status',
             )
                 ->selectRaw('(select count(id) from transaksi where id_kendaraan = kendaraan.id and transaksi.status = "proses") as s ')
                 ->where('kendaraan.status', '=', 'aktif')
                 ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                // ->leftJoin('range_transaksi', function ($join) use ($tanggal) {
-                //     $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')
-                //         ->where('range_transaksi.tanggal', $tanggal,);
-                // })
                 ->get();
             return DataTables::of($data)
                 ->addIndexColumn()

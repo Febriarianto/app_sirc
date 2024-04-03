@@ -19,55 +19,42 @@ class WebController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request['jenis'] != NULL && $request['tgl'] != NULL) {
-            $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
+        if ($request['jenis'] != NULL) {
+            $kendaraan = Kendaraan::select(
+                'kendaraan.id',
+                'kendaraan.no_kendaraan',
+                'kendaraan.tahun',
+                'kendaraan.warna',
+                'jenis.nama',
+                'kendaraan.status',
+                'jenis.harga_12',
+                'jenis.harga_24'
+            )
+                ->selectRaw('(select count(id) from transaksi where id_kendaraan = kendaraan.id and transaksi.status = "proses") as s ')
                 ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('range_transaksi', function ($join) use ($request) {
-                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', $request['tgl']);
-                })
-                ->where('jenis.id', $request['jenis'])
                 ->where('kendaraan.status', '=', 'aktif')
+                ->where('jenis.id', $request['jenis'])
                 ->paginate(6);
             $id_jenis = $request['jenis'];
-            $tgl = $request['tgl'];
-        } else if ($request['jenis'] != NULL) {
-            $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
-                ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('range_transaksi', function ($join) {
-                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', Carbon::now()->format('Y-m-d'));
-                })
-                ->where('jenis.id', $request['jenis'])
-                ->where('kendaraan.status', '=', 'aktif')
-                ->paginate(6);
-            $id_jenis = $request['jenis'];
-            $tgl = '';
-        } else if ($request['tgl'] != NULL) {
-            $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
-                ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('range_transaksi', function ($join) use ($request) {
-                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', $request['tgl']);
-                })
-                ->where('kendaraan.status', '=', 'aktif')
-                ->paginate(6);
-            $id_jenis = '';
-            $tgl = $request['tgl'];
         } else {
-            $kendaraan = DB::table('kendaraan')
-                ->select('kendaraan.id', 'kendaraan.no_kendaraan', 'kendaraan.tahun', 'kendaraan.warna', 'kendaraan.foto', 'jenis.nama', 'jenis.harga_12', 'jenis.harga_24', 'range_transaksi.tanggal', 'range_transaksi.id_kendaraan')
+            $kendaraan =  Kendaraan::select(
+                'kendaraan.id',
+                'kendaraan.no_kendaraan',
+                'kendaraan.tahun',
+                'kendaraan.warna',
+                'jenis.nama',
+                'kendaraan.status',
+                'jenis.harga_12',
+                'jenis.harga_24'
+            )
+                ->selectRaw('(select count(id) from transaksi where id_kendaraan = kendaraan.id and transaksi.status = "proses") as s ')
                 ->leftJoin('jenis', 'jenis.id', '=', 'kendaraan.id_jenis')
-                ->leftJoin('range_transaksi', function ($join) {
-                    $join->on('kendaraan.id', '=', 'range_transaksi.id_kendaraan')->where('range_transaksi.tanggal', Carbon::now()->format('Y-m-d'));
-                })
                 ->where('kendaraan.status', '=', 'aktif')
                 ->paginate(6);
             $id_jenis = '';
-            $tgl = '';
         }
         $jenis = Jenis::select('id', 'nama')->get();
-        return view('web.index', compact('kendaraan', 'jenis', 'tgl', 'id_jenis'));
+        return view('web.index', compact('kendaraan', 'jenis', 'id_jenis'));
     }
 
     /**
