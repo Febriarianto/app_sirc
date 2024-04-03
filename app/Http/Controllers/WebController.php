@@ -22,6 +22,7 @@ class WebController extends Controller
         if ($request['jenis'] != NULL) {
             $kendaraan = Kendaraan::select(
                 'kendaraan.id',
+                'kendaraan.foto',
                 'kendaraan.no_kendaraan',
                 'kendaraan.tahun',
                 'kendaraan.warna',
@@ -39,6 +40,7 @@ class WebController extends Controller
         } else {
             $kendaraan =  Kendaraan::select(
                 'kendaraan.id',
+                'kendaraan.foto',
                 'kendaraan.no_kendaraan',
                 'kendaraan.tahun',
                 'kendaraan.warna',
