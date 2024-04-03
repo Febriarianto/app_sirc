@@ -24,6 +24,7 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead>
                                 <tr>
+                                    <th>No Inv</th>
                                     <th>Nama Pemesan</th>
                                     <th>Alamat</th>
                                     <th>No Hp</th>
@@ -66,14 +67,16 @@
                 }
             }],
             order: [
-                [3, 'asc']
+                [4, 'asc']
             ],
             ajax: {
                 url: `{{ route('pemesanan.index') }}`
             },
             columns: [{
-                    // data: 'id',
-                    // name: 'id'
+                    data: 'no_inv',
+                    name: 'no_inv'
+                },
+                {
                     data: 'penyewa.nama',
                     name: 'penyewa.nama',
                 },

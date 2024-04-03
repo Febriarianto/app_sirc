@@ -40,6 +40,7 @@
                                     <th rowspan="2">Harga Sewa</th>
                                     <th colspan="3">Pembayaran</th>
                                     <th rowspan="2">Kurang</th>
+                                    <th rowspan="2">Deposit</th>
                                 </tr>
                                 <tr>
                                     <th>DP</th>
@@ -195,8 +196,25 @@
                     name: 'kekurangan',
                     render: function(data, type, full, meta) {
                         var sudah = parseInt(full.dp) + parseInt(full.titip) + parseInt(full.pelunasan)
-                        var jumlah = parseInt(full.harga_sewa) - sudah;
-                        return 'Rp. ' + numberRenderer(jumlah);
+                        if (full.harga_sewa > sudah) {
+                            var jumlah = parseInt(full.harga_sewa) - sudah;
+                            return 'Rp. ' + numberRenderer(jumlah);
+                        } else {
+                            return '-';
+                        }
+                    }
+                },
+                {
+                    data: 'kekurangan',
+                    name: 'kekurangan',
+                    render: function(data, type, full, meta) {
+                        var sudah = parseInt(full.dp) + parseInt(full.titip) + parseInt(full.pelunasan)
+                        if (full.harga_sewa < sudah) {
+                            var jumlah = sudah - parseInt(full.harga_sewa);
+                            return 'Rp. ' + numberRenderer(jumlah);
+                        } else {
+                            return '-';
+                        }
                     }
                 },
             ],

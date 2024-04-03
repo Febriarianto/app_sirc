@@ -91,74 +91,50 @@
                                 <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}" placeholder="Input Kota Tujuan">
                             </div>
                         </div>
-                        <!-- <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
-                            <div class="col-sm-9">
-                                <select id="select2Harga" style="width: 100% !important;" name="">
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $data->harga_sewa ?? '0'}}" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0" for="diskon">Diskon</label>
-                            <div class="col-sm-9">
-                            </div>
-                        </div>
-                        <input type="hidden" class="form-control" id="diskon" name="diskon" value="{{ $data->diskon ?? '0'}}"> -->
                     </div>
                 </div>
-                <!-- <div id="divProses">
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
-                                <div class="col-sm-9">
-                                    <select id="paket" name="paket" class="form-control">
-                                        <option value="">.: Pilih Paket:.</option>
-                                        <option value="jam" {{ isset($data->paket) && $data->paket == 'jam' ? 'selected' : ''}}>Jam</option>
-                                        <option value="harian" {{ isset($data->paket) && $data->paket == 'harian' ? 'selected' : ''}}>Harian</option>
-                                        <option value="mingguan" {{ isset($data->paket) && $data->paket == 'mingguan' ? 'selected' : ''}}>Mingguan</option>
-                                        <option value="bulanan" {{ isset($data->paket) && $data->paket == 'bulanan' ? 'selected' : ''}}>Bulanan</option>
-                                        <option value="tahunan" {{ isset($data->paket) && $data->paket == 'tahunan' ? 'selected' : ''}}>Tahunan</option>
-                                    </select>
-                                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $hari ?? ''}}" readonly>
                             </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
-                                <div class="col-sm-2">
-                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '0'}}" readonly>
-                                </div>
-                                <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Hari</label>
-                                <div class="col-sm-2">
-                                    <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $data->lama_sewa ?? '0'}}" readonly>
-                                </div>
-                                <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Jam</label>
+                            <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Hari</label>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $jam ?? ''}}" readonly>
                             </div>
+                            <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Jam</label>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="biaya">Total Biaya:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="biaya" name="biaya" value="{{ $data->biaya ?? '' }}" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Sisa:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="sisa" name="sisa" value="{{ $data->sisa ?? ''}}" readonly>
-                                </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="harga_sewa" name="harga_sewa" value="{{ $harga ?? '0'}}" readonly>
                             </div>
                         </div>
                     </div>
-                </div> -->
-                <hr>
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="biaya"></label>
+                            <div class="col-sm-9">
+                                <label for="" class="text-danger">*Harga berubah susuai lama sewa</label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="biaya">Total Biaya:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="biaya" name="biaya" value="{{ $data->biaya ?? '' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Sisa:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="sisa" name="sisa" value="{{ $data->sisa ?? ''}}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="div">
                     <button class="btn btn-info" type="button" id="add"> Tambah Pembayaran</button>
                 </div>
@@ -237,7 +213,7 @@
                 sum += parseInt(num);
             })
 
-            let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) - parseInt(diskon.val()),
+            let calTotal = parseInt(hargaPaket.val()),
                 sisa = calTotal - sum;
 
             totalBiaya.val(calTotal);

@@ -48,7 +48,19 @@ class KendaraanController extends Controller
                         <a class="btn btn-danger btn-delete" href="#" data-id="' . $row->id . '" >Hapus</a>
                         <a class="btn btn-info" target="_blank" href="' . route('kendaraan.show', $row->id) . '"><i class="fas fa-barcode"></i></a>';
                     return $actionBtn;
-                })->make();
+                })
+                ->addColumn('harga', function ($row) {
+                    $text = '';
+                    $harga = HargaKendaraan::select('nama', 'nominal')->where('id_kendaraan', $row->id)
+                        ->join('harga', 'id_harga', '=', 'harga.id')
+                        ->get();
+                    foreach ($harga as $value) {
+                        $text .= '<span class="badge badge-info">' . $value->nama . ' = ' . number_format($value->nominal) . '</span></br>';
+                    }
+                    return $text;
+                })
+                ->rawColumns(['harga', 'action'])
+                ->make();
         }
         return view('backend.kendaraan.index', compact('config'));
     }

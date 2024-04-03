@@ -29,9 +29,9 @@
                                     <th>Alamat</th>
                                     <th>No Hp</th>
                                     <th>No Plat</th>
-                                    <!-- <th>Lama Sewa</th> -->
                                     <th>Keberangkatan</th>
                                     <th>Lama Sewa</th>
+                                    <th>Harga Sewa</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -47,6 +47,7 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        var numberRenderer = $.fn.dataTable.render.number('.', ',', 0, '').display;
         $('#dt').DataTable({
             "aLengthMenu": [100],
             // "createdRow": function(row, data, dataIndex) {
@@ -102,6 +103,17 @@
                             return full.hari + ' Hari, ' + full.jam + ' Jam';
                         } else {
                             return '-';
+                        }
+                    }
+                },
+                {
+                    data: 'harga_sewa',
+                    name: 'harga_sewa',
+                    render: function(data, type, full, meta) {
+                        if (full.harga_sewa == null) {
+                            return '0';
+                        } else {
+                            return 'Rp. ' + numberRenderer(full.harga_sewa);
                         }
                     }
                 },

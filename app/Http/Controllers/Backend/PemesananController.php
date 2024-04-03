@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Helpers\SettingWeb;
 use App\Models\Kendaraan;
+use App\Models\HargaKendaraan;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
@@ -177,7 +178,23 @@ class PemesananController extends Controller
             'method' => 'PUT',
             'action' => route('pemesanan.proses', $id)
         ];
-        return view('backend.pemesanan.proses', compact('config', 'data', 'pembayaran'));
+
+        $start = Carbon::parse();
+        $end =  Carbon::parse();
+        $duration = $end->diff($start);
+        $hari = $end->diffInDays($start);
+        $jam = $duration->format('%H');
+
+        $get_harga = HargaKendaraan::SELECT('harga_kendaraan.id', 'harga.nilai', 'harga.nominal')
+            ->JOIN('harga', 'harga.id', '=', 'harga_kendaraan.id_harga')
+            ->WHERE('harga_kendaraan.id_kendaraan', $data->id_kendaraan)
+            ->WHERE('harga.nilai', '>=', $jam)
+            ->ORDERBY('harga.nilai', 'ASC')
+            ->first();
+
+        $harga = $get_harga->nominal;
+
+        return view('backend.pemesanan.proses', compact('config', 'data', 'pembayaran', 'hari', 'jam', 'harga'));
     }
 
     /**
@@ -284,6 +301,9 @@ class PemesananController extends Controller
             'id_kendaraan' => 'required',
             'status' => 'required',
             'jaminan' =>  $request['status'] == 'proses' ? 'required' : '',
+            'harga_sewa' =>  $request['status'] == 'proses' ? 'required' : '',
+            'biaya' =>  $request['status'] == 'proses' ? 'required' : '',
+            'sisa' =>  $request['status'] == 'proses' ? 'required' : '',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
             'kota_tujuan' => $request['status'] == 'proses' ? 'required' : '',
         ]);
@@ -308,6 +328,9 @@ class PemesananController extends Controller
                         'tipe' => $request['status'] == 'proses' ? 'sewa' : 'pesan',
                         'status' => $request['status'],
                         'jaminan' => $request['status'] == 'proses' ? $request['jaminan'] : null,
+                        'harga_sewa' => $request['status'] == 'proses' ? $request['harga_sewa'] : null,
+                        'biaya' => $request['status'] == 'proses' ? $request['biaya'] : null,
+                        'sisa' => $request['status'] == 'proses' ? $request['sisa'] : null,
                     ]);
 
                     if (isset($request->tipe)) {
@@ -350,13 +373,14 @@ class PemesananController extends Controller
                     DB::commit();
 
                     $dataWa = Transaksi::select('transaksi.id', 'transaksi.keberangkatan', 'transaksi.keberangkatan_time', 'transaksi.harga_sewa', 'penyewa.nama', 'penyewa.no_hp', 'kendaraan.no_kendaraan', 'jenis.nama as jenis', 'kendaraan.warna', 'transaksi.lama_sewa', 'transaksi.biaya', 'transaksi.sisa')
+                        ->selectRaw('(select SUM(CASE WHEN pembayaran.nominal THEN pembayaran.nominal ELSE 0 END) as uang_masuk from pembayaran WHERE pembayaran.id_transaksi = transaksi.id) as uang_masuk')
                         ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
                         ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
                         ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
                         ->where('transaksi.id', $data->id)
                         ->first();
                     // dd($dataWa->toArray());
-                    $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->biaya - $data->sisa) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
+                    $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0alama%20Sewa%20:%20" . $dataWa->lama_sewa . "%20Hari%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
                 } catch (\Throwable $throw) {
                     DB::rollBack();
                     Log::error($throw);

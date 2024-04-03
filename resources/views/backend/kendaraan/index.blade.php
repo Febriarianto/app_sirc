@@ -29,6 +29,7 @@
                                     <th>Jenis</th>
                                     <th>Tahun</th>
                                     <th>Warna</th>
+                                    <th>Harga</th>
                                     <th>Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -72,6 +73,10 @@
                 {
                     data: 'warna',
                     name: 'warna'
+                },
+                {
+                    data: 'harga',
+                    name: 'harga',
                 },
                 {
                     data: 'status',
