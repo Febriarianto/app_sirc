@@ -218,7 +218,11 @@
 
             totalBiaya.val(calTotal);
 
-            $('#sisa').val(sisa);
+            if (calTotal < sum) {
+                $('#sisa').val('0');
+            } else {
+                $('#sisa').val(sisa);
+            }
         }
 
         CalResult();
