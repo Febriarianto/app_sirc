@@ -72,7 +72,7 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="estimasi_tgl">Tanggal Berangkat :</label>
                             <div class="col-sm-9">
-                                <input type="date" class="form-control" id="estimasi_tgl" name="estimasi_tgl" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->estimasi_tgl ?? $data->keberangkatan }}">
+                                <input type="date" class="form-control" id="estimasi_tgl" name="estimasi_tgl" placeholder="Masukan Tanggal Keberangkatan" value="{{ $data->estimasi_tgl ?? '' }}">
                             </div>
                         </div>
                         <div class="form-group row">
