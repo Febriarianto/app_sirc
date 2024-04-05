@@ -99,13 +99,13 @@
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
                             <div class="col-sm-2">
-                                <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $hari ?? ''}}" readonly>
+                                <input type="number" class="form-control" id="hari" name="hari" value="{{ $hari ?? ''}}" readonly>
                             </div>
-                            <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Hari</label>
+                            <label class="control-label col-sm-2 align-self-center mb-0" for="hari" id="hari">Hari</label>
                             <div class="col-sm-2">
-                                <input type="number" class="form-control" id="lama_sewa" name="lama_sewa" value="{{ $jam ?? ''}}" readonly>
+                                <input type="number" class="form-control" id="jam" name="jam" value="{{ $jam ?? ''}}" readonly>
                             </div>
-                            <label class="control-label col-sm-2 align-self-center mb-0" for="harga_sewa" id="setLabel">Jam</label>
+                            <label class="control-label col-sm-2 align-self-center mb-0" for="jam" id="jam">Jam</label>
                         </div>
                         <div class="form-group row">
                             <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Harga Sewa:</label>

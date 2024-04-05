@@ -193,7 +193,6 @@ class DashboardController extends Controller
             'durasi' => $d,
             'kepulangan' => $kepulangan,
             'kepulangan_time' => $kepulangan_time,
-            // 'keterangan' => $ket,
             'harga_sewa' => $harga,
             'status' => 'selesai',
         ]);
