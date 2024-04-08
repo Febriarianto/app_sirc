@@ -8,8 +8,11 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-12">
-                    <input type="date" class="form-control" name="tgl" id="tgl">
+                <div class="col-6">
+                    <input type="date" class="form-control" name="tAwal" id="tAwal">
+                </div>
+                <div class="col-6">
+                    <input type="date" class="form-control" name="tAhir" id="tAhir">
                 </div>
             </div>
         </div>
@@ -23,7 +26,7 @@
                 <div class="card-body">
                     <div id="printArea">
                         <div class="text-center">
-                            <h4>Laporan Keuangan Harian</h4>
+                            <h4>Laporan Keuangan</h4>
                             <h6 class="mb-2 float-left">Pembuat Laporan : {{ Auth()->user()->name }}</h6>
                             <div class="float-right mb-2" id="shTgl">
                             </div>
@@ -39,6 +42,7 @@
                                         <th rowspan="2">Bukti</th>
                                         <th rowspan="2">Ket.</th>
                                         <th colspan="2">Pemasukan</th>
+                                        <th rowspan="2">Tanggal</th>
                                     </tr>
                                     <tr>
                                         <th>Cash</th>
@@ -55,12 +59,14 @@
                                         <th></th>
                                         <th></th>
                                         <th></th>
+                                        <th></th>
                                     </tr>
                                     <tr>
                                         <th style="text-align:right" colspan="5">Total:</th>
                                         <th colspan="2">
                                             <div id="totil"></div>
                                         </th>
+                                        <th></th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -75,12 +81,14 @@
                                         <th>Ket.</th>
                                         <th>Bukti</th>
                                         <th>Pengeluaran</th>
+                                        <th>Tanggal</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                                 <tfoot>
                                     <tr>
                                         <th style="text-align:right" colspan="3">Total:</th>
+                                        <th></th>
                                         <th></th>
                                     </tr>
                                 </tfoot>
@@ -114,8 +122,9 @@
         var day = ("0" + now.getDate()).slice(-2);
         var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var today = now.getFullYear() + "-" + (month) + "-" + (day);
-        $('#tgl').val(today);
-        $('#shTgl').html('Tanggal : ' + today);
+        $('#tAwal').val(today);
+        $('#tAhir').val(today);
+        $('#shTgl').html('Tanggal : ' + today + ' s/d ' + today);
 
         var numberRenderer = $.fn.dataTable.render.number('.', ',', 0, '').display;
 
@@ -130,7 +139,8 @@
                 url: `{{ route('laporan.keuangan') }}`,
                 data: function(d) {
                     d.param = 'dt';
-                    d.tgl = $('#tgl').val();
+                    d.tAwal = $('#tAwal').val();
+                    d.tAhir = $('#tAhir').val();
                 }
             },
             columns: [{
@@ -170,6 +180,10 @@
                 {
                     data: 'pf',
                     name: 'pf'
+                },
+                {
+                    data: 'tgl',
+                    name: 'tgl'
                 }
             ],
             rowCallback: function(row, data) {
@@ -240,7 +254,8 @@
                 url: `{{ route('laporan.keuangan') }}`,
                 data: function(d) {
                     d.param = 'dtp';
-                    d.tgl = $('#tgl').val();
+                    d.tAwal = $('#tAwal').val();
+                    d.tAhir = $('#tAhir').val();
                 }
             },
             columns: [{
@@ -269,6 +284,10 @@
                     data: 'pc',
                     name: 'pc'
                 },
+                {
+                    data: 'tgl',
+                    name: 'tgl'
+                }
             ],
             rowCallback: function(row, data) {
                 let api = this.api();
@@ -306,8 +325,8 @@
         });
 
 
-        $('#tgl').on('change', function() {
-            $('#shTgl').html('Tanggal : ' + $(this).val());
+        $('#tAwal, #tAhir').on('change', function() {
+            $('#shTgl').html('Tanggal : ' + $('#tAwal').val() + ' s/d ' + $('#tAhir').val());
             dt.draw();
             dtp.draw();
         })

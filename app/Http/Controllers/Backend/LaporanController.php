@@ -273,28 +273,37 @@ class LaporanController extends Controller
         $config['breadcrumbs'] = [
             ['url' => '#', 'title' => "Laporan Keuangan"],
         ];
-        $tgl = $request['tgl'];
+        $tAwal = $request['tAwal'];
+        $tAhir = $request['tAhir'];
         $param = $request['param'];
         if ($request->ajax()) {
             if ($param == 'dt') {
                 $data = Pembayaran::select('*')
                     ->selectRaw("(SELECT penyewa.nama FROM penyewa JOIN transaksi ON transaksi.id_penyewa = penyewa.id WHERE transaksi.id = id_transaksi ) as nama,
                     CASE WHEN status = 'pemasukan' AND metode = 'cash' THEN nominal END AS 'pc', CASE WHEN status = 'pemasukan' AND metode = 'transfer' THEN nominal END AS 'pf' ")
-                    ->whereDate('pembayaran.created_at', $tgl)
+                    ->whereBetween('pembayaran.created_at', [$tAwal, $tAhir])
                     ->where('status', '=', 'pemasukan')
                     ->get();
                 return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('tgl', function ($row) {
+                        $tgl = Carbon::parse($row->created_at);
+                        return $tgl;
+                    })
                     ->make();
             } else {
                 $data = Pembayaran::select('*')
                     ->selectRaw("(SELECT penyewa.nama FROM penyewa JOIN transaksi ON transaksi.id_penyewa = penyewa.id WHERE transaksi.id = id_transaksi ) as nama,
                 CASE WHEN status = 'pengeluaran' AND metode = 'cash' THEN nominal END AS 'pc', CASE WHEN status = 'pengeluaran' AND metode = 'transfer' THEN nominal END AS 'pf' ")
-                    ->whereDate('pembayaran.created_at', $tgl)
+                    ->whereBetween('pembayaran.created_at', [$tAwal, $tAhir])
                     ->where('status', '=', 'pengeluaran')
                     ->get();
                 return DataTables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('tgl', function ($row) {
+                        $tgl = Carbon::parse($row->created_at);
+                        return $tgl;
+                    })
                     ->make();
             }
         }
