@@ -107,6 +107,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Estimasi Lama Sewa</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="estimasi_sewa" name="estimasi_sewa" value="{{ $data->estimasi_sewa ?? ''}}">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <hr>
                     <div class="row">

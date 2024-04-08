@@ -21,6 +21,7 @@ class Transaksi extends Model
         'durasi',
         'paket',
         'keberangkatan',
+        'estimasi_sewa',
         'estimasi_time',
         'estimasi_tgl',
         'keberangkatan_time',

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('durasi')->nullable();
             $table->enum('paket', ['tahunan', 'bulanan', 'mingguan', 'harian', 'jam']);
             $table->date('keberangkatan');
+            $table->string('estimasi_sewa')->nullable();
             $table->time('estimasi_tgl')->nullable();
             $table->time('estimasi_time')->nullable();
             $table->time('keberangkatan_time')->nullable();

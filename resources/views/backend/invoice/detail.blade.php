@@ -100,25 +100,18 @@
                                 <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}" disabled>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="estimasi_sewa">Estimasi Lama Sewa:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="estimasi" name="estimasi" value="{{ $data->estimasi ?? ''}}" disabled>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="divProses">
                     <hr>
                     <div class="row">
                         <div class="col-sm-6">
-                            <!-- <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="paket">Paket:</label>
-                                <div class="col-sm-9">
-                                    <select id="paket" name="paket" class="form-control" disabled>
-                                        <option value="">.: Pilih Paket:.</option>
-                                        <option value="jam" {{ isset($data->paket) && $data->paket == 'jam' ? 'selected' : ''}}>Jam</option>
-                                        <option value="harian" {{ isset($data->paket) && $data->paket == 'harian' ? 'selected' : ''}}>Harian</option>
-                                        <option value="mingguan" {{ isset($data->paket) && $data->paket == 'mingguan' ? 'selected' : ''}}>Mingguan</option>
-                                        <option value="bulanan" {{ isset($data->paket) && $data->paket == 'bulanan' ? 'selected' : ''}}>Bulanan</option>
-                                        <option value="tahunan" {{ isset($data->paket) && $data->paket == 'tahunan' ? 'selected' : ''}}>Tahunan</option>
-                                    </select>
-                                </div>
-                            </div> -->
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Lama Sewa:</label>
                                 <div class="col-sm-2">
@@ -138,12 +131,6 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <!-- <div class="form-group row">
-                                <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Over Time:</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="over_time" name="over_time" value="{{ $data->over_time ?? '0'}}" disabled>
-                                </div>
-                            </div> -->
                             <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="harga_sewa">Diskon:</label>
                                 <div class="col-sm-9">

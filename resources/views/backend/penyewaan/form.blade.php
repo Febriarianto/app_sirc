@@ -91,6 +91,12 @@
                                 <input type="text" class="form-control" id="kota_tujuan" name="kota_tujuan" value="{{ $data->kota_tujuan ?? ''}}" placeholder="Input Kota Tujuan">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="estimasi_sewa">Estimasi Lama Sewa:</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="estimasi_sewa" name="estimasi_sewa" value="{{ $data->estimasi_sewa ?? ''}}" placeholder="Input Estimasi Lama Sewa">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr>

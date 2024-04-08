@@ -29,6 +29,7 @@
                                     <th>Alamat</th>
                                     <th>No Hp</th>
                                     <th>No Plat</th>
+                                    <th>Estimasi Lama Sewa</th>
                                     <th>Keberangkatan</th>
                                     <th>Lama Sewa</th>
                                     <th>Harga Sewa</th>
@@ -83,6 +84,17 @@
                 {
                     data: 'kendaraan.no_kendaraan',
                     name: 'kendaraan.no_kendaraan'
+                },
+                {
+                    data: 'estimasi_sewa',
+                    name: 'estimasi_sewa',
+                    render: function(data, type, full, meta) {
+                        if (full.estimasi_sewa !== null) {
+                            return full.estimasi_sewa;
+                        } else {
+                            return '-';
+                        }
+                    }
                 },
                 {
                     data: 'keberangkatan',
