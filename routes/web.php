@@ -104,6 +104,7 @@ Route::prefix('backend')->middleware(['auth:web'])->group(function () {
     Route::get('laporan-omset', [Backend\LaporanController::class, 'omset_index'])->name('laporan.omset');
     Route::get('laporan-referral', [Backend\LaporanController::class, 'referral_index'])->name('laporan.referral');
     Route::get('laporan-belum-lunas', [Backend\LaporanController::class, 'belum_lunas'])->name('laporan.belumLunas');
+    Route::get('laporan-uang-keluar', [Backend\LaporanController::class, 'uang_keluar'])->name('laporan.uangKeluar');
 
     //booking/pemesanan
     Route::put('penyewaan/proses/{penyewaan}', [Backend\PenyewaanController::class, 'proses'])->name('penyewaan.proses');
