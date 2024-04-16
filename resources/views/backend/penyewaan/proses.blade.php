@@ -144,6 +144,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="kembalian">Kembalian:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="kembalian" name="kembalian" value="{{ $data->kembalian ?? '0' }}" {{ $config["title"] == "Lihat Invoice" ? 'readonly' : '' }}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="control-label col-sm-3 align-self-center mb-0" for="sisa">Sisa:</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="sisa" name="sisa" value="{{ $data->sisa ?? ''}}" readonly>
@@ -218,7 +224,8 @@
         let hargaPaket = $('#harga_sewa'),
             // lamaSewa = $('#lama_sewa'),
             totalBiaya = $('#biaya'),
-            diskon = $('#diskon');
+            diskon = $('#diskon'),
+            kembalian = $('#kembalian');
         // overTime = $('#over_time'),
         // dp = $('#dp');
 
@@ -235,7 +242,8 @@
 
             // let calTotal = parseInt(hargaPaket.val()) * parseInt(lamaSewa.val()) + parseInt(overTime.val()) - parseInt(diskon.val()),
             let calTotal = parseInt(hargaPaket.val()) - parseInt(diskon.val()),
-                sisa = calTotal - sum;
+                sudahBayar = sum - parseInt(kembalian.val()),
+                sisa = calTotal - sudahBayar;
 
             totalBiaya.val(calTotal);
 
@@ -248,7 +256,7 @@
             CalResult();
         });
 
-        $("#harga_sewa, #lama_sewa, #over_time, #diskon").on("keyup", function() {
+        $("#harga_sewa, #lama_sewa, #kembalian, #diskon").on("keyup", function() {
             CalResult();
         });
 

@@ -37,6 +37,7 @@ return new class extends Migration
             $table->unsignedBigInteger('over_time')->nullable();
             $table->unsignedBigInteger('biaya')->nullable();
             $table->unsignedBigInteger('sisa')->nullable();
+            $table->unsignedBigInteger('kembalian')->nullable();
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });

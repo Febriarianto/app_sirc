@@ -513,6 +513,7 @@ class PenyewaanController extends Controller
             'biaya' => 'required',
             'sisa' => 'required',
             'diskon' => 'required',
+            'kembalian' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
@@ -530,6 +531,7 @@ class PenyewaanController extends Controller
                 $data->update([
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
+                    'kembalian' => $request['kembalian'],
                     'diskon' => $request['diskon'],
                     'keterangan' => $ket,
                     'status' => 'selesai',

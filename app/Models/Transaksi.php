@@ -35,6 +35,7 @@ class Transaksi extends Model
         'over_time',
         'biaya',
         'sisa',
+        'kembalian',
         'keterangan',
     ];
 
