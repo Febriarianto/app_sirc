@@ -40,6 +40,10 @@ class PemasukanController extends Controller
             $data = Pembayaran::where('status', 'pemasukan')->where('tipe', 'lainnya')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->addColumn('tanggal', function ($row) {
+                    $tgl = Carbon::parse($row->created_at)->format("Y-m-d");
+                    return $tgl;
+                })
                 ->addColumn('action', function ($row) {
                     if ($row->created_at->format("Y-m-d") !== Carbon::today()->format("Y-m-d")) {
                         $actionBtn = "";

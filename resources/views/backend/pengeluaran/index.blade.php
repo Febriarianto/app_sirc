@@ -28,6 +28,7 @@
                                     <th>Keterangan</th>
                                     <th>Nominal</th>
                                     <th>File</th>
+                                    <th>Tanggal</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -79,6 +80,10 @@
                             return '-';
                         }
                     }
+                },
+                {
+                    data: 'tanggal',
+                    name: 'tanggal'
                 },
                 {
                     data: 'action',
