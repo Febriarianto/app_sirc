@@ -96,6 +96,11 @@ class PenyewaanController extends Controller
                     $harga = $hari * $get_harga_harian->nominal + $get_harga_jam * 1;
                     return  $harga;
                 })
+                ->addColumn('sudah_bayar', function ($row) {
+                    $get_sudah_bayar = Pembayaran::where('id_transaksi', $row->id)
+                        ->sum('nominal');
+                    return intval($get_sudah_bayar);
+                })
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>';
                     $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit_sewa', [$row->id, $row->id_kendaraan]) . '">Edit</a>';

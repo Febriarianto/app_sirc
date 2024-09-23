@@ -82,6 +82,11 @@
         });
         var numberRenderer = $.fn.dataTable.render.number('.', ',', 0, '').display;
         var dt = $('#dt').DataTable({
+            "createdRow": function(row, data, dataIndex) {
+                if (data.keterangan == "belum lunas") {
+                    $(row).addClass('bg-danger');
+                }
+            },
             searching: false,
             paging: false,
             info: false,
@@ -184,7 +189,6 @@
                     .column(4)
                     .data()
                     .reduce((a, b) => intVal(a) + intVal(b), 0);
-                console.log(api.column(4).data());
 
                 // Total over this page
                 pageTotal = api

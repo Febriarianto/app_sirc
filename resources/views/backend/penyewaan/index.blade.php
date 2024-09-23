@@ -26,13 +26,13 @@
                                 <tr>
                                     <th>No Inv.</th>
                                     <th>Nama Pemesan</th>
-                                    <th>Alamat</th>
-                                    <th>No Hp</th>
                                     <th>No Plat</th>
                                     <th>Estimasi Lama Sewa</th>
                                     <th>Keberangkatan</th>
                                     <th>Lama Sewa</th>
                                     <th>Harga Sewa</th>
+                                    <th>Sudah Dibayar</th>
+                                    <th>Sisa / Kurang</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -72,14 +72,6 @@
                 {
                     data: 'penyewa.nama',
                     name: 'penyewa.nama'
-                },
-                {
-                    data: 'penyewa.alamat',
-                    name: 'penyewa.alamat'
-                },
-                {
-                    data: 'penyewa.no_hp',
-                    name: 'penyewa.no_hp'
                 },
                 {
                     data: 'kendaraan.no_kendaraan',
@@ -126,6 +118,24 @@
                             return '0';
                         } else {
                             return 'Rp. ' + numberRenderer(full.harga_sewa);
+                        }
+                    }
+                },
+                {
+                    data: 'sudah_bayar',
+                    name: 'sudah_bayar',
+                    render: function(data, type, full, meta) {
+                        return 'Rp. ' + numberRenderer(full.sudah_bayar);
+                    }
+                },
+                {
+                    data: 'sudah_bayar',
+                    name: 'sudah_bayar',
+                    render: function(data, type, full, meta) {
+                        if (full.harga_sewa < full.sudah_bayar) {
+                            return '<span class="badge badge-success"> Rp. ' + numberRenderer(full.sudah_bayar - full.harga_sewa) + '</span>';
+                        } else {
+                            return '<span class="badge badge-primary"> Rp. ' + numberRenderer(full.harga_sewa - full.sudah_bayar) + '</span>';
                         }
                     }
                 },

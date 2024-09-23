@@ -49,7 +49,7 @@ class LaporanController extends Controller
         $tAhir = $request['tAhir'] ?? Carbon::now()->format('Y-m-d');
         if ($request->ajax()) {
             $data = Transaksi::where('id_kendaraan', $request['kendaraan'])
-                ->select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya', 'transaksi.kepulangan_time', 'transaksi.keberangkatan_time')
+                ->select('transaksi.id', 'penyewa.nama', 'transaksi.keberangkatan', 'transaksi.kepulangan', 'transaksi.biaya', 'transaksi.kepulangan_time', 'transaksi.keberangkatan_time', 'transaksi.keterangan')
                 ->leftJoin('penyewa', 'transaksi.id_penyewa', '=', 'penyewa.id')
                 ->whereBetween('kepulangan', [$tAwal, $tAhir])
                 ->where('transaksi.status', '=', 'selesai');

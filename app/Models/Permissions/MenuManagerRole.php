@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class MenuManagerRole extends Model
 {
-    use HasFactory;
-  protected $table = 'menu_manager_role';
-  public $timestamps = false;
-  protected $fillable = [
-    'menu_manager_id',
-    'role_id',
-  ];
+   use HasFactory;
+   protected $table = 'menu_manager_role';
+   public $timestamps = false;
+   protected $fillable = [
+      'menu_manager_id',
+      'role_id',
+   ];
 
    public function roles()
    {
