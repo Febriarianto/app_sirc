@@ -89,6 +89,9 @@
                 },
             ],
             rowCallback: function(row, data) {
+                let k = data['kendaraan'],
+                    p = data['penyewa'],
+                    kb = data['keberangkatan'];
                 // var d = new Date();
 
                 // var month = d.getMonth() + 1;
@@ -106,19 +109,37 @@
                     //     console.log("Error");
                     // } else {
 
-                    $.ajax({
-                        url: "{{ route('dashboard.prosesCheckin') }}",
-                        dataType: "json",
-                        data: {
-                            id: pk
-                        },
-                        type: "GET",
-                        success: function(response) {
-                            toastr.success("Mobil Berhasil Checkin", 'Success !');
-                            location.href = `{{ route("penyewaan.index") }}/` + pk;;
+                    Swal.fire({
+                        title: "Anda Yakin ?",
+                        html: `<p style="text-align:left;">
+                                <b>Kendaraan:</b> ${k} <br>
+                                <b>Penyewa:</b> ${p} <br>
+                                <b>Keberangkatan:</b> ${kb} <br><br>
+                                <span style="color:red;">Data akan di Simpan!</span>
+                            </p>`,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ya, Simpan!",
+                        cancelButtonText: "Tidak, Batalkan",
+                    }).then((result) => {
+                        if (result.value) {
+                            $.ajax({
+                                url: "{{ route('dashboard.prosesCheckin') }}",
+                                dataType: "json",
+                                data: {
+                                    id: pk
+                                },
+                                type: "GET",
+                                success: function(response) {
+                                    toastr.success("Mobil Berhasil Checkin", 'Success !');
+                                    location.href = `{{ route("penyewaan.index") }}/` + pk;;
+                                }
+                            })
+                            console.log("ok");
                         }
-                    })
-                    console.log("ok");
+                    });
+
                     // }
                 });
             }

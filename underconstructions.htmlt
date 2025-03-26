@@ -1,0 +1,403 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://idwebhost.com/themes/general/webhosting/assets/css/dist/output.css" rel="stylesheet">
+</head>
+
+<body class="flex ">
+    <div class="flex flex-col w-full h-full mx-auto ">
+        <!-- ========== HEADER ========== -->
+        <header class="flex mb-auto bg-gradient-to-r from-blue-900 to-blue-700 pb-72">
+            <nav class="flex items-center justify-between w-full max-w-6xl px-6 py-6 mx-auto xl:px-0"
+                aria-label="Global">
+                <a class="text-center" href="https://idwebhost.com/" aria-label="Brand">
+                    <img src="https://idwebhost.com/themes/midnight/assets/img/logo-idwebhost-negative.svg" alt=""
+                        class="w-36" width="124" height="25">
+                </a>
+                <p class="max-w-xl text-white "><span class="hidden pr-5 md:inline">Customer service kami selalu siap
+                        membantu anda</span><a
+                        class="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-center text-white transition bg-green-500 border border-transparent rounded-md sm:w-auto gap-x-3 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white "
+                        href="https://api.whatsapp.com/send?phone=6282147439346" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=""
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+                        </svg>
+                        <span class="hidden ml-1 md:inline">082147439346</span>
+                    </a>
+                </p>
+            </nav>
+        </header>
+        <!-- ========== END HEADER ========== -->
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main id="content" role="main">
+            <div class="px-6 -mt-72">
+                <div
+                    class="flex flex-col items-center justify-between max-w-6xl px-4 pt-20 mx-auto bg-white shadow bg-img lg:pl-16 rounded-2xl">
+                    <div class="text-center">
+                        <div class="block text-lg font-semibold uppercase">Selamat </div>
+                        <h1 class="block max-w-xl mb-5 text-3xl font-bold md:text-7xl">Hosting kamu sudah
+                            aktif!</h1>
+                        <p class="max-w-xl mx-auto mb-10 text-lg">
+                            Segera ubah tampilan halaman ini menjadi website terbaikmu dan bersiaplah mendapatkan jutaan
+                            pelanggan!
+
+                        </p>
+                    </div>
+                    <img class="mx-auto ml-auto sm:max-w-xs sm:w-1/5" src="https://idwebhost.com/themes/general/webhosting/assets/img/thumb2.png" alt="" width="176"
+                        height="176">
+                </div>
+
+            </div>
+            <div class="max-w-[1920px] px-4 py-10 mx-auto bg-gradient-to-b from-white to-gray-100 lg:px-0 ">
+                <div class="text-gray-900 my-11 rounded-2xl">
+                    <div class="items-center gap-10 flex-cols">
+                        <div class="max-w-lg mx-auto mb-12 text-center">
+                            <div class="block text-sm font-semibold uppercase">Beberapa Langkah </div>
+                            <h2 class="block mb-5 text-3xl font-bold md:text-6xl "><span
+                                    class="text-gradient-pink-blue">Cara Membuat Website </span>
+                            </h2>
+                        </div>
+                        <div class="grid max-w-6xl grid-cols-1 px-10 mx-auto text-center md:grid-cols-2 xl:max-w-full xl:grid-cols-3 2xl:grid-cols-6">
+                            <div class="relative p-5 m-5 transition bg-white md:py-12 rounded-2xl">
+                                <div
+                                    class="absolute inline py-2 font-semibold text-center rounded-full top-5 left-5 bg-emerald-300 w-9 h-9">
+                                    1</div>
+                                <img class="w-20 mx-auto mb-5" src="https://idwebhost.com/themes/general/webhosting/assets/img/2972316.png" alt="" width="160" height="121">
+                                <div>
+                                    <span class="text-xs">Tentukan</span>
+                                    <h3 class="text-lg font-semibold text-black "> Jenis Website</h3>
+                                    <p class="mt-4 text-sm text-gray-600">Profile, ecommerce, berita, ataupun blog</p>
+                                </div>
+                            </div>
+                            <div class="relative p-5 m-5 transition bg-white md:py-12 rounded-2xl">
+                                <div
+                                    class="absolute inline py-2 font-semibold text-center rounded-full top-5 left-5 bg-emerald-300 w-9 h-9">
+                                    2</div>
+                                <img class="w-20 mx-auto mb-5" src="https://idwebhost.com/themes/general/webhosting/assets/img/4138159.png" alt="" width="160" height="121">
+                                <div>
+                                    <span class="text-xs">Pilih </span>
+                                    <h3 class="text-lg font-semibold text-black ">Platform Website</h3>
+                                    <p class="mt-4 text-sm text-gray-600">WordPress, Joomla, Drupal, atau CMS sendiri</p>
+
+                                </div>
+                            </div>
+                            <div class="relative p-5 m-5 transition bg-white md:py-12 rounded-2xl">
+                                <div
+                                    class="absolute inline py-2 font-semibold text-center rounded-full top-5 left-5 bg-emerald-300 w-9 h-9">
+                                    3</div>
+                                <img class="w-20 mx-auto mb-5" src="https://idwebhost.com/themes/general/webhosting/assets/img/2946892.png" alt="" width="160" height="121">
+                                <div>
+                                    <span class="text-xs">Buat</span>
+                                    <h3 class="text-lg font-semibold text-black "> Desain Website</h3>
+                                    <p class="mt-4 text-sm text-gray-600">Jadikan websitemu menarik dan user friendly</p>
+
+                                </div>
+                            </div>
+                            <div class="relative p-5 m-5 transition bg-white md:py-12 rounded-2xl">
+                                <div
+                                    class="absolute inline py-2 font-semibold text-center rounded-full top-5 left-5 bg-emerald-300 w-9 h-9">
+                                    4</div>
+                                <img class="w-20 mx-auto mb-5" src="https://idwebhost.com/themes/general/webhosting/assets/img/2838735.png" alt="" width="160" height="121">
+                                <div>
+                                    <span class="text-xs">Pasang</span>
+                                    <h3 class="text-lg font-semibold text-black "> Google Analytics
+                                    </h3>
+                                    <p class="mt-4 text-sm text-gray-600">Pantau trafik dan sumber kunjungan websitemu</p>
+
+                                </div>
+                            </div>
+                            <div class="relative p-5 m-5 transition bg-white md:py-12 rounded-2xl">
+                                <div
+                                    class="absolute inline py-2 font-semibold text-center rounded-full top-5 left-5 bg-emerald-300 w-9 h-9">
+                                    5</div>
+                                <img class="w-20 mx-auto mb-5" src="https://idwebhost.com/themes/general/webhosting/assets/img/4104836.png" alt="" width="160" height="121">
+                                <div>
+                                    <span class="text-xs">Daftar</span>
+                                    <h3 class="text-lg font-semibold text-black "> Social Media</h3>
+                                    <p class="mt-4 text-sm text-gray-600">Sebarkan websitemu melalui kanal social media</p>
+
+                                </div>
+                            </div>
+                            <div class="relative p-5 m-5 transition bg-white md:py-12 rounded-2xl">
+                                <div
+                                    class="absolute inline py-2 font-semibold text-center rounded-full top-5 left-5 bg-emerald-300 w-9 h-9">
+                                    6</div>
+                                <img class="w-20 mx-auto mb-5" src="https://idwebhost.com/themes/general/webhosting/assets/img/2518048.png" alt="" width="160" height="121">
+                                <div>
+                                    <span class="text-xs">Jangan Lupa</span>
+                                    <h3 class="text-lg font-semibold text-black "> Beriklan</h3>
+                                    <p class="mt-4 text-sm text-gray-600">Iklankan produkmu di Google atau Facebook</p>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+            <div class="py-20 bg-gradient-to-r bg-grid rounded-custom">
+                <div class="max-w-lg mx-auto mb-12 text-center">
+                    <div class="block text-sm font-semibold uppercase">Artikel </div>
+                    <h2 class="block mb-5 text-3xl font-bold md:text-6xl "><span class="text-gradient-pink-blue">Yang
+                            Bisa Kamu Pelajari </span>
+                    </h2>
+                </div>
+                <div class="grid max-w-6xl grid-cols-1 gap-10 px-6 mx-auto text-sm text-center md:grid-cols-3">
+                    <div class="px-4 hover:bg-gray-50 md:py-12 rounded-custom group">
+                        <img class="w-1/3 mx-auto mb-4 transition group-hover:-translate-y-3" width="131" height="98"
+                            src="https://cdn-icons-png.flaticon.com/512/6404/6404558.png" alt="">
+                        Cara
+                        <h3 class="mb-3 text-2xl font-bold text-black"> Membuat Website</h3>
+                        <a class="inline-flex items-center justify-center w-24 px-3 py-2 text-sm font-medium text-center text-black transition bg-yellow-500 border border-transparent rounded-md gap-x-3 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800"
+                            href="https://idwebhost.com/cara-membuat-website" target="_blank">
+                            Tips
+                        </a>
+
+
+                    </div>
+                    <div class="px-4 hover:bg-gray-50 md:py-12 rounded-custom group">
+                        <img class="w-1/3 mx-auto mb-4 transition group-hover:-translate-y-3" width="131" height="98"
+                            src="https://cdn-icons-png.flaticon.com/512/911/911993.png" alt="">
+                        Membuat
+                        <h3 class="mb-3 text-2xl font-bold text-black">Email Profesional
+                        </h3>
+
+                        <a class="inline-flex items-center justify-center w-24 px-3 py-2 text-sm font-medium text-center text-black transition bg-yellow-500 border border-transparent rounded-md gap-x-3 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800"
+                            href="https://idwebhost.com/email-hosting" target="_blank">
+                            Mulai
+                        </a>
+                    </div>
+                    <div class="px-4 hover:bg-gray-50 md:py-12 rounded-custom group">
+                        <img class="w-1/3 mx-auto mb-4 transition group-hover:-translate-y-3" width="131" height="98"
+                            src="https://cdn-icons-png.flaticon.com/512/6826/6826311.png" alt="">
+                        Menghasilkan
+                        <h3 class="mb-3 text-2xl font-bold text-black"> Uang dari Internet</h3>
+                        <a class="inline-flex items-center justify-center w-24 px-3 py-2 text-sm font-medium text-center text-black transition bg-yellow-500 border border-transparent rounded-md gap-x-3 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800"
+                            href="https://idwebhost.com/cara-mendapatkan-uang-dari-internet" target="_blank">
+                            Tips
+                        </a>
+                    </div>
+                    <div class="px-4 hover:bg-gray-50 md:py-12 rounded-custom group">
+                        <img class="w-1/3 mx-auto mb-4 transition group-hover:-translate-y-3" width="131" height="98"
+                            src="https://cdn-icons-png.flaticon.com/512/1376/1376343.png" alt="">
+                        Promo
+                        <h3 class="mb-3 text-2xl font-bold text-black"> Hosting Gratis</h3>
+                        <a class="inline-flex items-center justify-center w-24 px-3 py-2 text-sm font-medium text-center text-black transition bg-yellow-500 border border-transparent rounded-md gap-x-3 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800"
+                            href="https://idwebhost.com/hosting-gratis" target="_blank">
+                            Dapatkan
+                        </a>
+                    </div>
+                    <div class="px-4 hover:bg-gray-50 md:py-12 rounded-custom group">
+                        <img class="w-1/3 mx-auto mb-4 transition group-hover:-translate-y-3" width="131" height="98"
+                            src="https://cdn-icons-png.flaticon.com/512/6021/6021560.png" alt="">
+                        Event
+                        <h3 class="mb-3 text-2xl font-bold text-black"> Domain Gratis</h3>
+
+                        <a class="inline-flex items-center justify-center w-24 px-3 py-2 text-sm font-medium text-center text-black transition bg-yellow-500 border border-transparent rounded-md gap-x-3 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800"
+                            href="https://idwebhost.com/domain-gratis" target="_blank">
+                            Ikuti
+                        </a>
+                    </div>
+                    <div class="px-4 hover:bg-gray-50 md:py-12 rounded-custom group">
+                        <img class="w-1/3 mx-auto mb-4 transition group-hover:-translate-y-3" width="131" height="98"
+                            src="https://cdn-icons-png.flaticon.com/512/8158/8158544.png" alt="">
+                        Update
+                        <h3 class="mb-3 text-2xl font-bold text-black"> Promo IDwebhost</h3>
+                        <a class="inline-flex items-center justify-center w-24 px-3 py-2 text-sm font-medium text-center text-black transition bg-yellow-500 border border-transparent rounded-md gap-x-3 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800"
+                            href="https://idwebhost.com/promo" target="_blank">
+                            Dapatkan
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="max-w-full mx-auto my-12 text-center">
+                <div class="block text-sm font-semibold uppercase">Tips </div>
+                <h2 class="block mb-20 text-3xl font-bold md:text-6xl "><span class="text-gradient-pink-blue">
+                        cPanel, Email, <br> Wordpress </span>
+                </h2>
+            </div>
+            <div class="grid max-w-6xl grid-cols-1 gap-10 mx-auto my-32 text-sm sm:grid-cols-2 lg:grid-cols-3">
+
+                <div class="text-left">
+                    <h3 class="mb-3 text-lg font-bold text-center text-black">Tips cPanel</h3>
+                    <ul class="flex flex-col overflow-hidden divide-y divide-gray-50 rounded-t-xl rounded-b-xl">
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/cara-login-cpanel-lebih-tepat-dan-mudah/"
+                                    class="font-semibold hover:underline "> Cara Mudah Login
+                                    cPanel
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/mengubah-tampilan-dashboard-cpanel-ini-tutorial/"
+                                    class="font-semibold hover:underline "> Mengubah Tampilan
+                                    Dashboard cPanel
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/cpanel-menu-domains-pengertian-fungsi-kegunaannya/"
+                                    class="font-semibold hover:underline "> Penjelasan Menu
+                                    Domains di cPanel
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/menu-database-cpanel-pengertian-fungsi-dan-fiturnya/"
+                                    class="font-semibold hover:underline "> Penjelasan Menu
+                                    Database di cPanel
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/menu-preferences-cpanel-pengertian-fungsi-dan-kegunaannya/"
+                                    class="font-semibold hover:underline "> Penjelasan Menu
+                                    Preferences di cPanel
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/tutorial/kb/membuat-subdomain-di-cpanel/"
+                                    class="font-semibold hover:underline "> Cara Membuat
+                                    Subdomain di cPanel
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/install-ssl-cpanel/"
+                                    class="font-semibold hover:underline "> Cara Install SSL
+                                    Melalui cPanel
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/control-panel-hosting/"
+                                    class="font-semibold hover:underline "> Panduan Lengkap
+                                    Control Panel Hosting
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/control-panel-hosting-terbaik/"
+                                    class="font-semibold hover:underline "> Rekomendasi Control
+                                    Panel Hosting Terbaik
+                                </a>
+                            </li>
+                            <li class="px-5 py-3 bg-green-300 ">
+                                <a target="_blank" href="https://idwebhost.com/blog/panduan-cara-upload-laravel-ke-hosting-cpanel/"
+                                    class="font-semibold hover:underline "> Panduan Upload
+                                    Laravel ke Hosting cPanel
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+                <div class="text-left">
+                    <h3 class="mb-3 text-lg font-bold text-center text-black">Tips Email</h3>
+                    <ul class="flex flex-col overflow-hidden divide-y divide-gray-50 rounded-t-xl rounded-b-xl">
+                        <li class="px-5 py-3 bg-green-300 "><a
+                            target="_blank" href="https://idwebhost.com/tutorial/kb/membuat-akun-email-di-cpanel/"
+                                class="font-semibold hover:underline ">Email di cPanel</a>
+                        </li>
+                        <li class="px-5 py-3 bg-green-300 "><a href="https://idwebhost.com/tutorial/kb/cara-menambahkan-email-webmail-pada-gmail/"
+                            target="_blank"  class="font-semibold hover:underline ">Cara Integrasikan
+                                Webmail dengan Gmail</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/melihat-track-email-webmail-di-cpanel/"
+                                class="font-semibold hover:underline ">Melihat Track Email
+                                Webmail di cPanel</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                            target="_blank" href="https://idwebhost.com/tutorial/kb/cara-backup-email-di-hosting-cpanel/"
+                                class="font-semibold hover:underline ">Cara Backup Email di
+                                Hosting cPanel</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/menghapus-isi-email-trash-di-cpanel/"
+                                class="font-semibold hover:underline ">Cara Menghapus Email
+                                di cPanel</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                            target="_blank"  href="https://idwebhost.com/tutorial/kb/cara-ubah-password-akun-webmail-di-cpanel/"
+                                class="font-semibold hover:underline ">Cara Ubah Password
+                                Webmail di cPanel</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/blog/mengatasi-error-dkim-di-cpanel/"
+                               target="_blank" class="font-semibold hover:underline ">Cara Mengatasi Error
+                                DKIM di cPanel</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/blog/webmail-tidak-bisa-login/"
+                                class="font-semibold hover:underline ">Cara Mengatasi Webmail
+                                Tidak Bisa Login</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/cara-mudah-membuat-email-dengan-domain-sendiri/"
+                                class="font-semibold hover:underline ">Cara Membuat Email
+                                dengan Domain Sendiri</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/blog/mengirimkan-email-wordpress/"
+                                class="font-semibold hover:underline ">Cara Mengirimkan Email
+                                WordPress Menggunakan SMTP Server</a></li>
+                    </ul>
+                </div>
+                <div class="text-left">
+                    <h3 class="mb-3 text-lg font-bold text-center text-black">Tips Wordpress</h3>
+                    <ul class="flex flex-col overflow-hidden divide-y divide-gray-50 rounded-t-xl rounded-b-xl">
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/cara-instal-wordpress-menggunakan-softaculous/"
+                                class="font-semibold hover:underline ">Panduan Install
+                                WordPress Melalui Softaculous</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/mempelajari-fungsi-menu-dashboard-pada-wordpress/"
+                                class="font-semibold hover:underline ">Penjelasan Menu Pada
+                                WordPress</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/blog/cara-upload-wordpress-ke-hosting/"
+                                class="font-semibold hover:underline ">Cara Upload WordPress
+                                ke Hosting</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/wordpress-401-authorization-required/"
+                                class="font-semibold hover:underline ">Cara Mengatasi Error
+                                401 WordPress</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/blog/atasi-http-error-500-wordpress/"
+                                class="font-semibold hover:underline ">Cara Mengatasi Error
+                                505 di WordPress</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/cara-hilangkan-tulisan-powered-by-wordpress/"
+                                class="font-semibold hover:underline ">Cara Hilangkan Tulisan
+                                Powered by WordPress</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/tutorial/kb/setting-database-wordpress/"
+                                class="font-semibold hover:underline ">Panduan Setting
+                                Database WordPress</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a
+                                target="_blank" href="https://idwebhost.com/blog/memasang-theme-wordpress-secara-manual-melalui-cpanel/"
+                                class="font-semibold hover:underline ">Memasang Tema
+                                WordPress Melalui cPanel</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/blog/cara-reset-password-wordpress/"
+                                class="font-semibold hover:underline ">Cara Reset Password
+                                WordPress</a></li>
+                        <li class="px-5 py-3 bg-green-300 "><a target="_blank" href="https://idwebhost.com/blog/cara-custom-domain-ke-wordpress/"
+                                class="font-semibold hover:underline ">Cara Custom Domain
+                                WordPress</a></li>
+
+                    </ul>
+                </div>
+
+
+            </div>
+            <div class=""><a
+                    class="block px-6 py-20 text-xs text-center text-white bg-gradient-to-r from-blue-900 to-blue-500 md:text-lg hover:bg-gradient-to-r hover:from-blue-800 hover:to-blue-400 -top-px"
+                    target="_blank" href="https://idwebhost.com/">IDwebhost siap mengantar bisnismu mendunia
+                    <span class="block text-2xl font-bold"> Yuk, GO ONLINE
+                        sekarang!</span> </a>
+
+            </div>
+
+        </main>
+        <!-- ========== END MAIN CONTENT ========== -->
+
+        <!-- ========== FOOTER ========== -->
+        <footer class="py-5 mt-auto text-center">
+            <div class="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
+                <p class="text-sm text-gray-500">© IDwebhost 2023.</p>
+            </div>
+        </footer>
+        <!-- ========== END FOOTER ========== -->
+    </div>
+
+</body>
+<script src="https://idwebhost.com/themes/general/webhosting/assets/js/dist/preline.js"></script>
+
+</html>

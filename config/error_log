@@ -1,0 +1,4 @@
+[15-Jun-2024 19:31:19 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/concepta/public_html/config/cache.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/concepta/public_html/config/cache.php on line 18
