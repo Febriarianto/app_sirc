@@ -27,6 +27,7 @@ class Transaksi extends Model
         'keberangkatan_time',
         'kepulangan',
         'kepulangan_time',
+        'estimasi_kepulangan',
         'tipe',
         'status',
         'jaminan',

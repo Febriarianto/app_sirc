@@ -325,32 +325,45 @@ class KendaraanController extends Controller
 
     public function select2(Request $request)
     {
-        $page = $request->page;
+        $page = $request->page ?? 1;
         $resultCount = 10;
         $offset = ($page - 1) * $resultCount;
-        $data = Kendaraan::where('no_kendaraan', 'LIKE', '%' . $request->q . '%')
-            ->where('status', '=', 'aktif')
-            ->orderBy('no_kendaraan')
-            ->skip($offset)
-            ->take($resultCount)
-            ->selectRaw('id, no_kendaraan as text')
+        $search = $request->q ?? '';
+
+        // Query builder dasar
+        $kendaraanQuery = DB::table('kendaraan')
+            ->where('kendaraan.status', 'aktif')
+            ->where('kendaraan.no_kendaraan', 'LIKE', '%' . $search . '%');
+
+        // Jika ada parameter untuk mengecualikan kendaraan yang sedang diproses
+        if ($request->has('exclude_transaksi') && $request->exclude_transaksi == 1) {
+            $kendaraanQuery = $kendaraanQuery
+                ->leftJoin('transaksi', function ($join) {
+                    $join->on('kendaraan.id', '=', 'transaksi.id_kendaraan')
+                        ->where('transaksi.status', '=', 'proses');
+                })
+                ->whereNull('transaksi.id'); // hanya ambil kendaraan yang tidak sedang "proses"
+        }
+
+        // Ambil total count
+        $count = $kendaraanQuery->count();
+
+        // Ambil data paginasi
+        $data = $kendaraanQuery
+            ->select('kendaraan.id', 'kendaraan.no_kendaraan as text')
+            ->orderBy('kendaraan.no_kendaraan')
+            ->offset($offset)
+            ->limit($resultCount)
             ->get();
 
-        $count = Kendaraan::where('no_kendaraan', 'LIKE', '%' . $request->q . '%')
-            ->where('status', '=', 'aktif')
-            ->get()
-            ->count();
+        // Hitung apakah masih ada halaman selanjutnya
+        $morePages = $count > ($offset + $resultCount);
 
-        $endCount = $offset + $resultCount;
-        $morePages = $count > $endCount;
-
-        $results = array(
-            "results" => $data,
-            "pagination" => array(
-                "more" => $morePages
-            )
-        );
-
-        return response()->json($results);
+        return response()->json([
+            'results' => $data,
+            'pagination' => [
+                'more' => $morePages
+            ]
+        ]);
     }
 }

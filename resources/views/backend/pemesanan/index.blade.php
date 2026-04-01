@@ -19,6 +19,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="dt" class="table table-bordered w-100">
@@ -38,47 +39,81 @@
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+
 @section('script')
+
+<!-- 🔥 TAMBAHAN WAJIB -->
+<link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.4.1/css/rowGroup.dataTables.min.css">
+<script src="https://cdn.datatables.net/rowgroup/1.4.1/js/dataTables.rowGroup.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
 <script>
     $(document).ready(function() {
+
         $('#dt').DataTable({
 
             responsive: true,
             serverSide: true,
             processing: true,
+
             dom: "<'row'<'col-sm-2'l><'col-sm-2'B><'col-sm-8'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+
             buttons: [{
                 extend: 'print',
                 footer: true,
                 text: 'Print',
                 title: function() {
-                    var judul = 'Daftar Pemesanan Mobil';
-                    return judul;
+                    return 'Daftar Pemesanan Mobil';
                 },
                 exportOptions: {
                     columns: [0, 1, 2, 3, 4, 5]
                 }
             }],
+
+            // 🔥 SORT BERDASARKAN TANGGAL RAW
             order: [
                 [4, 'asc']
             ],
+
             ajax: {
                 url: `{{ route('pemesanan.index') }}`
             },
+
+            // 🔥 GROUPING PER TANGGAL (FIX PAGINATION)
+            rowGroup: {
+                dataSrc: function(row) {
+                    return row.estimasi_tgl ?? row.keberangkatan ?? '1970-01-01';
+                },
+                startRender: function(rows, group) {
+
+                    let label = moment(group).format('DD MMMM YYYY');
+
+                    return $('<tr/>')
+                        .append(`
+                        <td colspan="8" style="background:#343a40;color:#fff;font-weight:bold;">
+                            📅 ${label} (${rows.count()} pesanan)
+                        </td>
+                    `);
+                }
+            },
+
             columns: [{
                     data: 'no_inv',
                     name: 'no_inv'
                 },
                 {
                     data: 'penyewa.nama',
-                    name: 'penyewa.nama',
+                    name: 'penyewa.nama'
                 },
                 {
                     data: 'penyewa.alamat',
@@ -91,12 +126,16 @@
                 {
                     data: 'estimasi_tgl',
                     name: 'estimasi_tgl',
-                    render: function(data, type, full, meta) {
-                        if (full.estimasi_tgl == null) {
-                            return full.keberangkatan;
-                        } else {
-                            return full.estimasi_tgl;
+                    render: function(data, type, full) {
+
+                        let tgl = full.estimasi_tgl ?? full.keberangkatan ?? '1970-01-01';
+
+                        // 🔥 PENTING: untuk sorting & pagination
+                        if (type === 'sort' || type === 'type') {
+                            return tgl;
                         }
+
+                        return moment(tgl).format('YYYY-MM-DD');
                     }
                 },
                 {
@@ -115,11 +154,21 @@
                     searchable: false
                 },
             ],
+
+            // 🔥 BIAR TABEL STABIL
+            drawCallback: function() {
+                $('#dt tbody tr').css('vertical-align', 'middle');
+            },
+
+            // 🔥 DELETE FIX (ANTI DOUBLE CLICK BUG)
             rowCallback: function(row, data) {
                 let api = this.api();
-                $(row).find('.btn-delete').click(function() {
-                    let pk = $(this).data('id'),
-                        url = `{{ route("pemesanan.index") }}/` + pk;
+
+                $(row).find('.btn-delete').off('click').on('click', function() {
+
+                    let pk = $(this).data('id');
+                    let url = `{{ route("pemesanan.index") }}/` + pk;
+
                     Swal.fire({
                         title: "Anda Yakin ?",
                         text: "Data tidak dapat dikembalikan setelah di hapus!",
@@ -129,31 +178,40 @@
                         confirmButtonText: "Ya, Hapus!",
                         cancelButtonText: "Tidak, Batalkan",
                     }).then((result) => {
-                        if (result.value) {
+
+                        if (result.isConfirmed) {
+
                             $.ajax({
                                 url: url,
-                                type: "DELETE",
+                                type: "POST",
                                 data: {
                                     _token: '{{ csrf_token() }}',
                                     _method: 'DELETE'
                                 },
-                                error: function(response) {
-                                    toastr.error(response, 'Failed !');
+                                error: function() {
+                                    toastr.error('Gagal hapus data', 'Failed!');
                                 },
                                 success: function(response) {
+
                                     if (response.status === "success") {
-                                        toastr.success(response.message, 'Success !');
-                                        api.draw();
+                                        toastr.success(response.message, 'Success!');
+                                        api.ajax.reload(null, false);
                                     } else {
-                                        toastr.error((response.message ? response.message : "Please complete your form"), 'Failed !');
+                                        toastr.error(response.message ?? "Error", 'Failed!');
                                     }
+
                                 }
                             });
+
                         }
+
                     });
+
                 });
             }
+
         });
+
     });
 </script>
 @endsection

@@ -19,7 +19,16 @@ use Yajra\DataTables\DataTables;
 
 class DashboardController extends Controller
 {
-    public function index()
+    use ResponseStatus;
+
+    function __construct()
+    {
+        $this->middleware('can:dashboard-list', ['only' => ['index', 'show']]);
+        $this->middleware('can:dashboard-create', ['only' => ['create', 'store']]);
+        $this->middleware('can:dashboard-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('can:dashboard-delete', ['only' => ['destroy']]);
+    }
+    public function index(Request $request)
     {
         $config['title'] = "Dashboard";
         $config['breadcrumbs'] = [
@@ -55,6 +64,33 @@ class DashboardController extends Controller
             'countPenyewa' => $countPenyewa,
             'countPemesanan' => $countPemesanan,
         ];
+
+        if ($request->ajax()) {
+            if (!empty($request['tanggal'])) {
+                $tgl = $request['tanggal'];
+            } else {
+                $tgl = Carbon::now()->format('Y-m-d');
+            }
+            $kendaraan = Transaksi::query()
+                ->join('kendaraan', 'kendaraan.id', '=', 'transaksi.id_kendaraan')
+                ->join('penyewa', 'penyewa.id', '=', 'transaksi.id_penyewa')
+                ->select([
+                    'transaksi.id',
+                    'kendaraan.no_kendaraan',
+                    'penyewa.nama',
+                    'penyewa.no_hp',
+                    'transaksi.estimasi_kepulangan',
+                    'transaksi.keberangkatan_time',
+                    'transaksi.status'
+                ])
+                ->where('transaksi.status', 'proses')
+                ->where('estimasi_kepulangan', $tgl);
+            return DataTables::of($kendaraan)
+                ->addIndexColumn()
+                ->make();
+        }
+
+
 
         return view('backend.dashboard.index', compact('config', 'data'));
     }
@@ -132,9 +168,9 @@ class DashboardController extends Controller
         return view('backend.dashboard.checkin', compact('config'));
     }
 
-    public function prosesCheckin()
+    public function prosesCheckin(Request $request)
     {
-        $id = $_GET['id'];
+        $id = $request['id'];
 
         $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
 
@@ -194,10 +230,10 @@ class DashboardController extends Controller
             'kepulangan' => $kepulangan,
             'kepulangan_time' => $kepulangan_time,
             'harga_sewa' => $harga,
-            'status' => 'selesai',
+            // 'status' => 'selesai',
         ]);
 
-        $response = response()->json(['message' => 'success']);
+        $response = response()->json(['message' => 'success', 'token' => date('YmdHis')]);
         return $response;
     }
 }

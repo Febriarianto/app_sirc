@@ -24,7 +24,7 @@
                         <table id="dt" class="table table-bordered w-100">
                             <thead>
                                 <tr>
-                                    <th>No Inv.</th>
+                                    <!-- <th>No Inv.</th> -->
                                     <th>Nama Pemesan</th>
                                     <th>No Plat</th>
                                     <th>Estimasi Lama Sewa</th>
@@ -60,15 +60,16 @@
             serverSide: true,
             processing: true,
             order: [
-                [6, 'asc']
+                [5, 'asc']
             ],
             ajax: {
                 url: `{{ route('penyewaan.index') }}`
             },
-            columns: [{
-                    data: 'no_inv',
-                    name: 'no_inv'
-                },
+            columns: [
+                // {
+                //     data: 'no_inv',
+                //     name: 'no_inv'
+                // },
                 {
                     data: 'penyewa.nama',
                     name: 'penyewa.nama'
@@ -143,12 +144,16 @@
                     data: 'action',
                     name: 'action',
                     className: "text-center",
+                    responsivePriority: 1,
                     orderable: false,
                     searchable: false
                 },
             ],
             rowCallback: function(row, data) {
                 let api = this.api();
+                let k = data.kendaraan.no_kendaraan,
+                    p = data.penyewa.nama,
+                    kb = data.keberangkatan;
                 $(row).find('.btn-delete').click(function() {
                     let pk = $(this).data('id'),
                         url = `{{ route("penyewaan.index") }}/` + pk;
@@ -184,6 +189,46 @@
                         }
                     });
                 });
+
+                $(row).find('.btn-checkin').click(function() {
+                    let pk = $(this).data('id');
+
+                    Swal.fire({
+                        title: "Anda Yakin ?",
+                        html: `<p style="text-align:left;">
+                <b>Kendaraan:</b> ${k} <br>
+                <b>Penyewa:</b> ${p} <br>
+                <b>Keberangkatan:</b> ${kb} <br><br>
+                <span style="color:red;">Data akan di Simpan!</span>
+            </p>`,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ya, Simpan!",
+                        cancelButtonText: "Tidak, Batalkan",
+                    }).then((result) => {
+                        if (result.value) {
+                            $.ajax({
+                                url: "{{ route('dashboard.prosesCheckin') }}",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    id: pk,
+                                    _token: "{{ csrf_token() }}" // penting untuk POST di Laravel
+                                },
+                                success: function(response) {
+                                    toastr.success("Mobil Berhasil Checkin", 'Success !');
+                                    location.href = `{{ route("penyewaan.index") }}/` + pk + '_' + response['token'];
+                                },
+                                error: function(xhr) {
+                                    toastr.error("Terjadi kesalahan, coba lagi!", 'Error !');
+                                    console.error(xhr.responseText);
+                                }
+                            });
+                        }
+                    });
+                });
+
             }
         });
     });

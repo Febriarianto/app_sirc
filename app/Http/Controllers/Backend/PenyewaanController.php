@@ -31,6 +31,7 @@ class PenyewaanController extends Controller
         $this->middleware('can:penyewaan-create', ['only' => ['create', 'store']]);
         $this->middleware('can:penyewaan-edit', ['only' => ['edit', 'update']]);
         $this->middleware('can:penyewaan-delete', ['only' => ['destroy']]);
+        Carbon::setLocale('id');
     }
     /**
      * Display a listing of the resource.
@@ -102,8 +103,9 @@ class PenyewaanController extends Controller
                     return intval($get_sudah_bayar);
                 })
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>';
-                    $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit_sewa', [$row->id, $row->id_kendaraan]) . '">Edit</a>';
+                    // $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit', $row->id) . '">Edit</a>';
+                    $actionBtn = '<a class="btn btn-success" href="' . route('penyewaan.edit_sewa', [$row->id, $row->id_kendaraan]) . '">Edit</a>
+                   <a class="btn btn-primary btn-checkin"  href="#" data-id="' . $row->id . '">Check IN</a>';
                     return $actionBtn;
                 })->make();
         }
@@ -169,11 +171,38 @@ class PenyewaanController extends Controller
             'jaminan' => 'required',
             'harga_sewa' => 'required',
             'estimasi_sewa' => 'required',
+            'estimasi_kepulangan' => 'required',
             'biaya' => 'required',
             'sisa' => 'required',
             'file.*' => 'mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($validator->passes()) {
+
+            $existing = Transaksi::where('id_penyewa', $request->id_penyewa)
+                ->where('id_kendaraan', $request->id_kendaraan)
+                ->where('keberangkatan', $request->keberangkatan)
+                ->first();
+
+            if ($existing) {
+                $response = response()->json([
+                    'status' => 'Error',
+                    'message' => 'Data Sudah Di Proses',
+                ]);
+
+                return $response;
+            }
+
+            $cekMobil = Transaksi::select('id')->where('id_kendaraan', $request['id_kendaraan'])->where('status', '=', 'proses')->first();
+
+            if ($cekMobil) {
+                $response = response()->json([
+                    'status' => 'Error',
+                    'message' => 'Mobil Sudah DiSewa , Silahkan Periksa status Check IN',
+                ]);
+
+                return $response;
+            }
+
             DB::beginTransaction();
             try {
                 $today  = date('Y-m-d');
@@ -197,12 +226,13 @@ class PenyewaanController extends Controller
                     'no_inv' => $no_inv,
                     'id_penyewa' => $request['id_penyewa'],
                     'id_kendaraan' => $request['id_kendaraan'],
-                    'keberangkatan' => $request['keberangkatan'],
+                    'keberangkatan' => $today,
                     'keberangkatan_time' => $keberangkatan_time,
                     'kota_tujuan' => $request['kota_tujuan'],
                     'jaminan' => $request['jaminan'],
                     'harga_sewa' => $request['harga_sewa'],
                     'estimasi_sewa' => $request['estimasi_sewa'],
+                    'estimasi_kepulangan' => $request['estimasi_kepulangan'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
                     'durasi' => $d,
@@ -265,7 +295,7 @@ class PenyewaanController extends Controller
                     ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
                     ->where('transaksi.id', $data->id)
                     ->first();
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0aEstimasi%20lama%20Sewa%20:%20" . $dataWa->estimasi_sewa . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%20(%20" . $dataWa->durasi . "%20)%20%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%20" . Carbon::parse($dataWa->keberangkatan)->translatedFormat('d F Y') . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0aEstimasi%20lama%20Sewa%20:%20" . $dataWa->estimasi_sewa . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%20(%20" . $dataWa->durasi . "%20)%20%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . Carbon::now()->translatedFormat('d F Y H:i') . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -283,27 +313,59 @@ class PenyewaanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($text)
     {
         $config['title'] = "Tutup Penyewaan";
         $config['breadcrumbs'] = [
             ['url' => route('invoice.index'), 'title' => "Cetak"],
-            ['url' => '#', 'title' => "Tutup Pemyewaan"],
+            ['url' => '#', 'title' => "Tutup Penyewaan"],
         ];
 
-        $data = Transaksi::with('penyewa', 'kendaraan')->where('id', $id)->first();
+        $parts = explode('_', $text);
+
+        // Validasi token
+        if (count($parts) !== 2) {
+            return abort(404, "Token tidak valid.");
+        }
+
+        $id = $parts[0];
+        $token = $parts[1];
+
+        // Konversi token ke waktu
+        $tokenTime = DateTime::createFromFormat('YmdHis', $token);
+        if (!$tokenTime) {
+            return abort(400, "Format token salah.");
+        }
+
+        $now = new DateTime();
+        $interval = $now->getTimestamp() - $tokenTime->getTimestamp(); // selisih detik
+
+        if ($interval >= 30) {
+            // Jika selisih lebih dari atau sama dengan 60 detik, tolak
+            return abort(403, "Token telah kadaluarsa.");
+        }
+
+        // Ambil data jika token valid
+        $data = Transaksi::with('penyewa', 'kendaraan')->find($id);
+        if (!$data) {
+            return abort(404, "Data transaksi tidak ditemukan.");
+        }
+
         $pembayaran = Pembayaran::where('id_transaksi', $id)->get();
 
-        $start = Carbon::parse($data->keberangkatan . $data->keberangkatan_time);
-        $end =  Carbon::parse();
+        // Hitung lama sewa
+        $start = Carbon::parse($data->keberangkatan . ' ' . $data->keberangkatan_time);
+        $end = Carbon::now();
         $duration = $end->diff($start);
         $hari = $end->diffInDays($start);
         $jam = $duration->format('%H');
 
+        // Konfigurasi form
         $config['form'] = (object)[
             'method' => 'PUT',
             'action' => route('penyewaan.proses', $id)
         ];
+
         return view('backend.penyewaan.proses', compact('config', 'data', 'pembayaran', 'hari', 'jam'));
     }
 
@@ -384,6 +446,7 @@ class PenyewaanController extends Controller
             'kota_tujuan' => 'required',
             'harga_sewa' => 'required',
             'estimasi_sewa' => 'required',
+            'estimasi_kepulangan' => 'required',
             'biaya' => 'required',
             'sisa' => 'required',
             'jaminan' => 'required',
@@ -436,6 +499,7 @@ class PenyewaanController extends Controller
                     'jaminan' => $request['jaminan'],
                     'harga_sewa' => $request['harga_sewa'],
                     'estimasi_sewa' => $request['estimasi_sewa'],
+                    'estimasi_kepulangan' => $request['estimasi_kepulangan'],
                     'biaya' => $request['biaya'],
                     'sisa' => $request['sisa'],
                     'durasi' => $d,
@@ -500,7 +564,7 @@ class PenyewaanController extends Controller
                     ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
                     ->where('transaksi.id', $data->id)
                     ->first();
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0aEstimasi%20lama%20Sewa%20:%20" . $dataWa->estimasi_sewa . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%20(%20" . $dataWa->durasi . "%20)%20%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%20" . Carbon::parse($dataWa->keberangkatan)->translatedFormat('d F Y') . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0aEstimasi%20lama%20Sewa%20:%20" . $dataWa->estimasi_sewa . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%20(%20" . $dataWa->durasi . "%20)%20%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . Carbon::now()->translatedFormat('d F Y H:i') . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);
@@ -573,7 +637,7 @@ class PenyewaanController extends Controller
                     ->join('jenis', 'kendaraan.id_jenis', '=', 'jenis.id')
                     ->where('transaksi.id', $data->id)
                     ->first();
-                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%" . $dataWa->keberangkatan . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0aEstimasi%20lama%20Sewa%20:%20" . $dataWa->estimasi_sewa . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%20(%20" . $dataWa->durasi . "%20)%20%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0aDiskon%20:%20Rp.%20" . number_format($dataWa->diskon) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . date("Y-m-d H:i") . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
+                $response = response()->json($this->responseStore(true, NULL, "https://api.whatsapp.com/send/?phone=" . $dataWa->no_hp . "&text=" . SettingWeb::get_setting()->header_inv . "%0a=========================%0aTgl%20Penyewaan%20:%20" . Carbon::parse($dataWa->keberangkatan)->translatedFormat('d F Y') . "%20" . $dataWa->keberangkatan_time . "%0aNo%20Kwitansi%20:%20" . $dataWa->id . "%0aNama%20:%20" . $dataWa->nama . "%0a=========================%0aSewa%20Mobil%20%0aNo%20Kendaraan%20:%20" . $dataWa->no_kendaraan . "%0aJenis%20:%20" . $dataWa->jenis . "%20" . $dataWa->warna . "%0aEstimasi%20lama%20Sewa%20:%20" . $dataWa->estimasi_sewa . "%0a=========================%0aHarga%20Sewa%20:%20Rp.%20" . number_format($dataWa->harga_sewa) . "%20(%20" . $dataWa->durasi . "%20)%20%0aUang%20Masuk%20:%20Rp.%20" .  number_format($dataWa->uang_masuk) . "%0aTotal%20:%20Rp.%20" . number_format($dataWa->biaya) . "%0aSisa%20Belum%20Terbayar%20:%20Rp.%20" . number_format($dataWa->sisa) . "%0a(Per%20tanggal%20:%20" . Carbon::now()->translatedFormat('d F Y H:i') . ")%0a=========================%0a" . SettingWeb::get_setting()->footer_inv));
             } catch (\Throwable $throw) {
                 DB::rollBack();
                 Log::error($throw);

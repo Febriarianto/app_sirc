@@ -73,7 +73,7 @@
                     name: 'status',
                     render: function(data, type, full, meta) {
                         console.log(data);
-                        if ( data == 'aktif') {
+                        if (data == 'aktif') {
                             return '<span class="badge badge-success">Aktif</span>';
                         } else {
                             return '<span class="badge badge-danger">Non Aktif</span>';

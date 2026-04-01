@@ -133,7 +133,7 @@
                                 type: "GET",
                                 success: function(response) {
                                     toastr.success("Mobil Berhasil Checkin", 'Success !');
-                                    location.href = `{{ route("penyewaan.index") }}/` + pk;;
+                                    location.href = `{{ route("penyewaan.index") }}/` + pk + '_' + response['token'];
                                 }
                             })
                             console.log("ok");

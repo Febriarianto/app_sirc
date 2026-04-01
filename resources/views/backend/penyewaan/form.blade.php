@@ -97,6 +97,12 @@
                                 <input type="text" class="form-control" id="estimasi_sewa" name="estimasi_sewa" value="{{ $data->estimasi_sewa ?? ''}}" placeholder="Input Estimasi Lama Sewa">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3 align-self-center mb-0" for="pulang">Estimasi Pulang:</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control" id="estimasi_kepulangan" name="estimasi_kepulangan" value="{{ $data->estimasi_kepulangan ?? ''}}" placeholder="Input Detail Jaminan">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -352,7 +358,8 @@
                 data: function(e) {
                     return {
                         q: e.term || '',
-                        page: e.page || 1
+                        page: e.page || 1,
+                        exclude_transaksi: 1
                     }
                 },
             },

@@ -115,6 +115,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3 align-self-center mb-0" for="pulang">Estimasi Pulang:</label>
+                                <div class="col-sm-9">
+                                    <input type="date" class="form-control" id="estimasi_kepulangan" name="estimasi_kepulangan" value="{{ $data->estimasi_kepulangan ?? ''}}" placeholder="Input Detail Jaminan">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <hr>
                     <div class="row">
